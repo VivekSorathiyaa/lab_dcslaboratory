@@ -1,0 +1,1605 @@
+<?php include("header.php");?>
+<?php 
+if($_SESSION['name']=="")
+{
+	?>
+	<script >
+		window.location.href="<?php echo $base_url; ?>index.php";
+	</script>
+	<?php
+}
+
+if(isset($_POST["save_next"]))
+{
+	$txt_final_trf_no= $_POST["txt_final_trf_no"];
+	$var_ex_date_submission = $_POST['ex_date_submission'];
+	$date_ex_date_submission = str_replace('/', '-', $var_ex_date_submission);
+	$ex_date_submission =  date('Y-m-d', strtotime($date_ex_date_submission));
+	$morr= "r";
+	$txt_tested_by= $_POST["txt_tested_by"];
+	$txt_reported_by= $_POST["txt_reported_by"];
+	$current_date= date('Y-m-d');
+	// gt final material counts
+	
+	$select_mate_counts="select * from final_material_assign_master WHERE `is_deleted`=0 AND `temporary_trf_no`='$txt_final_trf_no' AND `created_by_id`='$_SESSION[u_id]' ORDER BY final_material_id ASC";
+	
+	$result_mate_counts=mysqli_query($conn,$select_mate_counts);
+	$get_counts_of_materials=mysqli_num_rows($result_mate_counts);
+	
+		if($get_counts_of_materials > 0)
+		{
+			$sel_save_table="select * from save_material_assign ORDER BY `sm_id` DESC";
+			$query_save_entry=mysqli_query($conn,$sel_save_table);
+			
+			
+			if(mysqli_num_rows($query_save_entry)>0)
+			{
+				// if record available in save_material_assign table
+				$result_save_mate=mysqli_fetch_assoc($query_save_entry);
+				
+				$set_trf_no= intval($result_save_mate["trf_no"])+1;
+				$set_job_no= intval($result_save_mate["job_no"])+1;
+				$set_lab_no= intval($result_save_mate["lab_no_counts"]) + intval($get_counts_of_materials);
+				$set_old_count = intval($result_save_mate["lab_no_counts"])+1;
+			}
+			else
+			{
+				// if record Not available in save_material_assign table
+				$set_trf_no= 1;
+				$set_job_no= 1;
+				$set_lab_no= $get_counts_of_materials;
+				$set_old_count = 1;
+			}
+			
+			$insert_save_mate="insert into save_material_assign (`lab_no_counts`, `trf_no`, `job_no`, `isstatus`, `created_by`, `created_date`, `modified_by`, `modified_date`) 
+						values(
+						'$set_lab_no',
+						'$set_trf_no',
+						'$set_job_no',
+						 2,
+						'$_SESSION[u_id]',
+						'$current_date',
+						'',
+						'0000-00-00')";
+						$query_save_entry=mysqli_query($conn,$insert_save_mate);
+						
+			$final_id_array=array();
+			while($one_final_id=mysqli_fetch_array($result_mate_counts))
+			{
+				array_push($final_id_array,$one_final_id["final_material_id"]);
+			}
+			
+			// update one entry in job table
+			$update_jobs="update job set `material_assign`=1,`trf_no`='$set_trf_no' where `temporary_trf_no`='$txt_final_trf_no'";
+			$result_jobs=mysqli_query($conn,$update_jobs);
+			
+			$sel_job="select * from job where `trf_no`='$set_trf_no'";
+		    $result_job_date=mysqli_query($conn,$sel_job);
+		    $get_job_result=mysqli_fetch_array($result_job_date);
+			$job_inserted_date=$get_job_result["sw_date"];
+		    $date_set= date("Ymd", strtotime($job_inserted_date));
+			
+			$counting=0;
+			for($i=$set_old_count;$i<=$set_lab_no;$i++)
+			{
+				
+				$set_trf_no1= sprintf('%03d', $set_trf_no);
+				$set_counts_no= sprintf('%02d', $i);
+				$set_report_nos= $h_sr."/".$date_set.$set_trf_no1."/".$set_counts_no;
+				$txt_final_ulr_no= sprintf('%09d', $i);
+				
+				// update final material table
+				$update_final_mate="update final_material_assign_master set `trf_no`='$set_trf_no',`job_no`='$set_job_no',`lab_no`='$i',`ulr_no`='$txt_final_ulr_no',`report_no`='$set_report_nos',`is_status`=1 where `final_material_id`=".$final_id_array[$counting];
+			    $result_final_mate=mysqli_query($conn,$update_final_mate);
+				
+				//update span_save_material table by final material ids
+				
+				 $update_span_material="update span_material_assign set `trf_no`='$set_trf_no',`job_number`='$set_job_no',`lab_no`='$i',`is_save`='1' where `final_material_id`='$final_id_array[$counting]'";
+				
+				$result_span_material=mysqli_query($conn,$update_span_material);
+				
+				
+				
+				$counting++;
+			}  
+			    //update test_wise_master table by temporarory trf_no
+				$update_test_wise_master="update test_wise_material_rate set `trf_no`='$set_trf_no',`job_no`='$set_job_no' where `temporary_trf_no`='$txt_final_trf_no'";
+				$result_test_wise_master=mysqli_query($conn,$update_test_wise_master);
+			
+			
+			
+		}else
+		{
+			?>
+			<script >
+				window.location.href="<?php echo $base_url; ?>index.php";
+			</script>
+			<?php
+		}		 
+	//report no genrate code Stop
+	
+	?>
+	<script >
+		window.location.href="<?php echo $base_url; ?>job_listing_for_second_reception.php";
+	</script>
+	<?php
+}
+// save and next old code like aanand 
+/*if(isset($_POST["save_next_old"]))
+{
+	$txt_trf_no= $_POST["txt_trf_no"];
+	$txt_final_job_no= $_POST["txt_final_job_no"];
+	
+	$var_ex_date_submission = $_POST['ex_date_submission'];
+	$date_ex_date_submission = str_replace('/', '-', $var_ex_date_submission);
+	$ex_date_submission =  date('Y-m-d', strtotime($date_ex_date_submission));
+	$morr= "r";
+	$txt_tested_by= $_POST["txt_tested_by"];
+	$txt_reported_by= $_POST["txt_reported_by"];
+	$current_date= date('Y-m-d');
+	
+				$sel_save_entry="select * from save_material_assign where `trf_no`='$txt_trf_no' AND `job_no`='$txt_final_job_no'";
+				$query_save_entry=mysqli_query($conn,$sel_save_entry);
+				if(mysqli_num_rows($query_save_entry)> 0){
+					
+					 $update_save_entry="update save_material_assign set `isstatus`='2'  where  `trf_no`='$txt_trf_no' AND `job_no`='$txt_final_job_no'";
+					$result_save_assign=mysqli_query($conn,$update_save_entry);
+					
+				
+					
+				}
+	
+	
+
+	// update in final_material_assign_master table
+	$update_final_master="update final_material_assign_master set `is_status`=1 where `trf_no`='$txt_trf_no'";
+	$result_final_master=mysqli_query($conn,$update_final_master);
+	
+	// update one entry in job table
+	$update_jobs="update job set `material_assign`=1,`admin_special_light`=2 where `trf_no`='$txt_trf_no'";
+	$result_jobs=mysqli_query($conn,$update_jobs);*/
+	
+	
+/*}*/
+
+				 
+?>
+
+<style>
+#billing label {
+    display: block;
+    text-align: center;
+    line-height: 150%;
+    font-size: .85em;
+}
+
+
+
+
+
+.mede_class{
+	color:red;
+}
+.select2{
+	
+	width:200px;
+}
+.visually-hidden {
+    position: absolute;
+    left: -100vw;
+    
+    /* Note, you may want to position the checkbox over top the label and set the opacity to zero instead. It can be better for accessibilty on some touch devices for discoverability. */
+}
+
+</style>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" style="margin-left: 0px !important;">
+   <?php
+  //set session job and report no
+  ?>
+<section class="content">
+			<?php include("menu.php") ?>
+			<div class="row">
+		
+		<h1 style="text-align:center;">
+		Material Selection
+		</h1>
+	</div>
+<div class="row">
+				<div class="col-md-12">
+					<div class="box box-info">
+						
+							<div class="box-body"  style="border:1px groove #ddd;">
+							<br>
+								<div class="row">
+									
+									<div class="col-lg-12">
+									<label for="inputEmail3" class="col-sm-2 control-label">Token No:</label>
+											
+										  <div class="col-sm-2">
+											<input type="text" class="form-control" value="<?php echo $_GET['temporary_trf_no'];?>" id="txt_trf_no" name="txt_trf_no" >
+										  </div>
+										<div class="form-group">
+										
+										  <label for="inputEmail3" class="col-sm-2 control-label">Lab No:</label>
+										  
+										  <div class="col-sm-3">
+												<div class="input-group date">
+													<input type="hidden" class="form-control" value="<?php echo $_GET['temporary_trf_no'];?>" id="txt_job_no" name="txt_job_no" >
+											</div>
+										</div>
+									</div>
+								
+								</div>
+							</div>
+							<div class="panel-group">
+							  
+								<a data-toggle="collapse" href="#collapse1" class="btn btn-primary" style="width:100%;margin-top: 2%;font-size: 20px;" id="add_material_button">Add Material</a>
+								<div id="collapse1" class="panel-collapse collapse">
+								<br>
+								<form class="form" id="add_mate_form" method="post">
+								
+								<div class="row">
+									<div class="col-md-4">
+									<label for="exampleInputEmail1">Select Category<span class="mede_class">*</span>:</label>
+									</div>
+									<div class="col-md-4">
+									<label for="exampleInputEmail1">Select Material<span class="mede_class">*</span>:</label>
+									</div>
+									<div class="col-md-4">
+									<label for="exampleInputEmail1">Expec. submission Date:</label>
+									</div>
+									
+								</div>
+								  <div class="row">
+								  <div class="col-md-4">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												<select class="form-control select2" name="select_material_category" id="select_material_category" >
+													<option value="">Select Category</option>
+													<?php 
+													$sql = "select * from material_category where `material_cat_status`='1' AND `material_cat_isdelete`='0'";
+												
+													$result = mysqli_query($conn, $sql);
+
+													if (mysqli_num_rows($result) > 0) {
+														while($row = mysqli_fetch_assoc($result)) {
+													
+													?>
+			
+													<option value="<?php echo $row['material_cat_id'];?>"><?php echo $row['material_cat_name'];?></option>
+													<?php }}?>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+									<div class="col-md-4">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+											<select class="form-control select2" name="select_material" id="select_material">
+													<option value="">Select Material</option>
+													
+											</select>
+												<!--<a href="javascript:void(0)" id="get_more" class=" btn btn-primary"><i class="fa fa-undo" aria-hidden="true"></i></a>-->
+												<!--<input type="hidden" value="20" id="get_more_count">-->
+											</div>
+											
+										</div>
+									</div>
+									
+								
+									
+									<div class="col-md-4">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												<div class="col-sm-12">
+												<input type="text"  style="height:30px;" name="ex_date_submission" id="ex_date_submission" value="<?php echo date('d/m/Y')?>">
+											</div>
+											</div>
+										</div>
+									</div>
+									
+										
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-4">
+									<label for="exampleInputEmail1">Sample Conditon:</label><br>
+									
+									</div>
+									<div class="col-md-4">
+									<label for="exampleInputEmail1">Location:</label><br>
+									
+									</div>
+									
+									
+								</div>
+								
+								<div class="row">
+									<div class="col-md-4">
+									<div class="form-group">
+											
+											<div class="col-sm-12">
+									<select class="form-control select2" name="select_samp_condition" id="select_samp_condition">
+										<option value="">Select Conditon</option>
+										<option value="1" selected>Sealed</option>
+										<option value="2">Unsealed</option>
+										<option value="3">Good</option>
+										<option value="4">Poor</option>
+									</select>
+									</div>
+									</div>
+									</div>
+									<div class="col-md-4">
+									<div class="form-group">
+											
+											<div class="col-sm-12">
+									<select class="form-control select2" name="select_location" id="select_location">
+										<option value="">Select Location</option>
+										<option value="1" selected>In Laboratory</option>
+										<option value="2">On Site</option>
+									</select>
+									</div>
+									</div>
+									</div>
+									
+									
+								</div>
+								  <br>
+								<div class="row">
+				<div class="col-md-12">
+					<div class="box box-info">
+						<form class="form" id="billing" method="post">
+							<div class="panel-group">
+								<div class="panel panel-default">
+									<br>
+									<div class="panel-heading">
+										<h4 class="panel-title" style="text-align:center;">
+											<a data-toggle="collapse" href="#collapse2" class="btn btn-primary" style="color:white;width:100%;"><b>Type Of Sample</b></a>
+										</h4>
+									</div><br>
+									<div id="collapse2" class="panel-collapse collapse">
+										<div class="panel-body">
+											<div class="row material_class" id="CM">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Cement</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+																<label>Type Of Cement</label>
+																<select class="form-control" id="type_of_cement" name="type_of_cement">
+																	<option value="OPC">OPC</option>
+																	<option value="PPC">PPC</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+																<label>Grade</label>
+																<select class="form-control" id="cement_grade" name="cement_grade">
+																	<option value="53 OPC">53 OPC</option>
+																	<option value="43 OPC">43 OPC</option>
+																	<option value="33 OPC">33 OPC</option>
+																	<option value="PPC">PPC</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Brand</label>
+															  <input type="text" class="form-control" id="cement_brand" name="cement_brand" placeholder="Brand">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Week No.</label>
+															  <input type="text" class="form-control" id="week_no" name="week_no" placeholder="Week No.">
+															</div>
+														</div>
+													</div>
+												</div>
+													
+												<div class="row material_class" id="CA">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Aggregate</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+													<div class="col-md-3">
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Source</label>
+																  <input type="text" class="form-control" id="brick_source" name="brick_source" placeholder="Source">
+																</div>
+															</div>
+												</div>
+												</div>
+												
+												<div class="row material_class" id="BR">
+													<div class="col-md-12">
+														<h4 style="text-align:center;"><b>Brick</b></h4>
+													</div>
+													<hr style="border: 1px solid #ddd;">
+													
+														
+														<div class="col-md-6">
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Mark</label>
+																  <input type="text" class="form-control" id="mark" name="mark" style="text-transform:uppercase;" placeholder="Mark">
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															<div class="box-body">
+																<div class="form-group">
+																	<label>Specification</label>
+																	<select class="form-control" id="brick_specification" name="brick_specification">
+																		<option value="3.5">3.5</option>
+																		<option value="5">5</option>
+																		<option value="7.5">7.5</option>
+																		<option value="10">10</option>
+																		<option value="12.5">12.5</option>
+																		<option value="15">15</option>
+																		<option value="17.5">17.5</option>
+																		<option value="20">20</option>
+																		<option value="25">25</option>
+																		<option value="30">30</option>
+																		<option value="35">35</option>
+																	</select>
+																</div>
+															</div>
+														</div>
+													
+												</div>
+												
+												
+												<div class="row material_class" id="BT">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Bitumin</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Tanker No.</label>
+															  <input type="text" class="form-control" id="tanker_no" name="tanker_no" placeholder="Tanker No">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Lot No.</label>
+															  <input type="text" class="form-control" id="lot_no" name="lot_no" placeholder="Lot No.">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+																<label>Grade</label>
+																<select class="form-control" id="bitumin_grade" name="bitumin_grade">
+																	<option value="vg-10">VG-10</option>
+																	<option value="vg-20">VG-20</option>
+																	<option value="vg-30">VG-30</option>
+																	<option value="vg-40">VG-40</option>
+																	
+																</select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-3">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Make</label>
+															  <input type="text" class="form-control" id="make" name="make" placeholder="Make">
+															</div>
+														</div>
+													</div>
+												</div>
+												
+												
+												<div class="row material_class" id="CC">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>C C Cube</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+													<div class="col-md-4">
+														<div class="box-body col-sm-6">
+															<div class="form-group">
+																<label>Grade</label>
+																<select class="form-control" id="cube_grade" name="cube_grade">
+																	<option value="">Grade</option>
+																	<option value="M-10">M - 10</option>
+																	<option value="M-15">M - 15</option>
+																	<option value="M-20">M - 20</option>
+																	<option value="M-25">M - 25</option>
+																	<option value="M-30">M - 30</option>
+																	<option value="M-35">M - 35</option>
+																	<option value="M-40">M - 40</option>
+																	<option value="M-45">M - 45</option>
+																	<option value="M-50">M - 50</option>
+																	<option value="1:3:6">1:3:6</option>
+																	<option value="1:2:4">1:2:4</option>
+																	<option value="1:1.5:3">1:1.5:3</option>
+																	<option value="1:5">1:5</option>
+																	<option value="1:3">1:3</option>
+																	
+																</select>
+															</div>
+														</div>
+														
+														<div class="box-body col-sm-5">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Casting Date</label>
+														<input type="text" class="form-control" id="casting_date" name="casting_date" placeholder="Casting Date" value="<?php echo date("d-m-Y");?>">
+															</div>
+														</div>
+														
+													</div>
+													<div class="col-md-4">
+														
+														<div class="box-body col-sm-4">
+															<div class="form-group">
+																<label>Day</label>
+															<select class="form-control" id="day" name="day">
+																<option value="7">7 Days</option>
+																<option value="28">28 Days</option>
+																<!--<option value="7_28">7 & 28 Days</option>-->
+																<option value="other">Other</option>
+																	
+																</select>
+															</div>
+														</div>
+														
+														<div class="box-body col-sm-6 only_remark">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Remarks</label>
+															  <input type="text" class="form-control" id="day_remark" name="day_remark" placeholder="Remarks">
+															</div>
+														</div>
+													
+													</div>
+													<div class="col-md-2">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Identification Mark</label>
+															  <input type="text" class="form-control" id="cc_identification" name="cc_identification" placeholder="Identification Mark" Value="">
+															</div>
+														</div>
+													</div>
+													
+													<input type="hidden" class="form-control" id="set_of_cube" name="set_of_cube"  Value="1">
+															
+													
+													<input type="hidden" class="form-control" id="no_of_cube" name="no_of_cube" value="3" disabled>
+															
+												</div>
+												
+												
+												<div class="row material_class" id="PB">
+													<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Paver Block</b></h4>
+													</div>
+													<hr style="border: 1px solid #ddd;">
+													<div class="col-md-5">
+														<div class="box-body col-sm-6">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Shape</label>
+															  <select class="form-control" id="shape" name="shape">
+																<option value="i_shape">I - Shape</option>
+																<option value="zigzag">Zigzag</option>
+																<option value="damru">Damru</option>
+																<option value="plain">Plain</option>
+															   </select>
+															  
+															</div>
+														</div>
+													
+														<div class="box-body col-sm-6">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Age</label>
+															  <input type="text" class="form-control" id="age" name="age" placeholder="Age">
+															</div>
+														</div>
+													</div>
+													<div class="col-md-5">
+														<div class="box-body col-sm-6">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Color</label>
+															  <input type="text" class="form-control" id="color" name="color" placeholder="Color">
+															</div>
+														</div>
+													
+														<div class="box-body col-sm-6">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Thickness(mm)</label>
+															  <select class="form-control" id="thickness" name="thickness">
+																<option value="">Select Thickness</option>
+																<option value="50">50</option>
+																<option value="60">60</option>
+																<option value="80">80</option>
+																<option value="100">100</option>
+																<option value="120">120</option>
+																
+															   </select>
+															</div>
+														</div>
+													</div>
+													<div class="col-md-2">
+														<div class="box-body">
+															<div class="form-group">
+															  <label for="exampleInputEmail1">Grade</label>
+															  <select class="form-control" id="paver_grade" name="paver_grade">
+																<option value="">Select Grade</option>
+																<option value="M-20">M - 20</option>
+																<option value="M-25">M - 25</option>
+																<option value="M-30">M - 30</option>
+																<option value="M-35">M - 35</option>
+																<option value="M-40">M - 40</option>
+																<option value="M-45">M - 45</option>
+																<option value="M-50">M - 50</option>
+																<option value="M-55">M - 55</option>
+																<option value="M-60">M - 60</option>
+																
+																
+															   </select>
+															</div>
+														</div>
+													</div>
+												</div>
+												
+												<div class="row material_class" id="SO">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Soil</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+												<div class="col-md-2">
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Location</label>
+																  <input type="text" class="form-control" id="location" name="location" placeholder="Location">
+																</div>
+															</div>
+														</div>
+												</div>
+												
+												<div class="row  material_class" id="ST">
+													
+													<div class="col-md-12">
+														<h4 style="text-align:center;"><b>Steel</b></h4>
+													</div>
+													<hr style="border: 1px solid #ddd;">
+															<div class="box-body col-md-4" >
+																<div class="form-group">
+																	<label>Dia (mm)</label>
+																	<input type="text" class="form-control" id="dia" name="dia" placeholder="Dia">
+																	
+																</div>
+															</div>
+															<div class="box-body col-md-4" >
+																<div class="form-group">
+																	<label>Grade</label>
+																	<select class="form-control" id="steel_grade" name="steel_grade">
+																		<option value="FE 415">FE 415</option>
+																		<option value="FE 415 D">FE 415 D</option>
+																		<option value="FE 500">FE 500</option>
+																		<option value="FE 500 D">FE 500 D</option>
+																		<option value="FE 550">FE 550</option>
+																		<option value="FE 550 D">FE 550 D</option>
+																		
+																	</select>
+																</div>
+															</div>
+															<div class="box-body col-md-4">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Brand</label>
+																  <input type="text" class="form-control" id="steel_brand" name="steel_brand" placeholder="Brand">
+																</div>
+															</div>
+														
+												
+												</div>
+												
+												<div class="row  material_class" id="WA">
+												<div class="col-md-12">
+													<h4 style="text-align:center;"><b>Water</b></h4>
+												</div>
+												<hr style="border: 1px solid #ddd;">
+												<div class="box-body col-md-3">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Source</label>
+																  <input type="text" class="form-control" id="tile_source" name="tile_source" placeholder="Source">
+																</div>
+															</div>
+												
+												</div>
+																						
+												<div class="row  material_class" id="TI">
+													
+														<div class="col-md-12">
+															<h4 style="text-align:center;"><b>Tiles</b></h4>
+														</div>
+													<hr style="border: 1px solid #ddd;">	
+														
+														<div class="col-md-6">
+															<div class="box-body">
+																<div class="form-group">
+																	<label>Specification</label>
+																	<input type="text" class="form-control" id="tiles_specification" name="tiles_specification" placeholder="Specification">
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Brand</label>
+																  <input type="text" class="form-control" id="brand" name="brand" placeholder="Brand">
+																</div>
+															</div>
+														</div>
+														
+													
+												</div>
+												
+												<div class="row  material_class" id="FA">
+													
+														<div class="col-md-12">
+															<h4 style="text-align:center;"><b>Fine Aggregate</b></h4>
+														</div>
+													<hr style="border: 1px solid #ddd;">	
+														
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Fine Aggregate Source</label>
+																  <input type="text" class="form-control" id="fine_agg_source" name="fine_agg_source" placeholder="Fine Aggregate Source">
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Fine Aggregate Type</label>
+																  <input type="text" class="form-control" id="fine_agg_type" name="fine_agg_type" placeholder="Fine Aggregate Type">
+																</div>
+															</div>
+														</div>
+														
+														
+												</div>
+												
+												<div class="row  material_class" id="QU">
+													
+														<div class="col-md-12">
+															<h4 style="text-align:center;"><b>Quarry Spall</b></h4>
+														</div>
+													<hr style="border: 1px solid #ddd;">	
+														
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Quarry Spall Source</label>
+																  <input type="text" class="form-control" id="qa_spall_source" name="qa_spall_source" placeholder="Quarry Spall Source">
+																</div>
+															</div>
+														</div>
+														
+														
+												</div>
+												
+												
+												<div class="row  material_class" id="FT">
+													
+														<div class="col-md-12">
+															<h4 style="text-align:center;"><b>Field Test</b></h4>
+														</div>
+													<hr style="border: 1px solid #ddd;">	
+														
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Chainage No.</label>
+																  <input type="text" class="form-control" id="chainage_no" name="chainage_no" placeholder="Enter Chainage No.">
+																</div>
+															</div>
+														</div>
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Type</label>
+																  <input type="text" class="form-control" id="type_method" name="type_method" placeholder="Enter Type">
+																</div>
+															</div>
+														</div>
+														
+														
+												</div>
+												
+												<div class="row  material_class" id="BM">
+													
+														<div class="col-md-12">
+															<h4 style="text-align:center;"><b>Bitumin Mix</b></h4>
+														</div>
+													<hr style="border: 1px solid #ddd;">	
+														
+														<div class="col-md-6">
+															
+															<div class="box-body">
+																<div class="form-group">
+																  <label for="exampleInputEmail1">Bitumin Specification</label>
+																  
+																  <select class="form-control" id="bitumin_mix" name="bitumin_mix">
+																		<option value="BC-I">BC-I</option>
+																		<option value="BC-II">BC-II</option>
+																		<option value="DBM-I">DBM-I</option>
+																		<option value="DBM-II">DBM-II</option>
+																		<option value="SDBC-I">SDBC-I</option>
+																		<option value="SDBC-II">SDBC-II</option>
+																		
+																	</select>
+																</div>
+															</div>
+														</div>
+														
+														
+												</div>
+												</div>
+											  <!-- /.box-body -->
+
+											  
+										
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+								<hr style="border:var(--primary) 2px solid;">
+								<div class="row">
+									<div class="col-md-1">
+									<label for="chk_for_star">
+									Select Test<span class="mede_class" id="id_for_star"></span>:<label>
+									<input type="hidden" name="txt_is_sample" id="txt_is_sample" value="0">
+									<input type="checkbox" class="visually-hidden" name="chk_for_star"  id="chk_for_star" value="0">									
+									</div>
+									<div class="col-md-2">
+									<div id="put_all_chk_box">
+									</div>
+									</div>
+									<!--<div class="col-md-2">
+									<label for="exampleInputEmail1">Admin Supply:<span class="mede_class">*</span>:</label>
+									
+									</div>-->
+									<div class="col-md-2">
+									<label for="exampleInputEmail1">Tested By<span class="mede_class">*</span>:</label>
+									</div>
+									<div class="col-md-3">
+									<label for="exampleInputEmail1">Reported By<span class="mede_class">*</span>:</label>
+									</div>
+									<div class="col-md-4">
+										<label for="exampleInputEmail1">Excel Uploaded<span class="mede_class">*</span>:</label>
+									</div>
+								</div>
+								<div class="row">
+								<div class="col-md-2">
+										<div class="form-group">
+											
+											<div class="col-sm-3">
+												<select class="form-control" name="select_test" id="select_test" multiple="multiple">
+													
+												</select>
+												
+												<!--<select class="form-control" name="select_test" id="select_test">
+												<option value="">Select Test</option>
+												
+													<option value="">Select Test</option>
+													
+												</select>-->
+											</div>
+											
+										</div>
+								</div>
+								<!--<div class="col-md-2">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												<input type="radio" style="width:33px;height:25px;" name="radio" value="m" checked><span style="font-size:35px;" ><b>M</b></span>
+												<input type="radio" style="width:33px;height:25px;"name="radio" value="r"><span style="font-size:35px;"><b>R<b></span>
+											</div>
+										</div>
+								</div>-->
+								
+								<div class="col-md-2">
+								<input type="hidden" name="radio" value="r">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												
+												<select class="form-control " name="sel_tested_by" id="sel_tested_by" style="height:50px;">
+													
+												</select>
+												
+											
+											</div>
+										</div>
+								</div>
+								
+								<div class="col-md-3">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+											<select class="form-control " name="reported_by" id="reported_by" style="height:50px;">
+													<?php 
+													
+													$sel_staff="select * from multi_login where `staff_isadmin`='5'";
+													$query_staff=mysqli_query($conn,$sel_staff);
+													if(mysqli_num_rows($query_staff) > 0)
+													{
+														while($rowss=mysqli_fetch_array($query_staff))
+														{
+															
+															?>
+																<option value="<?php echo $rowss['id']?>"><?php echo $rowss['staff_fullname']?></option>
+													
+												<?php 		
+														}
+													}
+												?>
+												</select>
+												
+											</div>
+										</div>
+								</div>
+								
+								<div class="col-md-4">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												<input type="radio" style="width:33px;height:25px;" name="exel_radio" value="y"><span style="font-size:35px;" ><b>YES</b></span>
+												<input type="radio" style="width:33px;height:25px;"name="exel_radio" value="n" checked><span style="font-size:35px;"><b>No<b></span>
+											</div>
+										</div>
+								</div>
+								</div>
+								<br>
+							<!--<select id="multiselectdemo" multiple="multiple">
+									<option value="jQuery">jQuery tutorial</option>
+												<option value="Bootstrap">Bootstrap Tips</option>
+												<option value="HTML">HTML</option>
+												<option value="CSS">CSS tricks</option>
+												<option value="angular">Angular JS</option>
+												</select>-->
+								
+								<div class="row">
+								
+								<div class="col-md-3">
+										<div class="form-group">
+											
+											<div class="col-sm-12">
+												<button type="button" class="btn btn-info"  onclick="addData('add_material_assinging')" name="btn_add_data" id="btn_add_data" style="width:100%;font-size:20px;margin-left:160%;" >Add Test</button>
+											</div>
+										</div>
+								</div>
+								</div>
+								</div>
+							</div>
+							</form>
+							<div class="row">
+									<div class="col-lg-12">
+									<div id="display_data">
+									</div>
+									</div>
+							</div>
+							<div class="box-footer">
+								<div class="row">
+									<div class="col-lg-12">
+										<div class="form-group">
+											<div class="col-sm-12">
+												
+												<button type="button" class="btn btn-info"  onclick="savedata('add_material_assinging_save')" name="btn_add_data_save" id="btn_add_data_save" style="width:100%;font-size:20px;display:none;" >Save Test</button>
+												
+											</div>
+										</div>
+									</div>
+								</div>	
+							</div>
+							<br>
+							<br>
+							<div class="row">
+									<div class="col-lg-12">
+									<div id="display_data_after_save">
+									</div>
+									</div>
+							</div>
+							
+							
+							
+							<form name="frm_save" method="post">
+							<div class="row">
+								<div class="col-lg-12">
+									<input type="hidden" value="<?php echo $_GET['temporary_trf_no'];?>" name="txt_final_trf_no">
+									<?php
+									// set job no from report no
+									//$set_job_no1=substr($_GET['report_no'],7);
+									?>
+									
+									<!--<input type="submit" class="btn btn-info" name="final_save" id="final_save" style="width:20%;font-size:20px;margin-left: 40%;margin-bottom: 2%;display:none;" value="SAVE">-->
+									 <button type="submit"  class="btn btn-info" name="save_next" id="save_next" style="width:20%;font-size:20px;margin-left: 40%;margin-bottom: 2%;display:none;" >Save
+									 </button>
+
+									
+									
+								</div>
+							</div>
+								</form>
+							</div>
+						
+					</div>
+				</div>
+</section>	
+</div>
+  
+	
+<?php include("footer.php");?>
+<link rel="stylesheet" href="bower_components/custom/bootstrap-multiselect.css" type="text/css">
+<script type="text/javascript" src="bower_components/custom/bootstrap-multiselect.js"></script>
+		  	  
+<script>
+$(function () {
+    $('.select2').select2();
+  });
+$(document).ready(function(){
+	   $('#select_test').multiselect();
+	$(".only_remark").hide();
+	$(".material_class").hide();
+	get_span_assign_after_save();
+	//get_span_assign();
+});
+
+$('#casting_date').datepicker({
+		  autoclose: true,
+	  format: 'dd/mm/yyyy'
+	})
+	
+$('#ex_date_submission').datepicker({
+		  autoclose: true,
+	  format: 'dd/mm/yyyy'
+	})
+   // on category change 
+$("#select_material_category").change(function(){
+      var select_material_category = $('#select_material_category').val(); 
+	  var txt_report_no = $('#txt_report_no').val();
+	   var txt_job_no = $('#txt_job_no').val();
+	  var postData = 'action_type=get_material_by_category&select_material_category='+select_material_category+'&txt_report_no='+txt_report_no+'&txt_job_no='+txt_job_no;
+			
+			$.ajax({
+				url : "<?php $base_url; ?>span_save_material.php",
+				type: "POST",
+				dataType:'JSON',
+				data : postData,
+				beforeSend: function(){
+					document.getElementById("overlay_div").style.display="block";
+				},
+				success: function(data)
+				 {
+					document.getElementById("overlay_div").style.display="none";
+					$('#select_material').html(data.all_material);	
+				    //$('#txt_lab_no').val(data.final_lab_id);
+				    $('#hidden_lab_no').val(data.final_lab_id);
+					$('#select_test').html(data.out_tests);
+					$('#put_all_chk_box').html(data.put_chk_box);
+					$('#sel_tested_by').html(data.out_materials_engineer);
+					$('#select_test').multiselect('rebuild');
+
+				    $('#get_more_count').val(20);
+					$("#get_more").prop("disabled", false);
+					
+					var set_sample_id= "#"+data.cate_prefix;
+					$(".material_class").hide();
+					$(set_sample_id).show();
+				 
+				 }
+			});
+});
+
+
+// on material change
+
+$("#select_material").change(function(){
+      var select_material = $('#select_material').val(); 
+      var txt_report_no = $('#txt_report_no').val(); 
+      var select_material_category = $('#select_material_category').val(); 
+      var txt_job_no = $('#txt_job_no').val(); 
+	  var postData = 'action_type=get_lab_by_material&select_material='+select_material+'&txt_report_no='+txt_report_no+'&select_material_category='+select_material_category+'&txt_job_no='+txt_job_no;
+			
+			$.ajax({
+				url : "<?php $base_url; ?>span_save_material.php", 
+				type: "POST",
+				dataType:'JSON',
+				data : postData,
+				beforeSend: function(){
+					document.getElementById("overlay_div").style.display="block";
+				},
+				success: function(data)
+				 {
+					document.getElementById("overlay_div").style.display="none";
+					
+					var days=parseInt(data.material_per_day_limit);
+					var someDate = new Date();
+					someDate.setDate(someDate.getDate() + days);
+					
+					var dd = someDate.getDate();
+					var mm = someDate.getMonth() + 1;
+					var y = someDate.getFullYear();
+
+					var someFormattedDate = dd + '/'+ mm + '/'+ y;
+					
+					$('#ex_date_submission').val(someFormattedDate);
+					
+					$('#select_test').html(data.out_tests);
+					$('#select_test').multiselect('rebuild');
+					
+				 }
+			});
+});
+
+//on day changes
+
+$("#day").change(function(){
+	var get_days=$("#day").val();
+	var get_set_of_cube=$("#set_of_cube").val();
+	
+	if(get_days !="" && get_days=="other"){
+		$(".only_remark").show();
+	}else{
+		$(".only_remark").hide();
+	}
+	
+	if(get_days=="7_28"){
+			var multi=6;
+		}else{
+			var multi=3;
+			
+		}
+		
+		var set_no_of_cobe= get_set_of_cube * multi;
+		$("#no_of_cube").val(set_no_of_cobe);
+	
+	
+	
+});
+
+
+//on ulr no  changes
+
+$(document).on("blur",".class_ulr",function(){
+	var txt_ulr_no= $(this).val();
+	if(txt_ulr_no.length !=5){
+		alert("Please Enter 5 Digit In Ulr No.");
+		return false;
+	}
+	var txt_ulr_no_ids= $(this).attr("id");
+	var set_first="#first_"+txt_ulr_no_ids;
+	var set_third="#third_"+txt_ulr_no_ids;
+	var first_ulr= $(set_first).val();
+	var third_ulr= $(set_third).val();
+	
+	var postData = 'action_type=update_ulr_no_by_ids&txt_ulr_no='+txt_ulr_no+'&txt_ulr_no_ids='+txt_ulr_no_ids+'&first_ulr='+first_ulr+'&third_ulr='+third_ulr;
+			
+		$.ajax({
+				url : "<?php $base_url; ?>span_save_material.php", 
+				type: "POST",
+				data : postData,
+				beforeSend: function(){
+					document.getElementById("overlay_div").style.display="block";
+				},
+				success: function(data)
+				 {
+					document.getElementById("overlay_div").style.display="none";
+				 }
+			});
+});
+
+//on delete final materials click
+
+$(document).on("click",".delete_final_entry",function(){
+	
+	var id= $(this).attr("id");
+	var postData = '&action_type=delete_final_entry&id='+id;
+			
+		$.confirm({
+        title: "warning",
+        content: "Are You Sure To Delete This material?",
+        buttons: {
+			confirm: function () 
+			{
+				$.ajax({
+						url : "<?php $base_url; ?>span_save_material.php", 
+						type: "POST",
+						data : postData,
+						beforeSend: function(){
+							document.getElementById("overlay_div").style.display="block";
+						},
+						success: function(data)
+						 {
+							document.getElementById("overlay_div").style.display="none";
+							get_span_assign_after_save();
+						 }
+					});
+			},
+            cancel: function () {
+				return;
+            }
+			}
+        })
+});
+
+
+// on set of cube blur
+$(document).on("blur","#set_of_cube",function(){
+	var get_days=$("#day").val();
+	var get_set_of_cube=$("#set_of_cube").val();
+	
+	if(get_days !=""){
+		if(get_days=="7_28"){
+			var multi=6;
+		}else{
+			var multi=3;
+			
+		}
+		
+		var set_no_of_cobe= get_set_of_cube * multi;
+		$("#no_of_cube").val(set_no_of_cobe);
+		
+	}else{
+		alert("Select Days");
+		$("#no_of_cube").val(0);
+		return false;
+	}
+	
+	
+	
+});
+
+// add data
+function addData(type,id){
+    id = (typeof id == "undefined")?'':id;
+    var statusArr = {add:"added",edit:"updated",delete:"deleted"};
+    var billData = '';
+    if (type == 'add_material_assinging') {
+				var txt_trf_no = $('#txt_trf_no').val(); 
+				var txt_job_no = $('#txt_job_no').val(); 
+				var select_material_category = $('#select_material_category').val(); 
+				var select_material = $('#select_material').val(); 
+				//var txt_lab_no = $('#txt_lab_no').val(); 
+				var type_of_cement = $('#type_of_cement').val(); 
+				var cement_grade = $('#cement_grade').val(); 
+				var cement_brand = $('#cement_brand').val(); 
+				var week_no = $('#week_no').val(); 
+				var brick_source = $('#brick_source').val(); 
+				var mark = $('#mark').val();
+				var brick_specification = $('#brick_specification').val();
+				var tanker_no = $('#tanker_no').val();
+				var lot_no = $('#lot_no').val();
+				var bitumin_grade = $('#bitumin_grade').val();
+				var make = $('#make').val();
+				var cube_grade = $('#cube_grade').val();
+				var day_remark = $('#day_remark').val();
+				var casting_date = $('#casting_date').val();
+				var day = $('#day').val();
+				var set_of_cube = $('#set_of_cube').val();
+				var no_of_cube = $('#no_of_cube').val();
+				var cc_identification = $('#cc_identification').val();
+				var chainage_no = $('#chainage_no').val();
+				var type_method = $('#type_method').val();
+				var shape = $('#shape').val();
+				var age = $('#age').val();
+				var color = $('#color').val();
+				var thickness = $('#thickness').val();
+				var paver_grade = $('#paver_grade').val();
+				var location = $('#location').val();
+				var dia = $('#dia').val();
+				var steel_grade = $('#steel_grade').val();
+				var steel_brand = $('#steel_brand').val();
+				var tile_source = $('#tile_source').val();
+				var tiles_specification = $('#tiles_specification').val();
+				var fine_agg_source = $('#fine_agg_source').val();
+				var fine_agg_type = $('#fine_agg_type').val();
+				var qa_spall_source = $('#qa_spall_source').val();
+				var bitumin_mix = $('#bitumin_mix').val();
+				var tiles_specification = $('#tiles_specification').val();
+				var brand = $('#brand').val();
+				var select_test = $('#select_test').val();
+				var select_samp_condition = $('#select_samp_condition').val();
+				var select_location = $('#select_location').val();
+				var txt_is_sample = $('#txt_is_sample').val();
+				
+				
+				var tested_by = $('#sel_tested_by').val();
+				var reported_by = $('#reported_by').val();
+				var ex_date_submission = $('#ex_date_submission').val();
+				var chkmorr = $("input[name='radio']:checked").val();
+				var exel_radio = $("input[name='exel_radio']:checked").val();
+				
+			
+				if(txt_trf_no !="" && select_material_category !="" && select_material !=""&& select_test !="" && tested_by !=""&& reported_by !=""){
+					
+				billData = '&action_type='+type+'&id='+id+'&txt_trf_no='+txt_trf_no+'&txt_job_no='+txt_job_no+'&select_material_category='+select_material_category+'&select_material='+select_material+'&type_of_cement='+type_of_cement+'&cement_grade='+cement_grade+'&cement_brand='+cement_brand+'&week_no='+week_no+'&brick_source='+brick_source+'&mark='+mark+'&brick_specification='+brick_specification+'&tanker_no='+tanker_no+'&lot_no='+lot_no+'&bitumin_grade='+bitumin_grade+'&make='+make+'&cube_grade='+cube_grade+'&day_remark='+day_remark+'&casting_date='+casting_date+'&day='+day+'&set_of_cube='+set_of_cube+'&no_of_cube='+no_of_cube+'&shape='+shape+'&age='+age+'&color='+color+'&thickness='+thickness+'&paver_grade='+paver_grade+'&location='+location+'&dia='+dia+'&steel_grade='+steel_grade+'&steel_brand='+steel_brand+'&tile_source'+tile_source+'&tiles_specification='+tiles_specification+'&brand='+brand+'&select_test='+select_test+'&tested_by='+tested_by+'&reported_by='+reported_by+'&ex_date_submission='+ex_date_submission+'&chkmorr='+chkmorr+'&exel_radio='+exel_radio+'&fine_agg_source='+fine_agg_source+'&qa_spall_source='+qa_spall_source+'&select_samp_condition='+select_samp_condition+'&select_location='+select_location+'&bitumin_mix='+bitumin_mix+'&txt_is_sample='+txt_is_sample+'&cc_identification='+cc_identification+'&chainage_no='+chainage_no+'&type_method='+type_method+'&fine_agg_type='+fine_agg_type;
+				}else{
+					alert(" All Filled Required");
+					return false;
+				}
+				
+				//exit();
+				
+    }else{
+				
+	
+				billData = 'action_type='+type+'&id='+id;
+				
+    }
+     $.ajax({
+        type: 'POST',
+        url: '<?php $base_url; ?>span_save_material.php',
+        data: billData,
+		beforeSend: function(){
+		document.getElementById("overlay_div").style.display="block";
+		},
+        success:function(msg){
+		document.getElementById("overlay_div").style.display="none";
+          get_span_assign();
+		  $("#btn_add_data_save").css("display", "block");
+        }
+    }); 
+}
+
+
+//save in final
+
+function savedata(type,id){
+    id = (typeof id == "undefined")?'':id;
+    var statusArr = {add:"added",edit:"updated",delete:"deleted"};
+    var billData = '';
+    if (type == 'add_material_assinging_save') {
+				var txt_trf_no = $('#txt_trf_no').val(); 
+				var txt_job_no = $('#txt_job_no').val(); 
+				var select_material_category = $('#select_material_category').val(); 
+				var select_material = $('#select_material').val(); 
+				//var txt_lab_no = $('#txt_lab_no').val(); 	
+				//6/4
+				var type_of_cement = $('#type_of_cement').val(); 
+				var cement_grade = $('#cement_grade').val(); 
+				var cement_brand = $('#cement_brand').val(); 
+				var week_no = $('#week_no').val(); 
+				var brick_source = $('#brick_source').val(); 
+				var mark = $('#mark').val();
+				var brick_specification = $('#brick_specification').val();
+				var tanker_no = $('#tanker_no').val();
+				var lot_no = $('#lot_no').val();
+				var bitumin_grade = $('#bitumin_grade').val();
+				var make = $('#make').val();
+				var cube_grade = $('#cube_grade').val();
+				var day_remark = $('#day_remark').val();
+				var casting_date = $('#casting_date').val();
+				var day = $('#day').val();
+				var set_of_cube = $('#set_of_cube').val();
+				var no_of_cube = $('#no_of_cube').val();
+				var cc_identification = $('#cc_identification').val();
+				var chainage_no = $('#chainage_no').val();
+				var type_method = $('#type_method').val();
+				var shape = $('#shape').val();
+				var age = $('#age').val();
+				var color = $('#color').val();
+				var thickness = $('#thickness').val();
+				var paver_grade = $('#paver_grade').val();
+				var location = $('#location').val();
+				var dia = $('#dia').val();
+				var steel_grade = $('#steel_grade').val();
+				var steel_brand = $('#steel_brand').val();
+				var tile_source = $('#tile_source').val();
+				var tiles_specification = $('#tiles_specification').val();
+				var fine_agg_source = $('#fine_agg_source').val();
+				var fine_agg_type = $('#fine_agg_type').val();
+				var qa_spall_source = $('#qa_spall_source').val();
+				var bitumin_mix = $('#bitumin_mix').val();
+				var brand = $('#brand').val();
+				var select_test = $('#select_test').val();
+				var select_samp_condition = $('#select_samp_condition').val();
+				var select_location = $('#select_location').val();
+				var txt_is_sample = $('#txt_is_sample').val();
+				
+				var tested_by = $('#sel_tested_by').val();
+				var reported_by = $('#reported_by').val();
+				var ex_date_submission = $('#ex_date_submission').val();
+				var chkmorr = $("input[name='radio']:checked").val();
+				var exel_radio = $("input[name='exel_radio']:checked").val();
+					
+				
+				var qty = prompt("ENTER QUANTITY","1");
+				if(qty == null)
+				{
+					alert("Process Cancel Successfully.");
+				}
+				else
+				{
+						if (qty != null || qty != "") {
+							
+								if(qty!=0)
+								{
+									if(qty > 1)
+									{
+						
+										if(!isNaN(qty))
+										{
+													billData = '&action_type='+type+'&id='+id+'&txt_trf_no='+txt_trf_no+'&txt_job_no='+txt_job_no+'&select_material_category='+select_material_category+'&select_material='+select_material+'&ex_date_submission='+ex_date_submission+'&qty='+qty+'&type_of_cement='+type_of_cement+'&cement_grade='+cement_grade+'&cement_brand='+cement_brand+'&week_no='+week_no+'&brick_source='+brick_source+'&mark='+mark+'&brick_specification='+brick_specification+'&tanker_no='+tanker_no+'&lot_no='+lot_no+'&bitumin_grade='+bitumin_grade+'&make='+make+'&cube_grade='+cube_grade+'&day_remark='+day_remark+'&casting_date='+casting_date+'&day='+day+'&set_of_cube='+set_of_cube+'&no_of_cube='+no_of_cube+'&shape='+shape+'&age='+age+'&color='+color+'&thickness='+thickness+'&paver_grade='+paver_grade+'&location='+location+'&dia='+dia+'&steel_grade='+steel_grade+'&steel_brand='+tile_source+'&tiles_specification='+tiles_specification+'&brand='+brand+'&select_test='+select_test+'&tested_by='+tested_by+'&reported_by='+reported_by+'&ex_date_submission='+ex_date_submission+'&chkmorr='+chkmorr+'&exel_radio='+exel_radio+'&fine_agg_source='+fine_agg_source+'&qa_spall_source='+qa_spall_source+'&select_samp_condition='+select_samp_condition+'&select_location='+select_location+'&bitumin_mix='+bitumin_mix+'&txt_is_sample='+txt_is_sample+'&cc_identification='+cc_identification+'&chainage_no='+chainage_no+'&type_method='+type_method+'&fine_agg_type='+fine_agg_type;
+													
+															 $.ajax({
+													type: 'POST',
+													url: '<?php $base_url; ?>span_save_material.php',
+													data: billData,
+													beforeSend: function(){
+													//document.getElementById("overlay_div").style.display="block";
+													},
+													success:function(msg){
+													  document.getElementById("overlay_div").style.display="none";
+													  $('#display_data').html("");
+													  $("#add_mate_form")[0].reset();
+													  $("#add_material_button").click();
+													 $("#btn_add_data_save").css("display", "none");
+													 $("#final_save").css("display", "block");
+													 $("#save_next").css("display", "block");
+													 $("#after_save_portion").css("display", "block");
+														get_span_assign_after_save();
+													}														
+												});
+										}
+										else
+										{
+											alert("Please Input Valid Quantity.");
+										}
+									}
+									else
+									{
+										
+										//PUT SUCEESS DATA OVER HERE
+										
+										$('#display_data').html("");
+										$("#add_mate_form")[0].reset();
+										$("#add_material_button").click();
+										$("#btn_add_data_save").css("display", "none");
+										$("#final_save").css("display", "block");
+										$("#save_next").css("display", "block");
+										$("#after_save_portion").css("display", "block");
+									    get_span_assign_after_save();
+										
+									}
+								}
+								else
+								{
+									alert("Please Input Valid Quantity.");
+								}
+						}
+						else
+						{
+								alert("Please Input Valid Quantity.");
+						}
+				}
+				
+    }
+   
+}
+
+
+
+function get_span_assign_after_save(){
+		
+		var str= '<?php echo $_GET["temporary_trf_no"]?>';
+		var txt_jb_id= str;
+    $.ajax({
+        type: 'POST',
+        url: '<?php $base_url; ?>span_save_material.php',
+        data: 'action_type=get_span_assign_after_save&temporary_trf_no='+str,
+        success:function(html){
+            $('#display_data_after_save').html(html);
+        }
+    });
+}
+
+function get_span_assign(){
+		var str= '<?php echo $_GET["temporary_trf_no"]?>';
+		var txt_jb_id= str;
+		
+    $.ajax({
+        type: 'POST',
+        url: '<?php $base_url; ?>span_save_material.php',
+        data: 'action_type=get_span_assign&temporary_trf_no='+str,
+        success:function(html){
+            $('#display_data').html(html);
+        }
+    });
+}
+
+
+   // $(".open .dropdown-menu checkbox").prop('checked', $(this).prop("checked")); 
+
+
+$(document).on('click','.all_chk', function(event){
+   
+	//$('.multiselect-container .multiselect-container').prop('checked', this.checked);
+	$('#select_test checkbox').prop('selected',true);
+});
+
+ //get more material by category 
+$(document).on('click','#get_more', function(event){
+   
+	var select_material_category = $('#select_material_category').val(); 
+	var get_more_count = $('#get_more_count').val(); 
+	if(select_material_category==0){
+		alert("Slect Category First");
+		return false;
+	}
+	  var postData = 'action_type=get_material_by_category_more&select_material_category='+select_material_category+'&get_more_count='+get_more_count;
+			
+			$.ajax({
+				url : "<?php $base_url; ?>span_save_material.php",
+				type: "POST",
+				dataType:'JSON',
+				data : postData,
+				beforeSend: function(){
+					document.getElementById("overlay_div").style.display="block";
+				},
+				success: function(data)
+				 {
+					document.getElementById("overlay_div").style.display="none";
+					$('#select_material').append(data.all_material);	
+				    get_more_count= parseInt(get_more_count)+ 20;
+				    $('#get_more_count').val(get_more_count);
+
+					if(data.get_rows_counts==0)
+					{
+						$("#get_more").prop("disabled", true);
+						alert("No More Material For "+data.category_names+" Category");
+					}
+					
+					
+				 
+				 }
+			});
+});
+
+$('#chk_for_star').click(function() {
+   
+	var txt_is_sample= $("#txt_is_sample").val();
+	
+	if(txt_is_sample=="0")
+	{
+		$("#txt_is_sample").val("1");
+		$('#id_for_star').text('*');
+	}else
+	{
+		$("#txt_is_sample").val("0");
+		$('#id_for_star').text('');
+	}
+});
+	
+</script>

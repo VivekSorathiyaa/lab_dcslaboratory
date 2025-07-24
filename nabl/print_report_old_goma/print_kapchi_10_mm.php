@@ -1,0 +1,974 @@
+<?php
+session_start();
+include("../connection.php");
+error_reporting(1); ?>
+<style>
+	@page {
+		margin: 0;
+	}
+
+	.pagebreak {
+		page-break-before: always;
+	}
+
+	page[size="A4"] {
+		width: 21cm;
+		height: 29.7cm;
+
+	}
+</style>
+<style>
+	.tdclass {
+		border: 1px solid black;
+		font-size: 12px;
+		font-family: Arial;
+
+	}
+
+	.test {
+		border-collapse: collapse;
+		font-size: 12px;
+		font-family: Arial;
+	}
+
+	.tdclass1 {
+
+		font-size: 12px;
+		font-family: Arial;
+	}
+
+	div.vertical-sentence {
+		-ms-writing-mode: tb-rl;
+		/* for IE */
+		-webkit-writing-mode: vertical-rl;
+		/* for Webkit */
+		writing-mode: vertical-rl;
+
+	}
+
+	.rotate-characters-back-to-horizontal {
+		-webkit-text-orientation: upright;
+		/* for Webkit */
+		text-orientation: upright;
+	}
+</style>
+<html>
+
+<body>
+	<?php
+	$job_no = $_GET['job_no'];
+	$lab_no = $_GET['lab_no'];
+	$report_no = $_GET['report_no'];
+	$trf_no = $_GET['trf_no'];
+	$select_tiles_query = "select * from rcc_10_mm WHERE `lab_no`='$lab_no' AND `report_no`='$report_no' AND `job_no`='$job_no' and `is_deleted`='0'";
+	$result_tiles_select = mysqli_query($conn, $select_tiles_query);
+	$row_select_pipe = mysqli_fetch_array($result_tiles_select);
+
+	$select_query = "select * from job WHERE `trf_no`='$trf_no' AND `jobisdeleted`='0'";
+	$result_select = mysqli_query($conn, $select_query);
+
+	$row_select = mysqli_fetch_array($result_select);
+	$clientname = $row_select['clientname'];
+
+	$client_address = $row_select['clientaddress'];
+	$r_name = $row_select['refno'];
+	$agreement_no = $row_select['agreement_no'];
+
+	$rec_sample_date = $row_select['sample_rec_date'];
+	$cons = $row_select['condition_of_sample_receved'];
+	if ($cons == 0) {
+		$con_sample = "Sealed";
+	} else {
+		$con_sample = "Unsealed";
+	}
+	$name_of_work = strip_tags(html_entity_decode($row_select['nameofwork']), "<strong><em>");
+
+	$select_query1 = "select * from agency_master WHERE `agency_id`='$row_select[agency]' AND `isdeleted`='0'";
+	$result_select1 = mysqli_query($conn, $select_query1);
+
+	if (mysqli_num_rows($result_select1) > 0) {
+		$row_select1 = mysqli_fetch_assoc($result_select1);
+		$agency_name = $row_select1['agency_name'];
+	}
+
+
+	if ($row_select["agency_name"] != "") {
+		$agency_name = $row_select['agency_name'];
+	}
+
+	$select_query2  = "select * from job_for_engineer WHERE `lab_no`='$lab_no' AND `trf_no`='$trf_no' AND `job_no`='$job_no' AND `isdeleted`='0'";
+	$result_select2 = mysqli_query($conn, $select_query2);
+
+	if (mysqli_num_rows($result_select2) > 0) {
+		$row_select2 = mysqli_fetch_assoc($result_select2);
+		$start_date = $row_select2['start_date'];
+		$end_date = $row_select2['end_date'];
+		$issue_date = $row_select2['issue_date'];
+		$select_query3 = "select * from material WHERE `id`='$row_select2[material_id]' AND `mt_isdeleted`='0'";
+		$result_select3 = mysqli_query($conn, $select_query3);
+
+		if (mysqli_num_rows($result_select3) > 0) {
+			$row_select3 = mysqli_fetch_assoc($result_select3);
+			if (
+				strpos($row_select3["mt_name"], "WMM (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - I MIX (M4-1)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - II MIX (M4-2)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - III MIX (M4-1)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - IV MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - V MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - VI MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - I MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - III MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - II MIX (M5)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - I MIX (M4-2)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - II MIX (M4-1)") !== false ||
+				strpos($row_select3["mt_name"], "GSB - III MIX (M4-2)") !== false ||
+				strpos($row_select3["mt_name"], "MSS - A (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "MSS - B (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "BUSG - CA") !== false ||
+				strpos($row_select3["mt_name"], "BUSG - KA") !== false ||
+				strpos($row_select3["mt_name"], "BM - 2 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "BM - 1 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "BC - 2 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "BC - 1 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "DBM - 1 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "DBM - 2 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "SDBC - 1 (MIX MATERIAL)") !== false ||
+				strpos($row_select3["mt_name"], "Seal Coat") !== false ||
+				strpos($row_select3["mt_name"], "Premix Carpet") !== false ||
+				strpos($row_select3["mt_name"], "BUSG - KA") !== false ||
+				strpos($row_select3["mt_name"], "BUSG - CA") !== false ||
+				strpos($row_select3["mt_name"], "SDBC - 2 (MIX MATERIAL)") !== false
+			) {
+				$mt_name = $row_select3['mt_name'];
+			} else {
+				$ans = substr($row_select3["mt_name"], strpos($row_select3["mt_name"], "(") + 1);
+				$explodeing = explode(")", $ans);
+				$mt_name = $explodeing[0];
+			}
+		}
+	}
+
+	$select_query4 = "select * from span_material_assign WHERE `lab_no`='$lab_no' AND `trf_no`='$trf_no' AND `job_number`='$job_no' AND `isdeleted`='0' ";
+	$result_select4 = mysqli_query($conn, $select_query4);
+
+	if (mysqli_num_rows($result_select4) > 0) {
+		$row_select4 = mysqli_fetch_assoc($result_select4);
+		$source = $row_select4['agg_source'];
+		$material_location = $row_select4['material_location'];
+	}
+
+
+	?>
+
+
+	<!-- <?php
+	if ($row_select['nabl_type'] == "nabl") {
+	?>
+		<Center><img src="nabl.png" style="padding-right:80px;padding-top:8px;" height="90px" width="80px" /></center>
+		<br><br>
+	<?php
+	} else {
+	?>
+		<br>
+		<Center><img src="non_nabl.png" style="padding-right:90px;padding-top:8px;" height="60px" width="200px" /></center>
+		<br>
+		<br>
+		<br>
+
+	<?php
+	}
+	?> -->
+
+	<page size="A4">
+		<table align="center" width="92%" cellspacing="0" cellpadding="0" style="font-size:11px;font-family: Cambria;margin-top:80px;border-bottom:0px solid black;">
+		    <tr>
+				<td style="text-align:center; font-size:15px;padding-bottom:8px; text-decoration: underline; text-underline-offset: 3px;"><b>Test Report</b></td>
+			</tr>
+			<tr>
+				<td style="text-align:center; font-size:15px;padding-bottom:15px; text-decoration: underline; text-underline-offset: 3px;"><b>Chemical Properties of Coarse Aggregate</b></td>
+			</tr>
+
+
+			<tr>
+				<table align="center" width="92%" cellspacing="0" cellpadding="0" style="font-size:10px;font-family: Cambria;border-bottom:1px solid;">
+					<tr style="">
+						<td style="width:16%;padding-bottom: 4px;">Discipline/Group</td>
+						<td style="width:6%;padding-bottom: 4px;text-align: center;">&raquo;</td>
+						<td style="width:40%;text-align:left;padding-bottom: 4px;">Chemical-Building Material</td>
+						<td style="width:21%;padding-bottom: 4px;">&nbsp;&nbsp; 
+						<?php if ($row_select_pipe['ulr'] != "" && $row_select_pipe['ulr'] != "0" && $row_select_pipe['ulr'] != null) {
+																echo "ULR- " . $row_select_pipe['ulr'];  
+															} ?>
+						</td>
+					</tr>
+
+					<tr style="">
+						<td style="width:6%;padding-bottom: 4px;">Sample ID No.</td>
+						<td style="width:6%;padding-bottom: 4px;text-align: center;"> &raquo;</td>
+						<td style="width:40%;text-align:left;padding-bottom: 4px;"></td>
+						<td style="width:0%;padding-bottom: 4px;">&nbsp;&nbsp; Date of Report</td>
+						<td style="width:6%;padding-bottom: 4px;text-align: left;"> &raquo;</td>
+						<td style="width:40%;text-align:left;padding-bottom: 4px;">&nbsp;&nbsp; <?php echo date('d - m - Y', strtotime($issue_date)); ?></td>
+					</tr>
+					<tr style="">
+						<td style="width:6%;padding-bottom: 6px;">Report No</td>
+						<td style="width:6%;padding-bottom: 6px;text-align: center;"> &raquo;</td>
+						<td style="width:40%;text-align:left;padding-bottom: 6px;"><?php echo $report_no; ?></td>
+					</tr>
+				</table>
+			</tr>
+
+			<tr>
+				<td>
+					<table align="center" width="92%" cellspacing="0" cellpadding="0" class="test" style="font-size:12px;font-family: Cambria;border-bottom:1px solid;">
+
+						<?php
+						if ($clientname != "") {
+						?>
+							<tr>
+							    <td style="width:16%;font-size: 11px;padding-bottom: 4px;padding-top: 14px;">Customer</td>
+								<td style="width:6%;padding-bottom: 4px;text-align: center;padding-top: 14px;"> &raquo;</td>
+								<td style="width:82%;font-size: 11px;text-align:left;padding-bottom: 4px;padding-top: 14px;"><?php $select_queryc = "select * from city WHERE `id`='$row_select[client_city]'";
+																					$result_selectc = mysqli_query($conn, $select_queryc);
+
+																					if (mysqli_num_rows($result_selectc) > 0) {
+																						$row_selectc = mysqli_fetch_assoc($result_selectc);
+																						$ct_nm = $row_selectc['city_name'];
+																					}
+																					echo $clientname; ?>
+								</td>
+							</tr>
+					
+						<?php
+						}
+						if ($name_of_work != "") {
+						?>
+							<tr>
+							<td style="width:16%;font-size: 11px;padding-bottom: 4px;">Name of Work</td>
+							<td style="width:6%;padding-bottom: 4px;text-align: center;"> &raquo;</td>
+							<td style="width:82%;font-size: 11px;text-align:left;padding-bottom: 4px;"><?php echo $name_of_work; ?>
+								</td>
+							</tr>
+
+						<?php
+						}
+						if ($agency_name != "") {
+						?>
+							<tr>
+								<td style="width:16%;font-size: 11px;padding-bottom: 4px;">Agency</td>
+								<td style="width:6%;padding-bottom: 4px;text-align: center;"> &raquo; </td>
+								<td style="width:82%;font-size: 11px;text-align:left;padding-bottom: 4px;"><?php echo $agency_name; ?>
+								</td>
+							</tr>
+							
+						
+						<?php
+						}
+						if ($agreement_no != "") {
+						?>
+							<tr>
+								<td style="width:16%;font-size: 11px;padding-bottom:14px;">Agg No.</td>
+								<td style="width:6%;padding-bottom: 14px;text-align: center;"> &raquo; </td>
+								<td style="width:82%;font-size: 11px;text-align:left;padding-bottom: 14px;"> <?php echo $agreement_no; ?></td>
+							</tr>
+
+						<?php
+						}
+						?>
+					</table>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td>
+					<table align="center" width="92%" cellspacing="0" cellpadding="0" class="test" style="font-size:11px;font-family: Cambria;border-bottom:1px solid;padding: 14px 0;">
+						<tr>
+							<td style="width:16%;padding-bottom: 4px;padding-top:14px;">Letter No.</td>
+							<td style="width:6%;padding-bottom: 4px;text-align: center;padding-top:14px;"> &raquo;</td>
+							<td style="width:40%;text-align:left;padding-bottom: 4px;padding-top:14px;"></td>
+							<td></td>
+						</tr>
+
+						<!-- <tr>
+							<td style="width:22%;">&nbsp;&nbsp;<b>Date of Receipt</b></td>
+							<td style="width:3%;font-family: Cambria;"><b>:</b></td>
+							<td style="width:22%">&nbsp;&nbsp;<?php echo date('d - m - Y', strtotime($rec_sample_date)); ?></td>
+						</tr> -->
+
+						<tr>
+							<td style="width:16%;padding-bottom: 4px;">Date of Sample Received</td>
+						    <td style="width:6%;padding-bottom: 4px;text-align: center;"> &raquo;</td>
+						    <td style="width:40%;text-align:left;padding-bottom: 4px;"><?php echo date('d - m - Y', strtotime($rec_sample_date)); ?></td>
+							<td style="width:21%;padding-bottom: 4px;">Test Started</td>
+							<td style="width:6%;padding-bottom: 4px;text-align: left;"> &raquo;</td>
+							<td style="width:40%"><?php echo date('d - m - Y', strtotime($start_date)); ?></td>
+						</tr>
+
+						<tr>
+
+						    <td style="width:16%;font-size: 11px;padding-bottom: 14px;">Material Received</td>
+							<td style="width:6%;padding-bottom:14px;text-align: center;"> &raquo; </td>
+							<td style="width:40%;font-size: 10px;text-align:left;padding-bottom: 14px;">Coarse Aggregate (10 mm)</td>
+							<!-- <td style="width:40%;font-size: 10px;text-align:left;padding-bottom: 14px;"><?php echo $mt_name; ?></td> -->
+							<td style="width:21%;padding-bottom: 14px;">Test Completed</td>
+							<td style="width:6%;padding-bottom: 14px;text-align: left;"> &raquo;</td>
+							<td style="width:40%;padding-bottom:14px;"><?php echo date('d - m - Y', strtotime($end_date)); ?></td>
+						</tr>
+						
+
+						<?php
+						if ($type != "" && $type != null && $type != "0") {
+						?>
+							<tr>
+								<td style="width:16%;padding-top:3px;">&nbsp;&nbsp;<b>Description of Sample</b></td>
+								<td style="width:3%;font-family:Cambria;font-weight:bold;">:</td>
+								<td style="width:40%"><?php echo $type; ?></td>
+								<td style="width:22%"><b></b></td>
+								<td style="width:3%;font-family:Cambria;font-weight:bold;"></td>
+								<td style="width:14%">&nbsp;&nbsp;</td>
+							</tr>
+						<?php
+						}
+						if ($source != "" && $source != null && $source != "0") {
+						?>
+							<tr>
+								<td style="width:16%;padding-top:3px;">&nbsp;&nbsp;<b>Sample Source</b></td>
+								<td style="width:3%;font-family:Cambria;font-weight:bold;">:</td>
+								<td style="width:40%">&nbsp;&nbsp;<?php echo $source; ?></td>
+								<td style="width:22%;padding-top:3px;padding-bottom:3px;">&nbsp;&nbsp;</td>
+								<td style="width:3%;font-family:Cambria;font-weight:bold;"></td>
+								<td style="width:14%">&nbsp;&nbsp;</td>
+							</tr>
+						<?php
+						}
+						?>
+
+					</table>
+				</td>
+			</tr>
+
+
+			<!-- <tr>
+				<td>
+					<table align="left" width="100%" border="0px" cellspacing="0" class="test" style="border-bottom:1px solid black;">
+						<tr>
+							<td style="width:9%;padding-top:3px;padding-bottom:3px;"><b>&nbsp;&nbsp;Report No.</b></td>
+							<td style="width:2%;font-family: Arial;font-weight:bold;"><b>:</b></td>
+							<td style="width:15%"><?php echo $report_no; ?></td>
+							<td style="width:9%;"><b>Report Date</b></td>
+							<td style="width:2%;font-family: Arial;font-weight:bold;"><b>:</b></td>
+							<td style="width:15%"><?php echo date('d - m - Y', strtotime($issue_date)); ?></td>
+							<?php
+							if ($row_select_pipe['ulr'] != "" && $row_select_pipe['ulr'] != "-" && strlen($row_select_pipe['ulr']) >= 5 && $row_select['nabl_type'] == "nabl") {
+							?>
+								<td style="width:7%;"><b>ULR No.</b></td>
+								<td style="width:2%;font-family: Arial;font-weight:bold;"><b>:</b></td>
+								<td style="width:15%"><?php echo $_GET['ulr']; ?></td>
+							<?php
+							} else {
+							?>
+								<td style="width:6%;"><b>&nbsp;</b></td>
+								<td style="width:2%;font-family: Arial;font-weight:bold;"><b>&nbsp;</b></td>
+								<td style="width:15%">&nbsp;&nbsp;</td>
+							<?php
+							}
+
+							?>
+						</tr>
+
+					</table>
+				</td>
+			</tr> -->
+
+			<!-- <tr>
+				<td>
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" class="test" style="border-bottom:1px solid black;">
+
+						<?php
+
+						if ($clientname != "") {
+						?>
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Name of Customer</b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;padding-top:3px;"><b>:</b></td>
+								<td style="width:77%;padding-top:3px;">&nbsp;&nbsp;<?php $select_queryc = "select * from city WHERE `id`='$row_select[client_city]'";
+																					$result_selectc = mysqli_query($conn, $select_queryc);
+
+																					if (mysqli_num_rows($result_selectc) > 0) {
+																						$row_selectc = mysqli_fetch_assoc($result_selectc);
+																						$ct_nm = $row_selectc['city_name'];
+																					}
+																					echo $clientname; ?>
+								</td>
+							</tr>
+						<?php
+						}
+						if ($agency_name != "") {
+						?>
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Name of Agency</b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;padding-top:3px;"><b>:</b></td>
+								<td style="width:77%;padding-top:3px;">&nbsp;&nbsp;<?php echo $agency_name; ?>
+								</td>
+							</tr>
+						<?php
+						}
+						if ($row_select['tpi_name'] != "") {
+						?>
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b><?php echo $row_select['tpi_or_auth']; ?></b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;padding-top:3px;"><b>:</b></td>
+								<td style="width:77%;padding-top:3px;">&nbsp;&nbsp;<?php echo $row_select['tpi_name']; ?>
+								</td>
+							</tr>
+						<?php
+						}
+						if ($row_select['pmc_name'] != "") {
+						?>
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b><?php echo $row_select['pmc_heading']; ?></b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;padding-top:3px;"><b>:</b></td>
+								<td style="width:77%;padding-top:3px;">&nbsp;&nbsp;<?php echo $row_select['pmc_name']; ?>
+								</td>
+							</tr>
+
+						<?php
+						}
+						if ($name_of_work != "") {
+						?>
+
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Name of Work</b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;padding-top:3px;"><b>:</b></td>
+								<td style="width:77%;padding-top:3px;">&nbsp;&nbsp;<?php echo $name_of_work; ?>
+								</td>
+							</tr>
+						<?php
+						}
+						if ($agreement_no != "") {
+						?>
+
+							<tr>
+								<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Agreement No.</b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;"><b>:</b></td>
+								<td style="width:77%">&nbsp;&nbsp;<?php echo $agreement_no; ?>
+								</td>
+							</tr>
+						<?php
+						}
+						if ($r_name != "") {
+						?>
+							<tr>
+								<td style="width:20%;padding-top:3px;padding-bottom:3px;">&nbsp;&nbsp;<b>Reference</b></td>
+								<td style="width:3%;font-family: Arial;font-weight:bold;"><b>:</b></td>
+								<td style="width:77%">&nbsp;&nbsp;<?php echo $r_name; ?>&nbsp;&nbsp;<?php
+																									if ($row_select["date"] != "" && $row_select["date"] != "null" && $row_select["date"] != "0000-00-00") {
+																									?>Date: <?php echo date('d - m - Y', strtotime($row_select["date"]));
+																									} else {
+																									}
+							?>
+
+								</td>
+							</tr>
+						<?php
+						}
+
+						?>
+					</table>
+				</td>
+			</tr> -->
+
+			<!-- <tr>
+				<td>
+					<table align="center" width="100%" border="0px" class="test" style="border-bottom:1px solid black;">
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Discipline &amp; Group</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;Mechanical &amp; Building Material</td>
+							<td style="width:22%">&nbsp; Environmental Condition in Lab</td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:22%">&nbsp;Ambient</td>
+
+						</tr>
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Material Received</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;Coarse Aggregates</td>
+							<td style="width:22%;">&nbsp;&nbsp;<b>Date of Receipt</b></td>
+							<td style="width:3%;font-family: Arial;"><b>:</b></td>
+							<td style="width:22%">&nbsp;&nbsp;<?php echo date('d - m - Y', strtotime($rec_sample_date)); ?></td>
+
+						</tr>
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Size of Sample</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;<?php echo $mt_name; ?></td>
+							<td style="width:22%">&nbsp;&nbsp;<b>Date of Test Started</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:14%">&nbsp;&nbsp;<?php echo date('d - m - Y', strtotime($start_date)); ?></td>
+						</tr>
+
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Source of Sample</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;<?php echo $source; ?></td>
+							<td style="width:22%">&nbsp;&nbsp;<b>Date of Test Completed</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:14%">&nbsp;&nbsp;<?php echo date('d - m - Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Condition of Sample</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;<?php echo $con_sample; ?></td>
+							<td style="width:22%">&nbsp;&nbsp;</td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;"></td>
+							<td style="width:14%">&nbsp;&nbsp;</td>
+						</tr>
+						<tr>
+							<td style="width:20%;padding-top:3px;">&nbsp;&nbsp;<b>Location of Test</b></td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;">:</td>
+							<td style="width:40%">&nbsp;&nbsp;<?php if ($material_location == 1) {
+																	echo "In Laboratory";
+																} else {
+																	echo "In Field";
+																} ?></td>
+							<td style="width:22%;padding-top:3px;padding-bottom:3px;">&nbsp;&nbsp;</td>
+							<td style="width:3%;font-family:Arial;font-weight:bold;"></td>
+							<td style="width:14%">&nbsp;&nbsp;</td>
+						</tr>
+
+
+
+					</table>
+				</td>
+			</tr> -->
+		</table>
+
+
+		<table align="center" width="92%" class="test" style="font-size:10px;font-family:Cambria;margin-top:30px;margin-bottom:30px;max-width:70%;">
+			<!-- <tr>
+				<?php if (($row_select_pipe['pass_sample_1'] != "") && ($row_select_pipe['pass_sample_1'] != null) && ($row_select_pipe['pass_sample_1'] != "0")) { ?>
+					<td width="92%" style="vertical-align:top;">
+						<table align="center" width="92%" class="test" style="">
+							<tr>
+								<td style="padding-bottom:4px;font-weight:bold;" colspan="3">&nbsp;&nbsp;Sieves Analysis</td>
+							</tr>
+							<tr>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;" colspan="3"><b>Particle Size Distribution Test</b></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;"><b>IS 2386-1963-RA 2016: P-1</b></td>
+							</tr>
+							<tr>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;"><b>IS Sieve Size</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left:0px solid black;"><b>% of Passing</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left:0px solid black;"><b>Req. as per<br>IS 383-2016</b></td>
+							</tr>
+							<tr>
+								<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">12.5 mm</td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;"><?php echo $row_select_pipe['pass_sample_1']; ?></td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;">100</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">10 mm</td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;"><?php echo $row_select_pipe['pass_sample_2']; ?></td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;">85-100</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">4.75 mm</td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;"><?php echo $row_select_pipe['pass_sample_3']; ?></td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;">0-20</td>
+							</tr>
+							<tr>
+								<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">2.36 mm</td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;"><?php echo $row_select_pipe['pass_sample_4']; ?></td>
+								<td style="text-align:center;border:1px solid black;border-left:0px solid black;">0-5</td>
+							</tr>
+						</table>
+					</td>
+				<?php } ?>
+				<?php
+				if (($row_select_pipe['combined_index'] != "" && $row_select_pipe['combined_index'] != "0") || ($row_select_pipe['imp_value'] != "" && $row_select_pipe['imp_value'] != "0") || ($row_select_pipe['imp_value'] != "" && $row_select_pipe['imp_value'] != "0") || ($row_select_pipe['sp_specific_gravity'] != "" && $row_select_pipe['sp_specific_gravity'] != "0") || ($row_select_pipe['sp_water_abr'] != "" && $row_select_pipe['sp_water_abr'] != "0") || ($row_select_pipe['cru_value'] != "" && $row_select_pipe['cru_value'] != "0") || ($row_select_pipe['abr_index'] != "" && $row_select_pipe['abr_index'] != "0") || ($row_select_pipe['bdl'] != "" && $row_select_pipe['bdl'] != "0") || ($row_select_pipe['fines_value'] != "" && $row_select_pipe['fines_value'] != "0") || ($row_select_pipe['liquide_limit'] != "" && $row_select_pipe['liquide_limit'] != "0") || ($row_select_pipe['soundness'] != "" && $row_select_pipe['soundness'] != "0") || ($row_select_pipe['cbr'] != "" && $row_select_pipe['cbr'] != "0") || ($row_select_pipe['mdd'] != "" && $row_select_pipe['mdd'] != "0") || ($row_select_pipe['omc'] != "" && $row_select_pipe['omc'] != "0")) {
+				?>
+
+
+					<td width="92%" style="vertical-align:top;">
+						<table align="top" width="100%" class="test" style="height:100%;width:100%;font-size:10px;">
+							<tr>
+								<td style="padding-bottom:4px;font-weight:bold;" colspan="4">Other Tests</td>
+							</tr>
+							<tr>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;"><b>Test Name</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;"><b>Req. as per<br>IS 383-2016</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;"><b>Test<br>Method</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;"><b>Test Results</b></td>
+							</tr>
+							<?php
+							if ($row_select_pipe['combined_index'] != "" && $row_select_pipe['combined_index'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Flakiness %</td>
+									<td rowspan="2" style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 40%</td>
+									<td rowspan="2" style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-1</td>
+									<td rowspan="2" style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['combined_index']; ?></td>
+								</tr>
+								<tr>
+									<td style="text-align:left;border:1px solid black;border-right:0px solid black;">Elongation %</td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['imp_value'] != "" && $row_select_pipe['imp_value'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Impact Value %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 30%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-4</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['imp_value']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['sp_specific_gravity'] != "" && $row_select_pipe['sp_specific_gravity'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Specific Gravity</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">--</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-3</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['sp_specific_gravity']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['sp_water_abr'] != "" && $row_select_pipe['sp_water_abr'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Water Absorption %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 2%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-3</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['sp_water_abr']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['cru_value'] != "" && $row_select_pipe['cru_value'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Crushing Value %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 30%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-4</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['cru_value']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['abr_index'] != "" && $row_select_pipe['abr_index'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Abrasion Value %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 30%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-4</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['abr_index']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['bdl'] != "" && $row_select_pipe['bdl'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Bulk Density kg/Lit.</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">--</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-3</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['bdl']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['fines_value'] != "" && $row_select_pipe['fines_value'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">10% Fine Value KN</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">--</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-4</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['fines_value']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['liquide_limit'] != "" && $row_select_pipe['liquide_limit'] != "0") {
+							?>
+
+								<tr>
+
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Liquid Limit %</td>
+									<td rowspan="3" style="text-align:center;border:1px solid black;border-right:0px solid black;">Max 25%</td>
+									<td rowspan="3" style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2720-5</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['liquide_limit']; ?></td>
+								</tr>
+								<tr>
+
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Plastic Limit %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;"><?php echo $row_select_pipe['plastic_limit']; ?></td>
+								</tr>
+								<tr>
+
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Plasticity Index %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;"><?php echo $row_select_pipe['pi_value']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['soundness'] != "" && $row_select_pipe['soundness'] != "0") {
+							?>
+								<tr>
+
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Soundness Na<sub>2</sub>SO<sub>4</sub> %</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 12%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-5</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['soundness']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['avg_dtm'] != "" && $row_select_pipe['avg_dtm'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Deleterius Material</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 2%</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;"><?php echo $row_select_pipe['avg_dtm']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['avg_org'] != "" && $row_select_pipe['avg_org'] != "0") {
+							?>
+								<tr>
+									<td style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Organic Impurities</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;"><?php echo $row_select_pipe['avg_org']; ?></td>
+								</tr>
+							<?php
+							}
+							?>
+						</table>
+					</td>
+				<?php
+				}
+				?>
+			</tr> -->
+			<?php
+			if (($row_select_pipe['alk_10'] != "" && $row_select_pipe['alk_10'] != "0") || ($row_select_pipe['dele_1_4'] != "" && $row_select_pipe['dele_2_3'] != "" && $row_select_pipe['dele_3_3'] != "" &&  $row_select_pipe['dele_4_3'] != "" && $row_select_pipe['dele_1_4'] != "0" && $row_select_pipe['dele_2_3'] != "0" && $row_select_pipe['dele_3_3'] != "0" &&  $row_select_pipe['dele_4_3'] != "0") || ($row_select_pipe['aoi_4'] != "" && $row_select_pipe['aoi_4'] != "0") || ($row_select_pipe['avg_ph'] != "" && $row_select_pipe['avg_ph'] != "0") || ($row_select_pipe['avg_sul'] != "" && $row_select_pipe['avg_sul'] != "0" && $row_select_pipe['avg_sul'] != "undefined") || ($row_select_pipe['avg_clr'] != "" && $row_select_pipe['avg_clr'] != 0 && $row_select_pipe['avg_clr'] != null)) {
+			?>
+
+
+<?php $cnts = 1; ?>
+				<tr>
+					<td colspan="2">
+						<table align="center" width="100%" class="test" style="font-size:11px;">
+							<!-- <tr>
+								<td colspan="6" style="padding-bottom:4px;padding-top:10px;font-weight:bold;">Chemical Test</td>
+							</tr> -->
+							<tr>
+							    <td style="font-size:11px;text-align:center;border:1px solid black;border-left: 1px solid black;font-weight:bold;padding:10px 4px;">Sr. No.</td>
+								<td colspan="3" style="font-size:11px;text-align:center;border:1px solid black;font-weight:bold;padding:10px 4px;"><b>Particular of Test</b></td>
+								<!-- <td style="font-size:11px;text-align:center;border:1px solid black;font-weight:bold;padding:10px 4px;"><b>Acceptance Critaria</b></td> -->
+								<td style="font-size:11px;text-align:center;border:1px solid black;font-weight:bold;padding:10px 4px;"><b>Method of Test</b></td>
+								<td style="font-size:11px;text-align:center;border:1px solid black;font-weight:bold;padding:10px 4px;"><b>Test Result</b></td>
+							</tr>
+
+							
+							<?php
+							$cnt = 1;
+
+							if ($row_select_pipe['alk_10'] != "" && $row_select_pipe['alk_10'] != "0") {
+							?>
+								<tr>
+								    <td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Alkali Reactivity Test (Gravimetric Method)</td>
+									<!-- <td style="text-align:center;border:1px solid black;">--</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-7</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['alk_11']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['dele_1_4'] != "" && $row_select_pipe['dele_2_3'] != "" && $row_select_pipe['dele_3_3'] != "" &&  $row_select_pipe['dele_4_3'] != "" && $row_select_pipe['dele_1_4'] != "0" && $row_select_pipe['dele_2_3'] != "0" && $row_select_pipe['dele_3_3'] != "0" &&  $row_select_pipe['dele_4_3'] != "0") {
+							?>
+								<tr>
+								    <td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Total of percentages of all deleterious Materials<br>(except mica), %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 2%</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-1,2</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php
+																														$a1 = $row_select_pipe['dele_1_4'];
+																														$a2 = $row_select_pipe['dele_2_3'];
+																														$a3 = $row_select_pipe['dele_3_3'];
+																														$a4 = $row_select_pipe['dele_4_3'];
+
+																														$ans  = floatval($a1) + floatval($a2) + floatval($a3) + floatval($a4);
+
+
+																														echo number_format($ans, 2, ".", ""); ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['dele_3_3'] != "" && $row_select_pipe['dele_3_3'] != "0") {
+							?>
+								<tr>
+								<td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>	
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Coal &amp; Lignite, %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 1%</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php
+																														if ($row_select_pipe['dele_3_3'] == "0" || $row_select_pipe['dele_3_3'] == "0.000") {
+																															echo "NILL";
+																														} else {
+
+																															echo $row_select_pipe['dele_3_3'];
+																														}
+																														?></td>
+								</tr>
+
+							<?php
+							}
+							if ($row_select_pipe['dele_2_3'] != "" && $row_select_pipe['dele_2_3'] != "0") {
+							?>
+								<tr>
+								    <td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Clay &amp; Lumps, %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 1%</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['dele_2_3']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['dele_4_3'] != "" && $row_select_pipe['dele_4_3'] != "0") {
+							?>
+								<tr>
+								<td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Soft Particles, %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['dele_4_3']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['dele_1_4'] != "" && $row_select_pipe['dele_1_4'] != "0") {
+							?>
+								<tr>
+								<td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Material Finer than 75&mu;, %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">Max. 1%</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-1</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['dele_1_4']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['aoi_4'] != "" && $row_select_pipe['aoi_4'] != "0") {
+							?>
+								<tr>
+									<td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Organic Impurities</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2386-2</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php
+																														if ($row_select_pipe['aoi_4'] == "Visual Match With Standard Solution, Organic Impurities Not Detected.") {
+																															echo "Not Detected";
+																														} else {
+																															echo $row_select_pipe['aoi_4'];
+																														} ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['avg_ph'] != "" && $row_select_pipe['avg_ph'] != "0") {
+							?>
+								<tr>
+								<td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">pH</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2720-26</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['avg_ph']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['avg_sul'] != "" && $row_select_pipe['avg_sul'] != "0" && $row_select_pipe['avg_sul'] != "undefined") {
+							?>
+								<tr>
+								    <td style="border-left: 1px solid black;border-top: 1px solid black;width:6%;text-align:center;padding-bottom:10px;  padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Sulphate (so<sub>3</sub>) (%)</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td> -->
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 2720-27</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">IS 4032 : 1985</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['avg_sul']; ?></td>
+								</tr>
+							<?php
+							}
+							if ($row_select_pipe['avg_clr'] != "" && $row_select_pipe['avg_clr'] != 0 && $row_select_pipe['avg_clr'] != null) {
+							?>
+								<tr>
+								<td style="border-left: 1px solid black;border-bottom: 1px solid black;border-top: 1px solid black;width:15%;text-align:center;padding-bottom:10px;padding-top:10px; "><?php echo $cnt++; ?></td>
+									<td colspan="3" style="text-align:center;border:1px solid black;border-left:1px solid black;padding:5px 0;">Cloride Content, %</td>
+									<!-- <td style="text-align:center;border:1px solid black;border-right:0px solid black;">-</td> -->
+									<td style="text-align:center;border:1px solid black;border-right:0px solid black;">BS EN 1744-1</td>
+									<td style="text-align:center;border:1px solid black;border-right:1px solid black;"><?php echo $row_select_pipe['avg_clr']; ?></td>
+								</tr>
+							<?php } ?>
+						</table>
+					</td>
+				</tr>
+			<?php } ?>
+		</table>
+
+
+		<table cellpadding="0" cellpadding="0" align="center" width="92%" style="font-size:11px;font-family: Cambria;" class="test">
+					<tr>
+						<td style="width:60%;text-align:center;font-weight:bold;padding:3px 0;">
+								** End of Report ** 
+						</td>																		
+					</tr>
+		</table>
+
+
+		<table align="center" width="92%" class="test">
+		        <tr>
+					<td style="text-align:center;font-size:10px;">
+						<table align="center" width="100%" class="test" style="height:auto;font-family: Cambria;border-top:1px solid black;border-bottom:1px solid black;">
+							<tr>
+								<td><b>Note :-</b></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="font-size:10px;width:50%;padding:3px 0;"> 1. &nbsp;The results are given only for the sample submitted by the Customer/Agency.</td>
+								<td style="text-align:center;width:15%;font-style:italic;font-size:11px;"><b>Reviewed & Authorized By</b></td>
+							</tr>
+							<tr>
+								<td style="font-size:10px;padding:3px 0;"> 2. &nbsp;The test report shall not be reproduced except in full , Without written approval of the laboratory.</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="font-size:10px;padding:3px 0;">3. &nbsp;Manglam Consultancy services is not responsible for any kind of interpretation of test results.</td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="font-size:10px;padding:3px 0;">4. &nbsp;The Results/Report are not used for publicity.</td>
+								<td style="text-align:center;font-style:italic;font-size:11px;"><b>(D.H.Shah/M.D.Shah)</b></td>
+							</tr>
+							<tr>
+								<td style="font-size:10px;padding:3px 0;">5. &nbsp;*As informed by Customer/Agency.</td>
+								<td style="text-align:center;font-style:italic;font-size:11px;"><b>Director/TM</b></td>
+							</tr>
+						</table>
+					</td>
+			    </tr>
+		</table>
+
+        <table width="92%" align="center" style="font-family:Cambria;font-size:10px;">
+						<tr>
+							<td style="width:40%;text-align:right;font-weight:bold;font-style:italic;font-size:11px;">
+								Doc ID : FMT-TST-28/ Page 1/1
+							</td>
+						</tr>
+		</table>
+
+
+	</page>
+
+</body>
+
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+</script>

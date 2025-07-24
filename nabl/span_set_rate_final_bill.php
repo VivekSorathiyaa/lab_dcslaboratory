@@ -1,0 +1,574 @@
+<?php include("header.php");?>
+<?php 
+if($_SESSION['name']=="")
+{
+	?>
+	<script >
+		window.location.href="<?php echo $base_url; ?>index.php";
+	</script>
+	<?php
+}
+
+
+
+	$txt_report= $_GET["report_no"];
+	$txt_jobs= $_GET["job_no"];  
+	
+	// to get job for agency id
+$sel_job="select * from job where `report_no`='$txt_report'";
+$query_job= mysqli_query($conn,$sel_job);
+$result_job=mysqli_fetch_array($query_job);
+$get_agency_id= $result_job["agency"];
+	
+// code for get test by report no and job no
+$select_test_wise="select * from test_wise_material_rate where `report_no`='$txt_report' AND `job_no`='$txt_jobs'";
+ $select_test_wise_query=mysqli_query($conn,$select_test_wise);
+ 
+ // get_estimate if available
+ $sel_estiamte="select * from estimate_total_span_only_bill where `report_no`='$txt_report' AND `job_no`='$txt_jobs'";
+ 
+ $estiamte_query= mysqli_query($conn,$sel_estiamte);
+ if(mysqli_num_rows($estiamte_query) > 0){
+	 
+	 $get_estimate= mysqli_fetch_array($estiamte_query);
+	 $get_rate_type= $get_estimate["rate_type"];
+	 $get_gst_type= $get_estimate["gst_type"];
+	 $get_c_gst_amt= $get_estimate["c_gst_amt"];
+	 $get_s_gst_amt= $get_estimate["s_gst_amt"];
+	 $get_i_gst_amt= $get_estimate["i_gst_amt"];
+	 $get_grand_total= $get_estimate["grand_total"];
+	 $get_total_amount= $get_estimate["total_amt"];
+	 $get_total_amt_in_word= $get_estimate["total_amt_in_word"];
+	 $show_print_and_next_button=1;
+	 
+ }else{
+	 $get_rate_type="";
+	 $get_gst_type="";
+	 $get_c_gst_amt="";
+	 $get_s_gst_amt="";
+	 $get_i_gst_amt="";
+	 $get_grand_total="";
+	 $get_total_amount="";
+	 $get_total_amt_in_word="";
+	 $show_print_and_next_button=0;
+ }
+ 
+
+?>
+
+<style>
+#billing label {
+    display: block;
+    text-align: center;
+    line-height: 150%;
+    font-size: .85em;
+}
+
+
+
+
+
+
+
+</style>
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper" style="margin-left: 0px !important;">
+  <?php 
+  $_SESSION['reporting_no']= $txt_report;
+  $_SESSION['jobing_no']= $txt_jobs;
+  ?>
+<section class="content">
+			<?php include("menu.php") ?>
+			<div class="row">
+		
+		<h1 style="text-align:center;">
+		Tax Invoice
+		</h1>
+	</div>
+<div class="row">
+				<div class="col-md-12">
+					<div class="box box-info">
+						
+							<div class="box-body"  style="border:1px groove #ddd;">
+							<br>
+								<div class="row">
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">Report No:</label>
+									</div>
+									
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">Job No:</label>
+									</div>
+									
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">Invoice No:</label>
+									</div>
+									
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">Invoice Date:</label>
+									</div>
+								</div>
+								<div class="row">
+									
+										  <div class="col-sm-3">
+											<input type="text" class="form-control" value="<?php echo $_GET['report_no'];?>" id="txt_report_no" name="txt_report_no" disabled>
+										  </div>
+										
+										
+										  
+											<div class="col-sm-3">
+												
+													<input type="text" class="form-control" value="<?php echo $_GET['job_no'];?>" id="txt_job_no" name="txt_job_no" disabled>
+											</div>
+										
+										  
+											<div class="col-sm-3">
+												<?php
+												$set_explode=explode("/",$_GET['report_no']);
+												$get_invoice_no= $set_explode[2].$set_explode[3];
+												?>
+													<input type="text" class="form-control" value="<?php echo $get_invoice_no;?>" id="txt_invoice_no" name="txt_invoice_no" disabled>
+											</div>
+											
+											<div class="col-md-3">
+													<input type="text"  class="form-control" name="invoice_date" id="invoice_date" value="<?php echo date('d/m/Y')?>">
+											
+											</div>
+									
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">Rate:</label>
+									</div>
+									<div class="col-sm-3">
+									<label for="inputEmail3" class="col-sm-2 control-label">GST NO:</label>
+									</div>
+								</div>
+								<div class="row">
+									
+										  <div class="col-md-3">
+											<div class="form-group">
+												
+												<div class="col-sm-12">
+													<select class="form-control " name="select_rate" id="select_rate" >
+														<option value="" <?php if($get_rate_type==""){echo "selected";}?>>Select Rate</option>
+														<option value="0|<?php  echo $txt_report;?>|<?php  echo $txt_jobs;?>" <?php if($get_rate_type=="0"){echo "selected";}?>>Government</option>
+														<option value="1|<?php  echo $txt_report;?>|<?php  echo $txt_jobs;?>" <?php if($get_rate_type=="1"){echo "selected";}?>>Private</option>
+														<option value="2|<?php  echo $txt_report;?>|<?php  echo $txt_jobs;?>" <?php if($get_rate_type=="2"){echo "selected";}?>>Other</option>
+														
+													</select>
+												</div>
+											</div>
+										  </div>
+										  <div class="col-md-3">
+													<input type="text"  class="form-control" name="gst_no" id="gst_no" value="<?php if($result_job['report_sent_to']=="0"){echo $result_job['client_gstno'];}else{echo $result_job['agency_gstno'];}?>">
+											
+											</div>
+								</div>
+								<br>
+							<div class="panel-group">
+								<div class="box box-info">
+									<div class="box-body">
+									  <div class="table-responsive" id="display_data">
+										<table class="table no-margin">
+										  <thead>
+										  <tr>
+											<th>Test Name</th>
+											<th>HSN Code</th>
+											<th>Qty</th>
+											<th>Rate</th>
+											<th>Amount</th>
+										  </tr>
+										  </thead>
+										  <tbody>
+										  <?php
+											$get_total_amt=0;
+											if(mysqli_num_rows($select_test_wise_query) > 0){ 
+											
+											while($get_test=mysqli_fetch_array($select_test_wise_query)){
+											
+											$get_total_amt += $get_test["amt"];
+											
+											$sel_test_name="select * from test_master where `test_id`=".$get_test["test_id"];
+											$sel_test_query=mysqli_query($conn,$sel_test_name);
+											$get_test_record=mysqli_fetch_array($sel_test_query);
+										  ?>
+										  <tr>
+											<td><b><?php echo $get_test_record["test_name"];?></b></td>
+											<td>
+											<input type="text" name="hsn[]" class="form-control" id="hsn_<?php echo $get_test_record['hsn_code'];?>" value="<?php echo $get_test_record['hsn_code']; ?>">
+											</td>
+											<td>
+											<input type="text" name="qty[]" class="form-control" id="qty_<?php echo $get_test['test_wise_id'];?>" value="<?php echo $get_test['qty']; ?>" disabled>
+											</td>
+											<td>
+											<input type="text" name="rate[]" class="form-control txt_rate_class" id="rate_<?php echo $get_test['test_wise_id'];?>" value="<?php echo $get_test['rate']; ?>">
+											</td>
+											<td>
+											  <input type="text" name="amt[]" class="form-control" id="amt_<?php echo $get_test['test_wise_id'];?>" value="<?php echo $get_test['amt']; ?>" disabled>
+											</td>
+										  </tr>
+										<?php 
+										
+										} }?>
+										  </tbody>
+										</table>
+									  </div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="box box-info">
+							<input type="hidden" name="hidden_gst_type" id="hidden_gst_type" value="without_gst"> 
+								<div class="row">
+									<div class="col-sm-2">
+									<label for="inputEmail3" class="control-label">GST TYPE:</label>
+									</div>
+									
+									<div class="col-sm-9">
+										<input type="radio" style="width:33px;height:25px;" name="gst_type" value="with_gst" <?php if($get_gst_type=="with_gst"){ echo "checked";} ?>><span style="font-size:20px;" ><b>With GST</b></span>
+										<input type="radio" style="width:33px;height:25px;"name="gst_type" value="without_gst" <?php if($get_gst_type=="" || $get_gst_type=="without_gst"){ echo "checked";} ?>><span style="font-size:20px;"><b>Without GST<b></span>
+										<input type="radio" style="width:33px;height:25px;"name="gst_type" value="with_igst" <?php if($get_gst_type!="" && $get_gst_type=="with_igst"){ echo "checked";} ?>><span style="font-size:20px;"><b>With IGST<b></span>
+									</div>
+								</div>
+								<br>
+								<div class="row" id="gst_hide_show" style="<?php if($get_gst_type=="" || $get_gst_type=="without_gst"){ echo "display:none";}else{ echo "display:block";} ?>">
+									<div class="col-md-1">
+									<label for="inputEmail3" class="control-label">CGST AMONUT:</label>
+									</div>
+									
+									<div class="col-md-2">
+									<input type="text" name="txt_cgst" class="form-control" id="txt_cgst" value="<?php echo $get_c_gst_amt;?>" disabled>
+									</div>
+									
+									<div class="col-md-1">
+									<label for="inputEmail3" class="control-label">SGST AMONUT:</label>
+									</div>
+									
+									<div class="col-md-2">
+									<input type="text" name="txt_sgst" class="form-control" id="txt_sgst" value="<?php echo $get_s_gst_amt;?>" disabled>
+									</div>
+									
+									<div class="col-md-1">
+									<label for="inputEmail3" class="control-label">IGST AMONUT:</label>
+									</div>
+									
+									<div class="col-md-2">
+									<input type="text" name="txt_igst" class="form-control" id="txt_igst" value="<?php echo $get_i_gst_amt;?>" disabled>
+									</div>
+									
+									<div class="col-md-1">
+									<label for="inputEmail3" class="control-label">GRAND TOTAL:</label>
+									</div>
+									
+									<div class="col-md-2">
+									<input type="text" name="txt_grand" class="form-control" id="txt_grand" value="<?php if($get_grand_total !=""){ echo $get_grand_total;}else{ echo $get_total_amt;} ?>" disabled>
+									</div>
+								</div>
+								
+							</div>
+							<div class="box box-info">
+							<br>
+								<div class="row">
+									<div class="col-md-3">
+									<label for="inputEmail3" class="control-label">Total Amount In Word:</label>
+									</div>
+									
+									<div class="col-md-4">
+									<input type="text" name="txt_amt_in_word" class="form-control" id="txt_amt_in_word" value="<?php if($get_total_amt_in_word !=""){ echo $get_total_amt_in_word;}else{ echo numtowords($get_total_amt);} ?>" disabled>
+									</div>
+									
+									<div class="col-md-2">
+									<label for="inputEmail3" class="control-label">Total Amount:</label>
+									</div>
+									
+									<div class="col-md-3">
+									<input type="text" name="total_amt" class="form-control" id="total_amt" value="<?php if($get_total_amount !=""){ echo $get_total_amount;}else{ echo $get_total_amt;} ?>" disabled>
+									</div>
+								</div>
+								<br>
+							<input type="hidden" name="hidden_agency" id="hidden_agency" value="<?php echo $get_agency_id;?>">
+								<div class="row">
+									<div class="col-md-3">&nbsp;</div>
+									<div class="col-md-6">
+									<!--<button type="button" class="btn btn-info"  onclick="addData('add_estimate')" name="btn_add_data" id="btn_add_data" style="width:100px;font-size:20px;" >Save</button>-->
+									
+									<button type="button" class="btn btn-info"  onclick="addData('save_next_estimate_only_save_final_bill')" name="btn_add_data" id="btn_add_data" style="width:150px;font-size:20px;" >Save</button>
+									
+									<?php
+									if($show_print_and_next_button==1)
+									{
+									?>
+									<a href="span_bill_print_final_bill.php?report_no=<?php echo $get_estimate['report_no'];?>&&job_no=<?php echo $get_estimate['job_no'];?>" class="btn btn-info" title="" target="_blank" style="width:150px;font-size:20px;"><span class="glyphicon glyphicon-question-list"></span> Print</a>
+									
+									<a href="dilevery_detail.php?report_no=<?php echo $get_estimate['report_no'];?>&&job_no=<?php echo $get_estimate['job_no'];?>" class="btn btn-info" title="" style="width:150px;font-size:20px;"><span class="glyphicon glyphicon-question-list"></span> Next</a>
+									<?php 
+									} 
+									?>
+									<!--<button type="button" class="btn btn-info"  onclick="addData('save_next_estimate')" name="btn_add_data" id="btn_add_data" style="width:150px;font-size:20px;" >Next</button>-->
+									</div>
+									<div class="col-md-3">&nbsp;</div>
+									
+								</div>
+							</div>
+							
+							
+							
+							</div>
+						
+					</div>
+				</div>
+</section>	
+</div>
+  
+	
+<?php include("footer.php");?>
+
+<?php
+function numtowords($num){
+	$number = $num;
+   $no = round($number);
+   $point = round($number - $no, 2) * 100;
+   $hundred = null;
+   $digits_1 = strlen($no);
+   $i = 0;
+   $str = array();
+   $words = array('0' => '', '1' => 'one', '2' => 'two',
+    '3' => 'three', '4' => 'four', '5' => 'five', '6' => 'six',
+    '7' => 'seven', '8' => 'eight', '9' => 'nine',
+    '10' => 'ten', '11' => 'eleven', '12' => 'twelve',
+    '13' => 'thirteen', '14' => 'fourteen',
+    '15' => 'fifteen', '16' => 'sixteen', '17' => 'seventeen',
+    '18' => 'eighteen', '19' =>'nineteen', '20' => 'twenty',
+    '30' => 'thirty', '40' => 'forty', '50' => 'fifty',
+    '60' => 'sixty', '70' => 'seventy',
+    '80' => 'eighty', '90' => 'ninety');
+   $digits = array('', 'hundred', 'thousand', 'lakh', 'crore');
+   while ($i < $digits_1) {
+     $divider = ($i == 2) ? 10 : 100;
+     $number = floor($no % $divider);
+     $no = floor($no / $divider);
+     $i += ($divider == 10) ? 1 : 2;
+     if ($number) {
+        $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
+        $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
+        $str [] = ($number < 21) ? $words[$number] .
+            " " . $digits[$counter] . $plural . " " . $hundred
+            :
+            $words[floor($number / 10) * 10]
+            . " " . $words[$number % 10] . " "
+            . $digits[$counter] . $plural . " " . $hundred;
+     } else $str[] = null;
+  }
+  $str = array_reverse($str);
+  $result = implode('', $str);
+  $points = ($point) ?
+    "." . $words[$point / 10] . " " . 
+          $words[$point = $point % 10] : '';
+ // return $result . "Rupees  " . $points;
+  return $result . "Rupees  ";
+}
+?>		  	  
+<script>
+$(document).ready(function(){
+	
+
+});
+
+$('#invoice_date').datepicker({
+		  autoclose: true,
+	  format: 'dd/mm/yyyy'
+	});
+
+// on rate change
+
+$("#select_rate").change(function(){
+      var select_rate = $('#select_rate').val(); 
+      var agency_id = $('#hidden_agency').val(); 
+	  var gst_type=$( 'input[name=gst_type]:checked' ).val();
+	  if(select_rate != ""){
+      var postData = 'action_type=get_data_by_rate&select_rate='+select_rate+'&agency_id='+agency_id;
+	  }else{
+		  alert("Select Rate First");
+		  return false;
+	  }		
+			
+			$.ajax({
+				url : "<?php $base_url; ?>save_span_set_rate.php",
+				type: "POST",
+				data : postData,
+				success: function(html)
+				 {
+					get_table_after_update(select_rate+"|"+gst_type);
+				 
+				 }
+			});
+});	
+
+function get_table_after_update(id){
+    id = (typeof id == "undefined")?'':id;
+    var billData = '';
+    
+	billData = '&action_type=get_table_after_update&id='+id;			
+   
+    $.ajax({
+        type: 'POST',
+        url: '<?php $base_url; ?>save_span_set_rate.php',
+        data: billData,
+		dataType:'JSON',
+        success:function(msg){
+          $('#display_data').html(msg.table_design);
+          $('#txt_cgst').val(msg.cgst);
+          $('#txt_sgst').val(msg.sgst);
+          $('#txt_igst').val(msg.igst);
+          $('#txt_grand').val(msg.grand_total);
+          $('#txt_amt_in_word').val(msg.get_total_amt_in_word);
+          $('#total_amt').val(Math.round(msg.net_total));
+		  
+        }
+    });
+}
+
+// on rate change
+
+$(document).on("blur",".txt_rate_class",function(){
+	
+      var get_rate = $(this).val();
+      var get_id = $( this ).attr( "id" );
+	  var split_data=get_id.split("_");
+	  var get_qty= $("#qty_"+split_data[1]).val();
+	  var get_test_id=split_data[1];
+	  var gst_type=$( 'input[name=gst_type]:checked' ).val();
+	 
+	  
+	  
+	  if(get_rate != "" && get_qty != ""&& get_test_id != ""){
+      var postData = 'action_type=update_test_by_id&get_rate='+get_rate+'&get_qty='+get_qty+'&get_test_id='+get_test_id;
+	  }else{
+		  alert("something Wrong..");
+		  return false;
+	  }		
+			
+			$.ajax({
+				url : "<?php $base_url; ?>save_span_set_rate.php",
+				type: "POST",
+				data : postData,
+				success: function(html)
+				 {
+					var txt_report_no=$("#txt_report_no").val();
+					var txt_job_no=$("#txt_job_no").val();
+					var send= "0"+"|"+txt_report_no+"|"+txt_job_no+"|"+gst_type;
+					get_table_after_update(send);
+				 
+				 }
+			});
+});
+
+$("input[name='gst_type']").change(
+    function(e)
+    {
+		var gst_type=$( 'input[name=gst_type]:checked' ).val();
+		if(gst_type=="with_gst"){
+			$("#gst_hide_show").show();
+			$('#hidden_gst_type').val("with_gst");
+		}else if(gst_type=="with_igst"){
+			$("#gst_hide_show").show();
+			$('#hidden_gst_type').val("with_igst");
+		}else{
+			$("#gst_hide_show").hide();
+			$('#hidden_gst_type').val("without_gst");
+		}
+		var txt_report_no=$("#txt_report_no").val();
+					var txt_job_no=$("#txt_job_no").val();
+					var send= "0"+"|"+txt_report_no+"|"+txt_job_no+"|"+gst_type;
+					get_table_after_update(send);
+		
+});
+
+
+// save estimate_date
+
+function addData(type,id){
+    id = (typeof id == "undefined")?'':id;
+    var statusArr = {add:"added",edit:"updated",delete:"deleted"};
+    var billData = '';
+    if (type == 'add_estimate' || 'save_next_estimate' || 'save_next_estimate_only_save_final_bill') {
+				var txt_report_no = $('#txt_report_no').val(); 
+				var txt_job_no = $('#txt_job_no').val(); 
+				var txt_invoice_no = $('#txt_invoice_no').val(); 
+				var invoice_date = $('#invoice_date').val(); 
+				var gst_no = $('#gst_no').val(); 
+				var select_rate = $('#select_rate').val(); 
+				var hidden_gst_type = $('#hidden_gst_type').val(); 
+				var txt_cgst = $('#txt_cgst').val(); 
+				var txt_sgst = $('#txt_sgst').val(); 
+				var txt_igst = $('#txt_igst').val(); 
+				var txt_grand = $('#txt_grand').val(); 
+				var txt_amt_in_word = $('#txt_amt_in_word').val(); 
+				var total_amt = $('#total_amt').val();
+				
+				var hidden_agency= $('#hidden_agency').val();									
+				billData = '&action_type='+type+'&id='+id+'&txt_report_no='+txt_report_no+'&txt_job_no='+txt_job_no+'&txt_invoice_no='+txt_invoice_no+'&invoice_date='+invoice_date+'&select_rate='+select_rate+'&hidden_gst_type='+hidden_gst_type+'&txt_cgst='+txt_cgst+'&txt_sgst='+txt_sgst+'&txt_igst='+txt_igst+'&txt_grand='+txt_grand+'&txt_amt_in_word='+txt_amt_in_word+'&total_amt='+total_amt+'&hidden_agency='+hidden_agency+'&gst_no='+gst_no;
+				
+    }else{
+				
+	
+				billData = 'action_type='+type+'&id='+id;
+				
+    }
+		var gst_no = $('#gst_no').val();
+		var hidden_gst_type = $('#hidden_gst_type').val(); 		
+		
+		if(hidden_gst_type !="without_gst")
+		{
+			if(gst_no==null || gst_no=="")
+			{
+				alert("GST No. Require..");
+			}
+			else
+			{
+					$.ajax({
+				type: 'POST',
+				url: '<?php $base_url; ?>save_span_set_rate.php',
+				data: billData,
+				success:function(msg){
+					if(type=="save_next_estimate"){
+					window.location.href="<?php echo $base_url; ?>view_job_by_eng.php?a=eng&&report_no="+txt_report_no+"&&job_no="+txt_job_no;
+						
+					}else if(type=="save_next_estimate_only_save_final_bill"){
+					window.location.href="<?php echo $base_url; ?>span_set_rate_final_bill.php?report_no="+txt_report_no+"&&job_no="+txt_job_no;
+						
+					}else{
+					window.location.href="<?php echo $base_url; ?>perfoma_list_rec_two.php?a=rec2";
+					}
+					}
+					 });
+			}
+		}
+		else
+		{
+			 $.ajax({
+			type: 'POST',
+			url: '<?php $base_url; ?>save_span_set_rate.php',
+			data: billData,
+			success:function(msg){
+				if(type=="save_next_estimate"){
+					window.location.href="<?php echo $base_url; ?>view_job_by_eng.php?a=eng&&report_no="+txt_report_no+"&&job_no="+txt_job_no;
+						
+					}else if(type=="save_next_estimate_only_save_final_bill"){
+					window.location.href="<?php echo $base_url; ?>span_set_rate_final_bill.php?report_no="+txt_report_no+"&&job_no="+txt_job_no;
+						
+					}else{
+					window.location.href="<?php echo $base_url; ?>perfoma_list_rec_two.php?a=rec2";
+					}
+			}
+				 });
+          
+        
+   
+		}
+	
+   
+}
+</script>

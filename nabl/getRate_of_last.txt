@@ -1,0 +1,45 @@
+
+<?php
+include 'connection.php';
+  
+if(isset($_POST['txt_new_material'])){
+   $txt_new_material = $_POST['txt_new_material'];
+	
+   
+ $query = "SELECT * FROM material WHERE id = '$txt_new_material'";
+	$result = mysqli_query($conn, $query);
+	 
+	$row = mysqli_fetch_assoc($result);
+	$mt_name=$row['mt_name'];
+	
+	$tax = "SELECT * FROM tax";
+	$result1 = mysqli_query($conn,$tax);
+	$row1 = mysqli_fetch_assoc($result1);
+	
+	$material_rate=$row['mt_rate']; 
+	$cgst=$row1['tax_cgst'];
+	$sgst=$row1['tax_sgst'];
+	$gst=$cgst+$sgst;
+	
+	$plus_gst=100+$gst;
+	
+	$ans=($material_rate*$gst)/$plus_gst;
+	$final_rate=$material_rate-$ans;
+	
+	$final_gst=$ans/2;
+	
+	$data=array();
+	
+	$data["txt_new_material"]=$mt_name;
+	$data["txt_qty"]=1;
+	$data["txt_rate"]=$final_rate;
+	$data["txt_cgst"]=$final_gst;
+	$data["txt_sgst"]=$final_gst;
+	$data["txt_net"]=$material_rate;
+	
+	 echo json_encode($data);
+}
+	
+   ?>
+   
+							

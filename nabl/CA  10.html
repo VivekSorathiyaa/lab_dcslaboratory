@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table align="center" width="95%" cellspacing="0" cellpadding="0" style="border:1px solid;font-size:11px;font-family : Calibri;">
+		<tr>
+		<td>
+    <table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:11px;font-family : Calibri;font-weight: bold;border: 0px solid;">
+        <tr>
+            <td style="font-size:15px;text-align:center;" colspan="4">TEST REPORT <br>COARSE AGGREGATE</td>
+        </tr>
+       
+        <tr>
+            <td style="width:15%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Lab Ref. No :</td>
+            <td style="width:40%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;"><?php echo $report_no; ?></td>
+            <td style="width:15%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;"><b>&nbsp;ULR No :-</b>&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;padding: 0 2px;text-align:left;"></td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;vertical-align: top;" rowspan="6">&nbsp;Report Issue To:</td>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;" rowspan="6">&nbsp;<?php echo $clientname; ?>&nbsp;</td>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Sample Receipt Date :-	</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo date('d/m/Y', strtotime($rec_sample_date));?> &nbsp;</td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Test Start Date :-</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Test End Date :-</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;" rowspan="3">&nbsp;Report Issue Date :-</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo date('d/m/Y', strtotime($issue_date)); ?>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;"colsapn="6">&nbsp;Ref. No :-&nbsp;</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;" colspan="3"></td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Project / Site Address :&nbsp;</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;" colspan="3"></td>
+        </tr>
+        <tr>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Name of Consultant: :-&nbsp;</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;" colspan="3"></td>
+        </tr>
+        <tr>
+            <td style="width:15%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Sample Description/ID Mark:&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;" >&nbsp;Compressive Test of Concrete Cube&nbsp;</td>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;"rowspan="2">&nbsp;Grade of Concrete :&nbsp;</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;"rowspan="2">&nbsp;<?php echo $cc_grade;?>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width:15%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Size:&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;150mm X 150mm&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width:15%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Age in Days :&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo $ans['day1'];?>&nbsp;</td>
+            <td style="border-top:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Date of Casting :&nbsp;</td>
+            <td style="border-top:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo $casting_date;?>&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width:15%;border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Test Method :&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;IS 516 Part 1 Sec 1 : 2021&nbsp;</td>
+            <td style="width:15%;border-top:1px solid;border-bottom:1px solid;border-right:1px solid;padding: 0 2px;text-align:left;">&nbsp;Temperature :&nbsp;</td>
+            <td style="width:30%;border-top:1px solid;border-bottom:1px solid;padding: 0 2px;text-align:left;">&nbsp;<?php echo $cc_identification_mark;?>&nbsp;</td>
+        </tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

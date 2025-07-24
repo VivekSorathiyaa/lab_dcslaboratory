@@ -1,0 +1,562 @@
+<?php
+session_start();
+include("../connection.php");
+error_reporting(1); ?>
+<style>
+	@page {
+		margin: 0 40px;
+	}
+
+	.pagebreak {
+		page-break-before: always;
+	}
+
+	page[size="A4"] {
+		width: 29.7cm;
+		height: 21cm;
+	}
+</style>
+<style>
+	.tdclass {
+		border: 1px solid black;
+		font-size: 10px;
+		font-family : Calibri;
+	}
+
+	.test {
+		border-collapse: collapse;
+		font-size: 12px;
+		font-family : Calibri;
+	}
+
+	.test1 {
+		font-size: 12px;
+		border-collapse: collapse;
+		font-family : Calibri;
+
+	}
+
+	.tdclass1 {
+
+		font-size: 11px;
+		font-family : Calibri;
+	}
+
+	.details {
+		margin: 0px auto;
+		padding: 0px;
+	}
+</style>
+<html>
+
+<body>
+	
+
+<?php 
+	        if (($row_select_pipe['area_1'] != "" && $row_select_pipe['area_1'] != "0" && $row_select_pipe['area_1'] != null) || ($row_select_pipe['com_1'] != "" && $row_select_pipe['com_1'] != "0" && $row_select_pipe['com_1'] != null) || ($row_select_pipe['corr_1'] != "" && $row_select_pipe['corr_1'] != "0" && $row_select_pipe['corr_1'] != null) || ($row_select_pipe['area_2'] != "" && $row_select_pipe['area_2'] != "0" && $row_select_pipe['area_2'] != null) || ($row_select_pipe['com_2'] != "" && $row_select_pipe['com_2'] != "0" && $row_select_pipe['com_2'] != null) || ($row_select_pipe['corr_2'] != "" && $row_select_pipe['corr_2'] != "0" && $row_select_pipe['corr_2'] != null) || ($row_select_pipe['area_3'] != "" && $row_select_pipe['area_3'] != "0" && $row_select_pipe['area_3'] != null) || ($row_select_pipe['com_3'] != "" && $row_select_pipe['com_3'] != "0" && $row_select_pipe['com_3'] != null) || ($row_select_pipe['corr_3'] != "" && $row_select_pipe['corr_3'] != "0" && $row_select_pipe['corr_3'] != null) || ($row_select_pipe['area_4'] != "" && $row_select_pipe['area_4'] != "0" && $row_select_pipe['area_4'] != null) || ($row_select_pipe['com_4'] != "" && $row_select_pipe['com_4'] != "0" && $row_select_pipe['com_4'] != null) || ($row_select_pipe['corr_4'] != "" && $row_select_pipe['corr_4'] != "0" && $row_select_pipe['corr_4'] != null) || ($row_select_pipe['area_5'] != "" && $row_select_pipe['area_5'] != "0" && $row_select_pipe['area_5'] != null) || ($row_select_pipe['com_5'] != "" && $row_select_pipe['com_5'] != "0" && $row_select_pipe['com_5'] != null) || ($row_select_pipe['corr_5'] != "" && $row_select_pipe['corr_5'] != "0" && $row_select_pipe['corr_5'] != null) || ($row_select_pipe['area_6'] != "" && $row_select_pipe['area_6'] != "0" && $row_select_pipe['area_6'] != null) || ($row_select_pipe['com_6'] != "" && $row_select_pipe['com_6'] != "0" && $row_select_pipe['com_6'] != null) || ($row_select_pipe['corr_6'] != "" && $row_select_pipe['corr_6'] != "0" && $row_select_pipe['corr_6'] != null) || ($row_select_pipe['area_7'] != "" && $row_select_pipe['area_7'] != "0" && $row_select_pipe['area_7'] != null) || ($row_select_pipe['com_7'] != "" && $row_select_pipe['com_7'] != "0" && $row_select_pipe['com_7'] != null) || ($row_select_pipe['corr_7'] != "" && $row_select_pipe['corr_7'] != "0" && $row_select_pipe['corr_7'] != null) || ($row_select_pipe['area_8'] != "" && $row_select_pipe['area_8'] != "0" && $row_select_pipe['area_8'] != null) || ($row_select_pipe['com_8'] != "" && $row_select_pipe['com_8'] != "0" && $row_select_pipe['com_8'] != null) || ($row_select_pipe['corr_8'] != "" && $row_select_pipe['corr_8'] != "0" && $row_select_pipe['corr_8'] != null) || ($row_select_pipe['avg_corr'] != "" && $row_select_pipe['avg_corr'] != "0" && $row_select_pipe['avg_corr'] != null) || ($row_select_pipe['wtr_w1_1'] != "" && $row_select_pipe['wtr_w1_1'] != "0" && $row_select_pipe['wtr_w1_1'] != null) || ($row_select_pipe['wtr_w2_1'] != "" && $row_select_pipe['wtr_w2_1'] != "0" && $row_select_pipe['wtr_w2_1'] != null) || ($row_select_pipe['wtr_1'] != "" && $row_select_pipe['wtr_1'] != "0" && $row_select_pipe['wtr_1'] != null) || ($row_select_pipe['wtr_w1_2'] != "" && $row_select_pipe['wtr_w1_2'] != "0" && $row_select_pipe['wtr_w1_2'] != null) || ($row_select_pipe['wtr_w2_2'] != "" && $row_select_pipe['wtr_w2_2'] != "0" && $row_select_pipe['wtr_w2_2'] != null) || ($row_select_pipe['wtr_2'] != "" && $row_select_pipe['wtr_2'] != "0" && $row_select_pipe['wtr_2'] != null) || ($row_select_pipe['wtr_w1_3'] != "" && $row_select_pipe['wtr_w1_3'] != "0" && $row_select_pipe['wtr_w1_3'] != null) || ($row_select_pipe['wtr_w2_3'] != "" && $row_select_pipe['wtr_w2_3'] != "0" && $row_select_pipe['wtr_w2_3'] != null) || ($row_select_pipe['wtr_3'] != "" && $row_select_pipe['wtr_3'] != "0" && $row_select_pipe['wtr_3'] != null) || ($row_select_pipe['avg_wtr'] != "" && $row_select_pipe['avg_wtr'] != "0" && $row_select_pipe['avg_wtr'] != null)) {
+	        ?>
+
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<page size="A4">
+
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse; ">
+			<!-- header design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; ">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 5px;border: 1px solid;"><u>PAVER BLOCK</u></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0;">Format No :- &nbsp; ICT-PB-TST-01</td>
+							<td style="padding: 5px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0;">Sample ID :- &nbsp; <?php echo $sample_id; ?></td>
+							<td style="padding: 5px;"></td>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0;">Testing Date :- &nbsp; <?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+							<td style="padding: 5px;"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0;">Material Description :- &nbsp; <?php echo $detail_sample; ?></td>
+							<td style="padding: 5px;"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 0px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+	<?php 
+			} if (($row_select_pipe['wtr_w1_1'] != "" && $row_select_pipe['wtr_w1_1'] != "0" && $row_select_pipe['wtr_w1_1'] != null) || ($row_select_pipe['wtr_w2_1'] != "" && $row_select_pipe['wtr_w2_1'] != "0" && $row_select_pipe['wtr_w2_1'] != null) || ($row_select_pipe['wtr_1'] != "" && $row_select_pipe['wtr_1'] != "0" && $row_select_pipe['wtr_1'] != null) || ($row_select_pipe['wtr_w1_2'] != "" && $row_select_pipe['wtr_w1_2'] != "0" && $row_select_pipe['wtr_w1_2'] != null) || ($row_select_pipe['wtr_w2_2'] != "" && $row_select_pipe['wtr_w2_2'] != "0" && $row_select_pipe['wtr_w2_2'] != null) || ($row_select_pipe['wtr_2'] != "" && $row_select_pipe['wtr_2'] != "0" && $row_select_pipe['wtr_2'] != null) || ($row_select_pipe['wtr_w1_3'] != "" && $row_select_pipe['wtr_w1_3'] != "0" && $row_select_pipe['wtr_w1_3'] != null) || ($row_select_pipe['wtr_w2_3'] != "" && $row_select_pipe['wtr_w2_3'] != "0" && $row_select_pipe['wtr_w2_3'] != null) || ($row_select_pipe['wtr_3'] != "" && $row_select_pipe['wtr_3'] != "0" && $row_select_pipe['wtr_3'] != null) || ($row_select_pipe['avg_wtr'] != "" && $row_select_pipe['avg_wtr'] != "0" && $row_select_pipe['avg_wtr'] != null)) {
+	?>		
+
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center; padding: 5px;border-top: 0;width: 8%;" colspan="6">WATER ABSORPTION TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 8px 5px;border: 0; width:20%;">Material Description :- <span style="border-bottom: 1px solid black;">&nbsp; <?php echo $detail_sample; ?></span></td>
+							<td style="font-weight: bold;text-align: center;padding: 8px 5px;border: 0; width:30%;">Testing Date :-<span style="border-bottom: 1px solid black;"><?php echo date('d/m/Y', strtotime($end_date)); ?></span></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="text-align: left;padding: 5px;border-top: 1px solid;width: 5%;" colspan=2><b>Reference Code :-</b> &nbsp;&nbsp;&nbsp;IS : 15658:2021, Annex C</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center; padding: 5px;border-top: 0;width: 8%;" colspan="6">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0; width:40%;">Paver block Shape :- <span style="border-bottom:1px solid black;"><?php echo $paver_shape; ?></span></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;width:20%;" rowspan="4">Sample Id.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Dry Weight (Wd), kg</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;" rowspan="2">Wet Weight (Ww), kg</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;" colspan="4">Water Absorption, %</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">W =</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">(Ww-Wd)</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">X</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">100 / Wd</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;">W<sub>d</sub></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;">W<sub>w</sub></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;">wd</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;">N</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;">N</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;" colspan="4">%</td>
+						</tr>
+						
+						<?php 
+	                    if (($row_select_pipe['wtr_w1_1'] != "" && $row_select_pipe['wtr_w1_1'] != "0" && $row_select_pipe['wtr_w1_1'] != null) || ($row_select_pipe['wtr_w2_1'] != "" && $row_select_pipe['wtr_w2_1'] != "0" && $row_select_pipe['wtr_w2_1'] != null) || ($row_select_pipe['wtr_1'] != "" && $row_select_pipe['wtr_1'] != "0" && $row_select_pipe['wtr_1'] != null)) {
+	                    ?>
+						
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w1_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w2_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" colspan="4"><?php echo $row_select_pipe['wtr_1']; ?></td>
+						</tr>
+						
+						<?php 
+	                    } if (($row_select_pipe['wtr_w1_2'] != "" && $row_select_pipe['wtr_w1_2'] != "0" && $row_select_pipe['wtr_w1_2'] != null) || ($row_select_pipe['wtr_w2_2'] != "" && $row_select_pipe['wtr_w2_2'] != "0" && $row_select_pipe['wtr_w2_2'] != null) || ($row_select_pipe['wtr_2'] != "" && $row_select_pipe['wtr_2'] != "0" && $row_select_pipe['wtr_2'] != null)) {
+	                    ?>
+						
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w1_2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w2_2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" colspan="4"><?php echo $row_select_pipe['wtr_2']; ?></td>
+						</tr>
+						
+						<?php 
+	                    } if (($row_select_pipe['wtr_w1_3'] != "" && $row_select_pipe['wtr_w1_3'] != "0" && $row_select_pipe['wtr_w1_3'] != null) || ($row_select_pipe['wtr_w2_3'] != "" && $row_select_pipe['wtr_w2_3'] != "0" && $row_select_pipe['wtr_w2_3'] != null) || ($row_select_pipe['wtr_3'] != "" && $row_select_pipe['wtr_3'] != "0" && $row_select_pipe['wtr_3'] != null)) {
+	                    ?>
+						
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w1_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['wtr_w2_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" colspan="4"><?php echo $row_select_pipe['wtr_3']; ?></td>
+						</tr>
+						
+						<?php 
+	                    } if (($row_select_pipe['avg_wtr'] != "" && $row_select_pipe['avg_wtr'] != "0" && $row_select_pipe['avg_wtr'] != null)) {
+	                    ?>
+						
+						<tr>
+							<td style="font-weight: bold;text-align: right;padding: 2px;" colspan=3>Average Water Absorpation :-</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;" colspan=4><?php echo $row_select_pipe['avg_wtr']; ?></td>
+						</tr>
+						
+						<?php } ?>
+						
+					</table>
+				</td>
+			</tr>
+			
+			
+			
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; ">
+						
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 5px;text-transform: uppercase;border: 1px solid;">COMPRESSIVE STRENGTH</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="text-align: left;padding: 5px;border-top: 0px solid;width: 8%;" colspan=2><b>Reference Code :-</b> &nbsp;&nbsp;&nbsp;IS : 15658-2021; Annex D</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center; padding: 5px;border-top: 0;width: 8%;" colspan="6">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="6">&nbsp;</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 5px;border: 0; width:40%;">Paver block Shape :- <span style="border-bottom:1px solid black;"><?php echo $paver_shape; ?></span></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			
+			
+			<?php 
+	        if (($row_select_pipe['area_1'] != "" && $row_select_pipe['area_1'] != "0" && $row_select_pipe['area_1'] != null) || ($row_select_pipe['com_1'] != "" && $row_select_pipe['com_1'] != "0" && $row_select_pipe['com_1'] != null) || ($row_select_pipe['corr_1'] != "" && $row_select_pipe['corr_1'] != "0" && $row_select_pipe['corr_1'] != null) || ($row_select_pipe['area_2'] != "" && $row_select_pipe['area_2'] != "0" && $row_select_pipe['area_2'] != null) || ($row_select_pipe['com_2'] != "" && $row_select_pipe['com_2'] != "0" && $row_select_pipe['com_2'] != null) || ($row_select_pipe['corr_2'] != "" && $row_select_pipe['corr_2'] != "0" && $row_select_pipe['corr_2'] != null) || ($row_select_pipe['area_3'] != "" && $row_select_pipe['area_3'] != "0" && $row_select_pipe['area_3'] != null) || ($row_select_pipe['com_3'] != "" && $row_select_pipe['com_3'] != "0" && $row_select_pipe['com_3'] != null) || ($row_select_pipe['corr_3'] != "" && $row_select_pipe['corr_3'] != "0" && $row_select_pipe['corr_3'] != null) || ($row_select_pipe['area_4'] != "" && $row_select_pipe['area_4'] != "0" && $row_select_pipe['area_4'] != null) || ($row_select_pipe['com_4'] != "" && $row_select_pipe['com_4'] != "0" && $row_select_pipe['com_4'] != null) || ($row_select_pipe['corr_4'] != "" && $row_select_pipe['corr_4'] != "0" && $row_select_pipe['corr_4'] != null) || ($row_select_pipe['area_5'] != "" && $row_select_pipe['area_5'] != "0" && $row_select_pipe['area_5'] != null) || ($row_select_pipe['com_5'] != "" && $row_select_pipe['com_5'] != "0" && $row_select_pipe['com_5'] != null) || ($row_select_pipe['corr_5'] != "" && $row_select_pipe['corr_5'] != "0" && $row_select_pipe['corr_5'] != null) || ($row_select_pipe['area_6'] != "" && $row_select_pipe['area_6'] != "0" && $row_select_pipe['area_6'] != null) || ($row_select_pipe['com_6'] != "" && $row_select_pipe['com_6'] != "0" && $row_select_pipe['com_6'] != null) || ($row_select_pipe['corr_6'] != "" && $row_select_pipe['corr_6'] != "0" && $row_select_pipe['corr_6'] != null) || ($row_select_pipe['area_7'] != "" && $row_select_pipe['area_7'] != "0" && $row_select_pipe['area_7'] != null) || ($row_select_pipe['com_7'] != "" && $row_select_pipe['com_7'] != "0" && $row_select_pipe['com_7'] != null) || ($row_select_pipe['corr_7'] != "" && $row_select_pipe['corr_7'] != "0" && $row_select_pipe['corr_7'] != null) || ($row_select_pipe['area_8'] != "" && $row_select_pipe['area_8'] != "0" && $row_select_pipe['area_8'] != null) || ($row_select_pipe['com_8'] != "" && $row_select_pipe['com_8'] != "0" && $row_select_pipe['com_8'] != null) || ($row_select_pipe['corr_8'] != "" && $row_select_pipe['corr_8'] != "0" && $row_select_pipe['corr_8'] != null) || ($row_select_pipe['avg_corr'] != "" && $row_select_pipe['avg_corr'] != "0" && $row_select_pipe['avg_corr'] != null)) {
+	        ?>
+
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Sr. <br> No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Sample Id</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Weight of Cardboard representing Paver Block, msp</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;" >Weight of Cardboard of 200mm x 100mm size, mstd</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 1px solid;" >Plan Area = 20000 msp / mstd</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2" >Remarks</td>
+							
+						</tr>
+						
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">g</sub></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">g</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">mm<sup>2</sup></td>
+							
+						</tr>
+						
+							
+						<?php 
+	                    if (($row_select_pipe['area_1'] != "" && $row_select_pipe['area_1'] != "0" && $row_select_pipe['area_1'] != null) || ($row_select_pipe['com_1'] != "" && $row_select_pipe['com_1'] != "0" && $row_select_pipe['com_1'] != null) || ($row_select_pipe['corr_1'] != "" && $row_select_pipe['corr_1'] != "0" && $row_select_pipe['corr_1'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">1</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_1']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_2'] != "" && $row_select_pipe['area_2'] != "0" && $row_select_pipe['area_2'] != null) || ($row_select_pipe['com_2'] != "" && $row_select_pipe['com_2'] != "0" && $row_select_pipe['com_2'] != null) || ($row_select_pipe['corr_2'] != "" && $row_select_pipe['corr_2'] != "0" && $row_select_pipe['corr_2'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">2</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_2']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_3'] != "" && $row_select_pipe['area_3'] != "0" && $row_select_pipe['area_3'] != null) || ($row_select_pipe['com_3'] != "" && $row_select_pipe['com_3'] != "0" && $row_select_pipe['com_3'] != null) || ($row_select_pipe['corr_3'] != "" && $row_select_pipe['corr_3'] != "0" && $row_select_pipe['corr_3'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">3</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_3']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_4'] != "" && $row_select_pipe['area_4'] != "0" && $row_select_pipe['area_4'] != null) || ($row_select_pipe['com_4'] != "" && $row_select_pipe['com_4'] != "0" && $row_select_pipe['com_4'] != null) || ($row_select_pipe['corr_4'] != "" && $row_select_pipe['corr_4'] != "0" && $row_select_pipe['corr_4'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">4</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_4']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_5'] != "" && $row_select_pipe['area_5'] != "0" && $row_select_pipe['area_5'] != null) || ($row_select_pipe['com_5'] != "" && $row_select_pipe['com_5'] != "0" && $row_select_pipe['com_5'] != null) || ($row_select_pipe['corr_5'] != "" && $row_select_pipe['corr_5'] != "0" && $row_select_pipe['corr_5'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">5</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_5']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_6'] != "" && $row_select_pipe['area_6'] != "0" && $row_select_pipe['area_6'] != null) || ($row_select_pipe['com_6'] != "" && $row_select_pipe['com_6'] != "0" && $row_select_pipe['com_6'] != null) || ($row_select_pipe['corr_6'] != "" && $row_select_pipe['corr_6'] != "0" && $row_select_pipe['corr_6'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">6</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_6']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_7'] != "" && $row_select_pipe['area_7'] != "0" && $row_select_pipe['area_7'] != null) || ($row_select_pipe['com_7'] != "" && $row_select_pipe['com_7'] != "0" && $row_select_pipe['com_7'] != null) || ($row_select_pipe['corr_7'] != "" && $row_select_pipe['corr_7'] != "0" && $row_select_pipe['corr_7'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">7</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_7']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_8'] != "" && $row_select_pipe['area_8'] != "0" && $row_select_pipe['area_8'] != null) || ($row_select_pipe['com_8'] != "" && $row_select_pipe['com_8'] != "0" && $row_select_pipe['com_8'] != null) || ($row_select_pipe['corr_8'] != "" && $row_select_pipe['corr_8'] != "0" && $row_select_pipe['corr_8'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">8</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_8']; ?></td>
+						</tr>
+						
+                        <?php } ?>
+					</table>
+				</td>
+			</tr>
+             
+			 
+			 
+
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 10px;border: 0px solid;" colspan="7"></td>
+							
+						</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">Sr. <br> No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">Sample Id</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Thickness, mm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">Failure Load, kN</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;"> Compressive Strength, MPa</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">Correction Factor Based on Thickness</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">Corrected Compressive Strength, MPa</td>
+							
+						</tr>
+							
+						<?php 
+	                    if (($row_select_pipe['area_1'] != "" && $row_select_pipe['area_1'] != "0" && $row_select_pipe['area_1'] != null) || ($row_select_pipe['com_1'] != "" && $row_select_pipe['com_1'] != "0" && $row_select_pipe['com_1'] != null) || ($row_select_pipe['corr_1'] != "" && $row_select_pipe['corr_1'] != "0" && $row_select_pipe['corr_1'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">1</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_1']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_1']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_2'] != "" && $row_select_pipe['area_2'] != "0" && $row_select_pipe['area_2'] != null) || ($row_select_pipe['com_2'] != "" && $row_select_pipe['com_2'] != "0" && $row_select_pipe['com_2'] != null) || ($row_select_pipe['corr_2'] != "" && $row_select_pipe['corr_2'] != "0" && $row_select_pipe['corr_2'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">2</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm2'];?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_2'];?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_2'];?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m2']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_2'];?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_2'];?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_3'] != "" && $row_select_pipe['area_3'] != "0" && $row_select_pipe['area_3'] != null) || ($row_select_pipe['com_3'] != "" && $row_select_pipe['com_3'] != "0" && $row_select_pipe['com_3'] != null) || ($row_select_pipe['corr_3'] != "" && $row_select_pipe['corr_3'] != "0" && $row_select_pipe['corr_3'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">3</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_3']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_3']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_4'] != "" && $row_select_pipe['area_4'] != "0" && $row_select_pipe['area_4'] != null) || ($row_select_pipe['com_4'] != "" && $row_select_pipe['com_4'] != "0" && $row_select_pipe['com_4'] != null) || ($row_select_pipe['corr_4'] != "" && $row_select_pipe['corr_4'] != "0" && $row_select_pipe['corr_4'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">4</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_4']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_4']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_5'] != "" && $row_select_pipe['area_5'] != "0" && $row_select_pipe['area_5'] != null) || ($row_select_pipe['com_5'] != "" && $row_select_pipe['com_5'] != "0" && $row_select_pipe['com_5'] != null) || ($row_select_pipe['corr_5'] != "" && $row_select_pipe['corr_5'] != "0" && $row_select_pipe['corr_5'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">5</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_5']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_5']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_6'] != "" && $row_select_pipe['area_6'] != "0" && $row_select_pipe['area_6'] != null) || ($row_select_pipe['com_6'] != "" && $row_select_pipe['com_6'] != "0" && $row_select_pipe['com_6'] != null) || ($row_select_pipe['corr_6'] != "" && $row_select_pipe['corr_6'] != "0" && $row_select_pipe['corr_6'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">6</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_6']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_6']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_7'] != "" && $row_select_pipe['area_7'] != "0" && $row_select_pipe['area_7'] != null) || ($row_select_pipe['com_7'] != "" && $row_select_pipe['com_7'] != "0" && $row_select_pipe['com_7'] != null) || ($row_select_pipe['corr_7'] != "" && $row_select_pipe['corr_7'] != "0" && $row_select_pipe['corr_7'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">7</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_7']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_7']; ?></td>
+						</tr>
+						<?php 
+	                    } if (($row_select_pipe['area_8'] != "" && $row_select_pipe['area_8'] != "0" && $row_select_pipe['area_8'] != null) || ($row_select_pipe['com_8'] != "" && $row_select_pipe['com_8'] != "0" && $row_select_pipe['com_8'] != null) || ($row_select_pipe['corr_8'] != "" && $row_select_pipe['corr_8'] != "0" && $row_select_pipe['corr_8'] != null)) {
+	                    ?>
+						<tr>
+							<td style="text-align: center;padding: 2px;border: 1px solid;">8</td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['sm8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['thick_8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['lab_8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['m8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['area_8']; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe['load_8']; ?></td>
+						</tr>
+						
+                        <?php } ?>
+					</table>
+				</td>
+			</tr>
+             
+
+		
+			<!-- footer design -->
+            <tr>
+                <td>
+                    <table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+			<!-- <tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;border-left: 1px solid; width:15%">Remarks :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;" colspan="3"><?php echo $row_select_pipe['sl_2'];?></td>
+			</tr> -->
+			<tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;width: 15%;border: 0px solid;">Checked By :-</td>
+				<td style="padding: 5px;border: 0px solid;"></td>
+				<td style="font-weight: bold;text-align: center;padding:5px;width: 12%;border: 0px solid;">Tested By :-</td>
+				<td style="padding: 5px;border: 0px solid;"></td>
+			</tr>
+			<tr>
+				<td style="height: 35px;border: 1px solid;border-right: 1px solid; border-bottom:0px; border-top:1px solid;" colspan="4"></td>
+			</tr>
+			
+		</table>
+                </td>
+            </tr>
+            
+        </table>
+
+
+			
+	 <?php } ?>		
+		</table>
+
+
+	</page>
+
+
+			<?php } ?>
+
+
+
+</body>
+
+</html>
+
+
+<script type="text/javascript">
+
+</script>

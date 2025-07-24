@@ -1,0 +1,3346 @@
+<?php
+session_start();
+include("../connection.php");
+error_reporting(1); ?>
+<style>
+	@page {
+		margin: 0px 40px;
+	}
+
+	.pagebreak {
+		page-break-before: always;
+	}
+
+	page[size="A4"] {
+		width: 29.7cm;
+		height: 21cm;
+	}
+</style>
+<style>
+	.tdclass {
+		border: 1px solid black;
+		font-size: 10px;
+		font-family : Calibri;
+	}
+
+	.test {
+		border-collapse: collapse;
+		font-size: 12px;
+		font-family : Calibri;
+	}
+
+	.test1 {
+		font-size: 12px;
+		border-collapse: collapse;
+		font-family : Calibri;
+
+	}
+
+	.tdclass1 {
+
+		font-size: 11px;
+		font-family : Calibri;
+	}
+
+	.details {
+		margin: 0px auto;
+		padding: 0px;
+	}
+</style>
+<html>
+
+<body>
+	<?php
+	$job_no = $_GET['job_no'];
+	$lab_no = $_GET['lab_no'];
+	$report_no = $_GET['report_no'];
+	$trf_no = $_GET['trf_no'];
+	$select_tiles_query = "select * from bitumin_span WHERE `lab_no`='$lab_no' AND `report_no`='$report_no' AND `job_no`='$job_no' and `is_deleted`='0'";
+    //echo $select_tiles_query;
+	$result_tiles_select = mysqli_query($conn, $select_tiles_query);
+	$row_select_pipe = mysqli_fetch_array($result_tiles_select);
+
+
+	$select_query = "select * from job WHERE `trf_no`='$trf_no' AND `jobisdeleted`='0'";
+	$result_select = mysqli_query($conn, $select_query);
+
+	$row_select = mysqli_fetch_array($result_select);
+	$clientname = $row_select['clientname'];
+	$r_name = $row_select['refno'];
+	$sr_no = $row_select['sr_no'];
+	$sample_no = $row_select['job_no'];
+	$rec_sample_date = $row_select['sample_rec_date'];
+	$branch_name = $row_select['branch_name'];
+	$cons = $row_select['condition_of_sample_receved'];
+	if ($cons == 0) {
+		$con_sample = "Sealed Ok";
+	} else {
+		$con_sample = "Unsealed";
+	}
+	$name_of_work = strip_tags(html_entity_decode($row_select['nameofwork']), "<strong><em>");
+
+	$select_query1 = "select * from agency_master WHERE `agency_id`='$row_select[agency]' AND `isdeleted`='0'";
+	$result_select1 = mysqli_query($conn, $select_query1);
+
+	if (mysqli_num_rows($result_select1) > 0) {
+		$row_select1 = mysqli_fetch_assoc($result_select1);
+		$agency_name = $row_select1['agency_name'];
+	}
+
+	$select_query2  = "select * from job_for_engineer WHERE `lab_no`='$lab_no' AND `trf_no`='$trf_no' AND `job_no`='$job_no' AND `isdeleted`='0'";
+	$result_select2 = mysqli_query($conn, $select_query2);
+
+	if (mysqli_num_rows($result_select2) > 0) {
+		$row_select2 = mysqli_fetch_assoc($result_select2);
+		$start_date = $row_select2['start_date'];
+		$end_date = $row_select2['end_date'];
+        $issue_date = $row_select2['issue_date'];
+
+		$select_query3 = "select * from material WHERE `id`='$row_select2[material_id]' AND `mt_isdeleted`='0'";
+		$result_select3 = mysqli_query($conn, $select_query3);
+
+		if (mysqli_num_rows($result_select3) > 0) {
+			$row_select3 = mysqli_fetch_assoc($result_select3);
+			$mt_name= $row_select3['mt_name'];
+			
+			include_once 'sample_id.php';
+		}
+	}
+
+	$select_query4 = "select * from span_material_assign WHERE `lab_no`='$lab_no' AND `trf_no`='$trf_no' AND `job_number`='$job_no' AND `isdeleted`='0' ";
+	$result_select4 = mysqli_query($conn, $select_query4);
+
+	if (mysqli_num_rows($result_select4) > 0) {
+		$row_select4 = mysqli_fetch_assoc($result_select4);
+		$source = $row_select4['agg_source'];
+		$mark = $row_select4['mark'];
+		$bitumin_grade = $row_select4['bitumin_grade'];
+		$brick_specification = $row_select4['brick_specification'];
+	}
+	?>
+
+
+
+	
+
+
+	<br>
+	<br>
+	<br>
+
+
+	<!-- NEW REPORT 1 -->
+
+	<page size="A4">
+	
+	
+
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			<?php if (($row_select_pipe['pen_1'] != "" && $row_select_pipe['pen_1'] != "0" && $row_select_pipe['pen_1'] != null) || ($row_select_pipe['pen_2'] != "" && $row_select_pipe['pen_2'] != "0" && $row_select_pipe['pen_2'] != null) || ($row_select_pipe['pen_3'] != "" && $row_select_pipe['pen_3'] != "0" && $row_select_pipe['pen_3'] != null) || ($row_select_pipe['avg_pen'] != "" && $row_select_pipe['avg_pen'] != "0" && $row_select_pipe['avg_pen'] != null) || ($row_select_pipe['pen_temp'] != "" && $row_select_pipe['pen_temp'] != "0" && $row_select_pipe['pen_temp'] != null)) { ?>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding-bottom: 5px; font-size: 12px;">Format No :- ICT-BT-TST-01</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Sample ID :-</td>
+							<td style="padding: 2px;"><?php echo $sample_id; ?></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Material Description :-</td>
+							<td style="padding: 2px;"><?php echo $mt_name; ?></td>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Testing Date :-</td>
+							<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Bitumen Grade :-</td>
+							<td style="padding: 2px;"><?php echo $bitumin_grade; ?></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 0px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+			
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">PENETRATION TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 15%;">Reference: -</td>
+								<td style="padding: 2px;">IS 1203 - 1978 </td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			<!-- table design -->
+
+			<tr>
+				<td>
+					<table style="font-size:11px; width:100%; border:1px solid; border-bottom:2px solid;">
+					<?php if (($row_select_pipe['pen_temp'] != "" && $row_select_pipe['pen_temp'] != "0" && $row_select_pipe['pen_temp'] != null)) { ?>
+						<tr>
+							<td style="width:40%;"><b>Test Temperature :- <u>&nbsp;&nbsp;<?php echo $row_select_pipe['pen_temp']; ?>&nbsp;&nbsp;</u> °C &nbsp; &nbsp; &nbsp; &nbsp;(25.0 ± 0.1°C)</td>
+							<td style="text-align:right;padding-right:50px;" colspan="3"><b>Standard Weights :- &nbsp; &nbsp; &nbsp; 
+								100 ± 0.25 g / 200 ± 0.25 g</td>
+						</tr>
+					<?php } ?>	
+						<tr>
+						<td style="text-align:right;padding-right:8px;" colspan="3"><b>Standard Time :- &nbsp; &nbsp; &nbsp; 
+								5 ± 0.1 S</td>
+						</tr>
+					<?php if (($row_select_pipe['pen_1'] != "" && $row_select_pipe['pen_1'] != "0" && $row_select_pipe['pen_1'] != null) || ($row_select_pipe['pen_2'] != "" && $row_select_pipe['pen_2'] != "0" && $row_select_pipe['pen_2'] != null) || ($row_select_pipe['pen_3'] != "" && $row_select_pipe['pen_3'] != "0" && $row_select_pipe['pen_3'] != null)) { ?>	
+						<tr>
+							<td style="padding-top:15px;"><b>Penetration (1/10 of mm) :- </td>
+							<td style="padding-top:15px; "><b>(i) <?php echo $row_select_pipe['pen_1']; ?> mm </td>
+							<td style="padding-top:15px; "><b>(ii) <?php echo $row_select_pipe['pen_2']; ?> mm </td>
+							<td style="padding-top:15px; "><b>(iii) <?php echo $row_select_pipe['pen_3']; ?> mm </td>
+						</tr>
+					
+			        <?php } if (($row_select_pipe['avg_pen'] != "" && $row_select_pipe['avg_pen'] != "0" && $row_select_pipe['avg_pen'] != null)) { ?>
+						<tr>
+							<td style="padding-top:5px;padding-bottom:15px; width:25%"><b>Penetration (1/10 of mm) Mean Value:- </td>
+							<td style="padding-left:13px; padding-bottom:5px;"><b> <?php echo $row_select_pipe['avg_pen']; ?> mm</td>
+						</tr>
+					<?php } ?>
+					</table>
+				</td>
+			</tr>
+
+		<tr>
+			<td>
+				<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+					<tr>
+						<td style="border-right:2px solid; text-align:center; width:5%"><b>Note*:- </td>
+						<td>
+							<table style="font-size:11px;">
+								<tr>
+									<td style="padding-top:10px;"><b>(i) The Value of Penetration Reported shall be the mean of not less than three determonations whose Value do not differ more than the amount given below.</td>
+								</tr>
+								<tr>
+									<td>
+									<table align="center" width="50%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+									<tr>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> Penetration </td>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> Maximum Difference </td>
+									</tr>
+									<tr>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 0 to 49 </td>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 2 </td>
+									</tr>
+									<tr>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 50 to 149 </td>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 4 </td>
+									</tr>
+									<tr>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 150 to 249 </td>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 6 </td>
+									</tr>
+									<tr>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 250 and above </td>
+									<td style="font-weight: bold;padding: 2px;border:2px solid;text-align:center"><b> 8 </td>
+									</tr>
+									</table>
+									</td>
+								</tr>
+								<tr>
+									<td style="padding-top:10px;"><b>(ii) The Duplicate Test Result should not be differ by more than the following.</td>
+								</tr>
+								<tr>
+									<td>
+										<table align="center" width="80%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid; margin-bottom:15px;">
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center"><b> Penetration </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%; border:2px solid;  text-align:center;"><b>Repeatability</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center;"><b>Reproducibility</td>
+
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center;">
+													<b>Below 50
+												</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center"><b>1 Unit</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center;"><b>4 Units</td>
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center;">
+													<b>Above 50</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center"><b>3 Percent of their Mean</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 0%;border:2px solid;  text-align:center;"><b>8 Percent of their Mean</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>	
+				</table>
+			</td>
+		</tr>
+		
+		<?php } if (($row_select_pipe['spe_temp'] != "" && $row_select_pipe['spe_temp'] != "0" && $row_select_pipe['spe_temp'] != null) || ($row_select_pipe['sp_a_1'] != "" && $row_select_pipe['sp_a_1'] != "0" && $row_select_pipe['sp_a_1'] != null) || ($row_select_pipe['sp_b_1'] != "" && $row_select_pipe['sp_b_1'] != "0" && $row_select_pipe['sp_b_1'] != null) || ($row_select_pipe['sp_c_1'] != "" && $row_select_pipe['sp_c_1'] != "0" && $row_select_pipe['sp_c_1'] != null) || ($row_select_pipe['sp_d_1'] != "" && $row_select_pipe['sp_d_1'] != "0" && $row_select_pipe['sp_d_1'] != null) || ($row_select_pipe['sp_1'] != "" && $row_select_pipe['sp_1'] != "0" && $row_select_pipe['sp_1'] != null) || ($row_select_pipe['sp_a_2'] != "" && $row_select_pipe['sp_a_2'] != "0" && $row_select_pipe['sp_a_2'] != null) || ($row_select_pipe['sp_b_2'] != "" && $row_select_pipe['sp_b_2'] != "0" && $row_select_pipe['sp_b_2'] != null) || ($row_select_pipe['sp_c_2'] != "" && $row_select_pipe['sp_c_2'] != "0" && $row_select_pipe['sp_c_2'] != null) || ($row_select_pipe['sp_d_2'] != "" && $row_select_pipe['sp_d_2'] != "0" && $row_select_pipe['sp_d_2'] != null) || ($row_select_pipe['sp_2'] != "" && $row_select_pipe['sp_2'] != "0" && $row_select_pipe['sp_2'] != null) || ($row_select_pipe['avg_sp'] != "" && $row_select_pipe['avg_sp'] != "0" && $row_select_pipe['avg_sp'] != null)) { ?>
+		
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">SPACIFIC GRAVITY TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align:right;padding: 2px;border: 0; padding-right:100px;">Testing Date :-</td>
+							<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%;">Reference: -</td>
+							<td style="padding-left:0px;">IS 1202 - 1978 </td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="width:40%;"><b>Test Temperature :- <u>&nbsp;&nbsp;<?php echo $row_select_pipe['spe_temp']; ?>&nbsp;&nbsp;</u> °C &nbsp; &nbsp; &nbsp; &nbsp;(27.0 ± 0.1°C)</td>
+						</tr>
+						<!-- <tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr> -->
+					</table>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td>
+					<table style="font-size:11px; border-bottom:1px solid; width:100%; border-left:1px solid; border-right:1px solid;">
+						
+
+			<tr>
+			<td>
+		
+		<table align="center" width="80%"  style="font-size:11px;height:auto; font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 2px solid; border-top:2px solid; margin-top:5px;">
+			<tr>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;" rowspan="3">Sr. No.</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">Mass of bottle + Stopper Weight</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">Mass of bottle + Stopper +<br> Water Weight</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">Mass of bottle+ Stopper +<br> Sample Weight</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">Mass of bottle + Stopper + Sample +<br> Water Weight</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">Specific gravity</td>
+             </tr>
+             <tr>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">a</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">b</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">c</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;">d</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; width:20%"> (c-a) / ((b-a)-(d-c)) </td>
+                 </tr>
+             <tr>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">gm</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">gm</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">gm</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">gm</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">--</td>
+                 </tr>
+             <tr>
+                 <td style="font-weight:bold; border:1px solid;">1</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_a_1']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_b_1']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_c_1']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_d_1']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_1']; ?></td>
+             </tr>     
+             <tr>
+                 <td style="font-weight:bold; border:1px solid;">2</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_a_2']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_b_2']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_c_2']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_d_2']; ?></td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['sp_2']; ?></td>
+             </tr>
+             <tr>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; text-align: end; border-top:2px solid;" colspan="5">Mean Value</td>
+                 <td style="text-align: center; font-weight:bold; border:1px solid; border-top:2px solid;"><?php echo $row_select_pipe['avg_sp']; ?></td>
+             </tr>
+		</table>
+		<tr>
+			<td style="padding:5px"></td>
+		</tr>
+		</td>
+		</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<tr>
+			<td>
+				<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+					<tr>
+						<td style="border-right:2px solid; text-align:center; width:5%"><b>Note*:- </td>
+						<td>
+							<table style="font-size:11px;">
+								<tr>
+									<td style="padding-top:0px;"><b>The Duplicate Test Result should not be differ by more than the following.</td>
+								</tr>
+								<tr>
+									<td>
+										<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%; border:2px solid;  text-align:center;"><b>Repeatability</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>Reproducibility</td>
+
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;border:2px solid;  text-align:center;"><b>0.002</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;border:2px solid;  text-align:center; "><b>0.005</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+							<tr><td style=" height:60px;border-top:2px solid; width:100%;" colspan="2"></td></tr>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+
+		
+			<!-- footer design -->
+            <tr>
+                <td>
+                    <table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+			<!-- <tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;border-left: 1px solid; width:15%">Remarks :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;" colspan="3"><?php echo $row_select_pipe['sl_2'];?></td>
+			</tr> -->
+			<tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;width: 15%;border: 0px solid;">Checked By :-</td>
+				<td style="padding: 5px;border: 0px solid;"></td>
+				<td style="font-weight: bold;text-align: center;padding:5px;width: 12%;border: 0px solid;">Tested By :-</td>
+				<td style="padding: 5px;border: 0px solid;"></td>
+			</tr>
+			<tr>
+				<td style="height: 35px;border: 1px solid;border-right: 1px solid; border-bottom:0px; border-top:1px solid;" colspan="4"></td>
+			</tr>
+			
+			</table>
+                </td>
+            </tr>
+            
+       
+
+
+	</page>
+
+
+
+	<?php } if (($row_select_pipe['abs_9_1'] != "" && $row_select_pipe['abs_9_1'] != "0" && $row_select_pipe['abs_9_1'] != null) || ($row_select_pipe['abs_9_2'] != "" && $row_select_pipe['abs_9_2'] != "0" && $row_select_pipe['abs_9_2'] != null) || ($row_select_pipe['abs_9_3'] != "" && $row_select_pipe['abs_9_3'] != "0" && $row_select_pipe['abs_9_3'] != null) || ($row_select_pipe['avg_abs'] != "" && $row_select_pipe['avg_abs'] != "0" && $row_select_pipe['avg_abs'] != null) || ($row_select_pipe['avg_kin_1'] != "" && $row_select_pipe['avg_kin_1'] != "0" && $row_select_pipe['avg_kin_1'] != null) || ($row_select_pipe['avg_kin_2'] != "" && $row_select_pipe['avg_kin_2'] != "0" && $row_select_pipe['avg_kin_2'] != null) || ($row_select_pipe['avg_kin_3'] != "" && $row_select_pipe['avg_kin_3'] != "0" && $row_select_pipe['avg_kin_3'] != null)) {  ?> 
+	
+	
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+
+	<center>
+
+	<!-- NEW REPORT 3 -->
+
+	<page size="A4">
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+				<!-- header design -->
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+							<tr>
+								<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">ABSOLUTE VISCOSITY TEST</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: right;padding-right: 100px;padding-top:5px; padding-bottom:5px;">Testing Date :-  <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+								</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 3px;">Test Method :-</td>
+								<td>As Per IS: 1206 (Part-2) 2022, (By Canon Manning Viscometer)</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- table design -->
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; border-left: 2px solid;border-right: 2px solid;">
+				<tr>
+				<td style="border-left: 0; font-weight:bold;border-right: 0; padding-top:5px; padding-bottom: 30px">Test Temperature:- &nbsp; <span style="font-weight: bolder;"><?php echo $row_select_pipe['abs_temp']; ?></span> &deg;C <span>&nbsp; &nbsp; &nbsp; &nbsp; (60.0 &deg;c)</span></td>
+				<td style="text-align: center; border-right: 0; font-weight:bold; border-left: 0; padding-top:5px; padding-bottom: 30px">Vaccum:-30 cm Hg</td>
+				</tr>
+			</table>
+			<tr>
+				<td>
+			<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 1px solid; border-top:2px solid;">
+			
+			<table align="center" width="100%"  style="font-size:11px;height:auto; font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 1px solid; border-top:2px solid;">
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;" rowspan="3">Sr. No.</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">Time Required by<br> Bitumin to cross<br> the bulb-B mark</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">Calibration Constant<br> for Bulb-B</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">Time Required by<br> Bitumin to cross<br> the Bulb-C mark</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">Calibration Constant<br> for Bulb-C</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">Absolute Viscosity</td>
+				</tr>
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">t<sub>1</sub></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">K<sub>1</sub></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">t<sub>2</sub></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">K<sub>2</sub></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;">V = (K<sub>1</sub>*t<sub>1</sub>+K<sub>2</sub>*t<sub>2</sub>) / 2</td>
+					</tr>
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Sec</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Poises/Sec</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Sec</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Poises/Sec</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Poises</td>
+					</tr>
+				<?php if (($row_select_pipe['abs_9_1'] != "" && $row_select_pipe['abs_9_1'] != "0" && $row_select_pipe['abs_9_1'] != null)) {  ?> 
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_sr_1']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_4_1']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_3_1']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_7_1']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_6_1']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_9_1']; ?></td>
+				</tr>   
+               <?php } if (($row_select_pipe['abs_9_2'] != "" && $row_select_pipe['abs_9_2'] != "0" && $row_select_pipe['abs_9_2'] != null)) {  ?> 				
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_sr_2']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_4_2']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_3_2']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_7_2']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_6_2']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_9_2']; ?></td>
+				</tr>
+				<?php } if (($row_select_pipe['abs_9_3'] != "" && $row_select_pipe['abs_9_3'] != "0" && $row_select_pipe['abs_9_3'] != null)) {  ?> 
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_sr_3']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_4_3']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_3_3']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_7_3']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_6_3']; ?></td>
+					<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['abs_9_3']; ?></td>
+				</tr>
+				<?php } if (($row_select_pipe['avg_abs'] != "" && $row_select_pipe['avg_abs'] != "0" && $row_select_pipe['avg_abs'] != null)) {  ?> 
+				<tr>
+					<td style="text-align: center; font-weight:bold; border:1px solid; text-align: end; border-top:2px solid;" colspan="5">Mean Value</td>
+					<td style="text-align: center; font-weight:bold; border:1px solid; border-top:2px solid;"><?php echo $row_select_pipe['avg_abs']; ?></td>
+				</tr>
+				<tr>
+					<td style="border:2px solid; height:15px;" colspan="6"></td>
+				</tr>
+				<?php } ?>
+			</table>
+			<tr>
+				<td>
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; border-left: 2px solid;border-right: 2px solid; border-bottom: 1px solid;">
+				<tr>
+					<td>
+					<td style="text-align: center; font-weight:bold; border-right:2px solid;"> Note*:- </td>
+					<td style=" font-weight:bold; border-right:2px solid;"> The Duplicate Result Should Not Differ by More than the following.
+					<table  width="50%"  style="margin-top:5px;font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+					<tr>
+					<td style=" text-align:center;font-weight:bold; border-left:0px solid; border-top:2px solid; border-right:2px solid; border-bottom:2px solid;">Repeatability</td>
+					<td style=" text-align:center;font-weight:bold; border-right:0px solid;  border-top:2px solid; border-right:2px solid; border-bottom:2px solid;">7 percent of the mean</td>
+					</tr>
+					<tr>
+					<td style=" text-align:center;font-weight:bold; border-right:0px solid; border-top:2px solid; border-right:2px solid;">Reproducibility</td>
+					<td style=" text-align:center;font-weight:bold; border-right:0px solid;  border-top:2px solid; border-right:2px solid;">10 percent of the mean</td>
+					</tr>
+			</table>
+				</td>
+			</tr>
+			</table>
+			</td>
+			</tr>
+			
+			<?php  if (($row_select_pipe['avg_kin_1'] != "" && $row_select_pipe['avg_kin_1'] != "0" && $row_select_pipe['avg_kin_1'] != null) || ($row_select_pipe['avg_kin_2'] != "" && $row_select_pipe['avg_kin_2'] != "0" && $row_select_pipe['avg_kin_2'] != null) || ($row_select_pipe['avg_kin_3'] != "" && $row_select_pipe['avg_kin_3'] != "0" && $row_select_pipe['avg_kin_3'] != null)) {  ?> 
+			
+
+
+				<tr>
+				<td>
+							<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; border-left:2px solid; border-right:2px solid;">
+								<tr>
+									<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid; border-right:1px solid; border-left:1px solid; opacity: 0;">B</td>
+								</tr>
+								<tr>
+									<td style="padding: 1px;border: 1px solid;"></td>
+								</tr>
+								<tr>
+									<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">KINEMATIC VISCOSITY TEST</td>
+								</tr>
+								<tr>
+									<td style="padding: 1px;border: 1px solid;"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+								<tr>
+									<td style="font-weight: bold;text-align: right;padding-right: 100px;padding-top:5px; padding-bottom:5px;  border-right:2px solid; border-left:2px solid;">Testing Date :-   <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+									</tr>
+								<tr>
+									<td style="padding: 1px;border: 1px solid;  border-right:2px solid; border-left:2px solid;" colspan="4"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid; ">
+								<tr>
+									<td style="font-weight: bold;text-align: left;padding: 3px;">Test Method :-</td>
+									<td>As Per IS: 1206 (Part-3) 2021, Clause No :- 6.2 (BS U Tube Viscometer)</td>
+								</tr>
+								<tr>
+									<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+								</tr>
+								<tr>
+									<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+								</tr>
+								<tr>
+									<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- table design -->
+					<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; border-left: 2px solid;border-right: 2px solid;">
+					<tr>
+					<td style="border-left: 0; font-weight:bold;border-right: 0; padding-top:5px; padding-bottom: 13px">Test Temperature:- &nbsp; <span style="font-weight: bolder;"><?php echo $row_select_pipe['kin_test_temp']; ?></span> &deg;C <span>&nbsp; &nbsp; &nbsp; &nbsp; (135.0 &deg;c)</span></td>
+					</tr>
+					<tr>
+					<td style="border-left: 0; font-weight:bold;border-right: 0;padding-bottom: 13px">Temperature Time for 38°C: - &nbsp; <span style="font-weight: bolder;"><?php echo $row_select_pipe['kin_38_temp']; ?></span> <span>&nbsp; &nbsp; &nbsp; &nbsp; min</span></td>
+					</tr>
+					<tr>
+					<td style="border-left: 0; font-weight:bold;border-right: 0;padding-bottom: 13px">Temperature Time for 100°C: - &nbsp; <span style="font-weight: bolder;"><?php echo $row_select_pipe['kin_100_temp']; ?></span> <span>&nbsp; &nbsp; &nbsp; &nbsp; min</span></td>
+					</tr>
+					<tr>
+					<td style="border-left: 0; font-weight:bold;border-right: 0;padding-bottom: 20px">Temperature Time for 135°C: - &nbsp; <span style="font-weight: bolder;"><?php echo $row_select_pipe['kin_135_temp']; ?></span> <span>&nbsp; &nbsp; &nbsp; &nbsp; min</span></td>
+					</tr>
+				</table>
+				<tr>
+					<td>
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 1px solid; border-top:2px solid;">
+				
+				<table align="center" width="100%"  style="font-size:11px;height:auto; font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 1px solid; border-top:2px solid; ">
+				<tr>
+						<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;" rowspan="3">Sr. No.</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">Time Required by Bitumin to cross<br> the bulb-C mark</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">Calibration Constant<br> for Bulb-C</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">KINEMATIC Viscosity</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">t</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">C</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;">V = K * t</td>
+
+						</tr>
+					<tr>
+						<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">Sec</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">cSt/Sec</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid; border-bottom:2px solid;">cSt</td>
+						
+						</tr>
+					<tr>
+						<td style="font-weight:bold; border:1px solid;">1</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_5_1']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_6_1']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['avg_kin_1']; ?></td>
+					
+					</tr>     
+					<tr>
+						<td style="font-weight:bold; border:1px solid;">2</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_5_2']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_6_2']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['avg_kin_2']; ?></td>
+						
+					</tr>
+					<tr>
+						<td style="font-weight:bold; border:1px solid;">3</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_5_3']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['kin_6_3']; ?></td>
+						<td style="text-align: center; font-weight:bold; border:1px solid;"><?php echo $row_select_pipe['avg_kin_3']; ?></td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-weight:bold; border:1px solid; text-align: end; border-top:2px solid;" colspan="3">Mean Value</td>
+						<td style="text-align: center; font-weight:bold; border:1px solid; border-top:2px solid;"><?php echo ($row_select_pipe['kin_5_3'] + $row_select_pipe['kin_6_3'] + $row_select_pipe['avg_kin_3']) / 3 ?></td>
+					</tr>
+					<tr>
+						<td style="border:2px solid; height:15px;" colspan="6"></td>
+					</tr>
+				</table>
+				<tr>
+					<td>
+					<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; border-left: 2px solid;border-right: 2px solid; border-bottom: 1px solid;">
+					<tr>
+						<td>
+						<td style="text-align: center; font-weight:bold; border-right:2px solid;"> Note*:- </td>
+						<td style=" font-weight:bold; border-right:2px solid;"> The Duplicate Result Should Not Differ by More than the following.
+						<table  width="50%"  style="margin-top:5px;font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+						<td style=" text-align:center;font-weight:bold; border-left:0px solid; border-top:2px solid; border-right:2px solid; border-bottom:2px solid;">Repeatability</td>
+						<td style=" text-align:center;font-weight:bold; border-right:0px solid;  border-top:2px solid; border-right:2px solid; border-bottom:2px solid;">1.8 percent of the mean</td>
+						</tr>
+						<tr>
+						<td style=" text-align:center;font-weight:bold; border-right:0px solid; border-top:2px solid; border-right:2px solid;">Reproducibility</td>
+						<td style=" text-align:center;font-weight:bold; border-right:0px solid;  border-top:2px solid; border-right:2px solid;">8.8 percent of the mean</td>
+						</tr>
+				</table>
+					</td>
+				</tr>
+				</table>
+			</td>
+			</tr>		
+				</td>
+			</tr>
+		</table>
+		
+		 <!-- FOOTER DESIGN -->
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 1px solid;">
+                        <tr>
+                            <td style="height: 80px;border: 1px solid;border-bottom: 2px solid;" colspan="4"></td>
+                        </tr>
+                       
+                    </table>
+                </td>
+				
+			<?php } ?>		
+				
+            </tr>
+			<tr>
+			<td>
+			<!-- footer design -->
+		<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+			<!-- <tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;border-left: 1px solid; width:15%">Remarks :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;" colspan="3"><?php echo $row_select_pipe['sl_2'];?></td>
+			</tr> -->
+			<tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;width: 15%;border-left: 1px solid;border-top: 1px solid;">Checked By :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+				<td style="font-weight: bold;text-align: center;padding: 5px;width: 12%;border: 1px solid;">Tested By :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+			</tr>
+			<tr>
+				<td style="height: 35px;border: 1px solid;border-right: 1px solid; border-bottom:0px; border-top:1px solid;" colspan="4"></td>
+			</tr>
+			
+		</table>
+		</td>
+		</tr>
+            <!--<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 0px solid;border-right: 0px solid;border-bottom: 1px solid; border-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Issue No :-  03</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Issue Date :-  <?php echo date('d/m/Y', strtotime($issue_date)); ?>   </td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Prepared & Issued By</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Reviewed & Approved By</td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">Amend No :-  01</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">Amend Date :- <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?></td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">(Quality Manager)</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">(Chief Executive Officer)</td>
+							</tr>
+							<tr>
+								<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;border-left:1px solid; border-right:1px solid;padding:5px;">Page 1 of 1</td>
+							</tr>
+						
+						</table>
+					</td>
+				</tr>-->
+        </table>	
+	</page>
+	
+	
+	<?php } if (($row_select_pipe['sof_att'] != "" && $row_select_pipe['sof_att'] != "0" && $row_select_pipe['sof_att'] != null) || ($row_select_pipe['sof_rrt'] != "" && $row_select_pipe['sof_rrt'] != "0" && $row_select_pipe['sof_rrt'] != null) || ($row_select_pipe['avg_sof'] != "" && $row_select_pipe['avg_sof'] != "0" && $row_select_pipe['avg_sof'] != null)) {  ?> 
+
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+
+
+	<!-- NEW REPORT 4 -->
+
+	<page size="A4">
+			
+	<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+				<!-- header design -->
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+							<tr>
+								<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">SOFTENING POINT TEST</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+								<td style="font-weight: bold;text-align: right;padding-right: 100px;border: 0;">Testing Date :- <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 30%;">Test Method :-</td>
+								<td>As Per IS : 1205 : 2022</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<!-- table design -->
+				<?php $cnt=1; ?>
+				<tr>
+					<td>
+					<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+					<tr>
+					<td style="width:40%; padding-top:10px;"><b>Test Temperature :- &nbsp; <?php echo $row_select_pipe["sof_temp"] ?> °C &nbsp; &nbsp; &nbsp; &nbsp; 
+					(5.0 ± 0.5°C)</td>
+					<td style="text-align:right; padding-right:80px; padding-top:10px;"><b>Rate of Rise Temperature :-  5 ± 0.5°C</td>	
+					</tr>
+					<tr>
+						<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse; margin-top:20px; border:2px solid; border-left:0px solid;">
+						<tr>
+						<td style="height:40px;border:1px solid; border-bottom:2px solid; text-align:center; border-left:0px solid;"><b>Sr. No.</td>
+						<td style="border:1px solid; border-bottom:2px solid; text-align:center;"><b> Starting time for 5°C </td>
+						<td style="border:1px solid; border-bottom:2px solid; text-align:center;"><b> Test Temperature in °C </td>
+						</tr>
+						<tr>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_1"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_1"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_2"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_2"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_3"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_3"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_4"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_4"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_5"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_5"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_6"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_6"] ?></td>
+						</tr>
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_7"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_7"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_8"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_8"] ?></td>
+						</tr> 
+						<tr>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_9"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_9"] ?></td>
+						</tr> 
+						<tr>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_10"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_10"] ?></td>
+						</tr>
+						<tr>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_11"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_11"] ?></td>
+						</tr> 
+						<tr> 
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $cnt++; ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_st_12"] ?></td>
+							<td style="padding:8px; border:1px solid; border-left:0px;text-align: center;"><?php echo $row_select_pipe["sof_tt_12"] ?></td>
+						</tr>
+						</table>
+						</td>
+					</tr>
+					<tr>
+							<td style="font-weight:bold; padding:20px; width:51%">Average of Test Temperature :- &nbsp; &nbsp; <?php echo $row_select_pipe["sof_att"] ?> °C</td>
+							<td style="font-weight:bold; padding:20px;">Rate of Rising Temperature:- &nbsp; &nbsp;
+							<?php echo $row_select_pipe["sof_rrt"] ?> °C</td>
+						</tr>
+						<tr>
+						<td style="font-weight:bold; padding:20px;"> Softening Point:- &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (i) <?php echo $row_select_pipe["sof_0"] ?> °C </td> 
+						<td style="font-weight:bold; padding:20px;">(ii) <?php echo $row_select_pipe["sof_1"] ?> °C</td>
+						</tr>
+						<tr>
+						<td style="font-weight:bold; padding:20px; padding-top:0px;">Softening Point Mean Value:- </td>
+						<td style="font-weight:bold; padding:20px; padding-top:0px;"> <?php echo $row_select_pipe["avg_sof"] ?> °C</td>
+						</tr>
+					</table>
+					</td>
+				</tr>
+						
+	<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border-left:2px solid; border-right:2px solid; border-top:1px solid;padding: 0;border-collapse: collapse;">
+					<tr>
+						<td style="border-right:2px solid; text-align:center; width:60px;"><b>Note*:- </td>
+						<td>
+							<table style="font-size:11px;">
+								<tr>
+									<td><b>The Result shall not be differ from the mean by more than the following.</td>
+								</tr>
+								<tr>
+									<td>
+										<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid; border-bottom:0px solid; margin-left: 25px;">
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center "><b> Softening Point °C </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%; border:2px solid;  text-align:center;"><b> Repeatability &deg;C </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>Reproducibility &deg;C</td>
+
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b> 40 to 60</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b> 1.0 </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b> 5.5 </td>
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>61 to 80</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b> 1.5 </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b> 5.5 </td>
+											</tr>
+											<tr>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>81 to 100</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b> 2.0 </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b> 5.5 </td>
+											</tr>
+											<tr>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>101 to 120</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b> 2.5 </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b> 5.5 </td>
+											</tr>
+											<tr>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center; border-bottom: 0px;"><b>121 to 140</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center; border-bottom: 0px;"><b> 3.0 </td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center; border-bottom: 0px;"><b> 5.5 </td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+
+				
+				 <!-- footer design -->
+
+				 <tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-top: 2px solid; border-left:2px solid;  border-right:2px solid; ">
+							
+								<td style="height: 90px;border: 1px solid;  border-bottom:2px solid;"></td>
+
+							</tr>
+						   
+						</table>
+					</td>
+				</tr>
+				
+				<tr>
+			<td>
+			<!-- footer design -->
+		<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+			<!-- <tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;border-left: 1px solid; width:15%">Remarks :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;" colspan="3"><?php echo $row_select_pipe['sl_2'];?></td>
+			</tr> -->
+			<tr>
+				<td style="font-weight: bold;text-align: left;padding: 5px;width: 15%;border-left: 1px solid;border-top: 1px solid;">Checked By :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+				<td style="font-weight: bold;text-align: center;padding: 5px;width: 12%;border: 1px solid;">Tested By :-</td>
+				<td style="padding: 5px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+			</tr>
+			<tr>
+				<td style="height: 35px;border: 1px solid;border-right: 1px solid; border-bottom:0px; border-top:1px solid;" colspan="4"></td>
+			</tr>
+			
+		</table>
+		</td>
+		</tr>
+            <!--<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 0px solid;border-right: 0px solid;border-bottom: 1px solid; border-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Issue No :-  03</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Issue Date :-  <?php echo date('d/m/Y', strtotime($issue_date)); ?>   </td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Prepared & Issued By</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid; ;width: 20%;">Reviewed & Approved By</td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">Amend No :-  01</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">Amend Date :- <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?></td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">(Quality Manager)</td>
+								<td style="font-weight: bold;text-align: center;padding: 5px;border: 1px solid;">(Chief Executive Officer)</td>
+							</tr>
+							<tr>
+								<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;border-left:1px solid; border-right:1px solid;padding:5px;">Page 1 of 1</td>
+							</tr>
+						
+						</table>
+					</td>
+				</tr>-->
+			</table>
+			</page>
+
+			<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+	
+	
+   <?php } if (($row_select_pipe['avg_duc'] != "" && $row_select_pipe['avg_duc'] != "0" && $row_select_pipe['avg_duc'] != null) || ($row_select_pipe['time_1'] != "" && $row_select_pipe['time_1'] != "0" && $row_select_pipe['time_1'] != null) || ($row_select_pipe['time_2'] != "" && $row_select_pipe['time_2'] != "0" && $row_select_pipe['time_2'] != null)) {  ?> 
+
+
+
+	<!-- NEW REPORT 5 -->
+
+	<page size="A4">
+
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			
+			<?php if (($row_select_pipe['avg_duc'] != "" && $row_select_pipe['avg_duc'] != "0" && $row_select_pipe['avg_duc'] != null)) {  ?> 
+			
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">DUCTILITY TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;width: 12%;">Format No :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Sample ID :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align:right;padding: 2px;border: 0; padding-right:100px;">Testing Date :-</td>
+							<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Material Description :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%;">Test Method :-</td>
+							<td style="padding-left:0px;">As Per IS : 1208 (Part-1) 2023</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<!-- <tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr> -->
+					</table>
+				</td>
+			</tr>
+			<!-- table design -->
+
+			<tr>
+				<td>
+					<table style="font-size:11px; width:100%; border:1px solid; border-bottom:2px solid;">
+						<tr>
+							<td style="width:40%;"><b>Test Temperature :- <?php echo $row_select_pipe["duc_temp"] ?> °C &nbsp; &nbsp; &nbsp; &nbsp;(25.0 ± 0.5°C)</td>
+							<td style="text-align:right;padding-right:50px;" colspan="3"><b>Rate of Pull:- &nbsp; &nbsp; &nbsp; 50 ± 2.5 mm / min</td>
+						</tr>
+						<tr>
+							<td style="padding-top:20px;"><b>Ductility Value:- </td>
+							<td style="padding-top:20px; "><b>(i) <?php echo $row_select_pipe["duc_1"] ?> cm </td>
+							<td style="padding-top:20px; "><b>(ii) <?php echo $row_select_pipe["duc_2"] ?> cm </td>
+							<td style="padding-top:20px; "><b>(iii) <?php echo $row_select_pipe["duc_3"] ?> cm </td>
+
+						</tr>
+						<tr>
+							<td style="padding-top:5px;padding-bottom:20px; width:25%"><b>Ductility Mean Value:- </td>
+							<td style="padding-left:13px; padding-bottom:5px;"><b> <?php echo $row_select_pipe["avg_duc"] ?> cm</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+
+			<tr>
+				<td style="border-right:2px solid;">
+					<table style="font-size:11px; font-family : Calibri; border-left:1px solid;">
+						<tr>
+							<td rowspan="" style="border-right:2px solid; text-align:center; width:15%"><b>Note*:-</td>
+							<td style="width:85%;"><b>The Duplicate Result Should not differ by more than the following.
+
+									<table style="font-size:11px; font-family : Calibri; border:2px solid; width:100%; border-collapse:collapse; margin-left:30px;margin-bottom:15px;margin-top:5px;">
+										<tr>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%; border:2px solid;  text-align:center;"><b>Repeatability</td>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>10 percent of the Mean</td>
+										</tr>
+										<tr>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;">Reproducibility</td>
+											<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;">20 percent of the Mean</td>
+										</tr>
+									</table>
+							</td>
+							</tr>
+					</table>
+				</td>
+			</tr>
+           <?php } if (($row_select_pipe['time_1'] != "" && $row_select_pipe['time_1'] != "0" && $row_select_pipe['time_1'] != null) || ($row_select_pipe['time_2'] != "" && $row_select_pipe['time_2'] != "0" && $row_select_pipe['time_2'] != null)) {  ?> 
+
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 10px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">FLASH & FIRE POINT TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;width: 12%;">Format No :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Sample ID :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align:right;padding: 2px;border: 0; padding-right:100px;">Testing Date :-</td>
+							<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+							<!-- <td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Material Description :-</td> -->
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%;">Test Method :-</td>
+							<td style="padding-left:0px;"> As Per IS: 1209: 2021 (Method A-Pensky Martens Closed Tester)</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<!-- <tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr> -->
+					</table>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td>
+					<table style="font-size:11px; border-bottom:1px solid; width:100%; border-left:1px solid; border-right:1px solid;">
+						<tr>
+							<td style="text-align:left; width:30%" colspan=""><b> Rate of Stirrer:- &nbsp; &nbsp; &nbsp;60 Revolutions/min</td>
+						</tr>
+						<tr>
+							<td style="padding-top:20px;"><b>Flash Point Value:- </td>
+							<td style="padding-top:20px; "><b>(i) <?php echo $row_select_pipe["fla_1"] ?> °C </td>
+							<td style="padding-top:20px; "><b>(ii) <?php echo $row_select_pipe["fla_2"] ?> °C </td>
+						</tr>
+						<tr>
+							<td style="padding-top:5px;padding-bottom:20px; width:25%"><b>Flash Point Mean Value:- </td>
+							<td style="padding-left:13px; padding-bottom:10px;"><b> <?php echo $row_select_pipe["time_1"] ?> °C </td>
+						</tr>
+						<tr>
+							<td><b>Fire Point Value:- </td>
+							<td><b>(i) <?php echo $row_select_pipe["fire_1"] ?> °C </td>
+							<td><b>(ii) <?php echo $row_select_pipe["fire_2"] ?> °C </td>
+						</tr>
+						<tr>
+							<td style="padding-top:5px;padding-bottom:20px; width:25%"><b>Fire Point Mean Value:- </td>
+							<td style="padding-left:13px; padding-bottom:10px;"><b> <?php echo $row_select_pipe["time_2"] ?> °C </td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		<tr>
+			<td>
+				<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+					<tr>
+						<td style="border-right:2px solid; text-align:center; width:5%"><b>Note*:- </td>
+						<td>
+							<table style="font-size:11px;">
+								<tr>
+									<td style="padding-top:10px;"><b>(i) The Bluish Halo that sometimes Surrounds the test flame shall not be Confused with the the True Flash.</td>
+								</tr>
+								<tr>
+									<td style="padding-top:30px;"><b>(ii) The Duplicate Test Result should not be differ by more than the following</td>
+								</tr>
+								<tr>
+									<td>
+										<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid; margin-bottom:15px;">
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b> Flash Point</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%; border:2px solid;  text-align:center;"><b>Repeatability</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>Reproducibility</td>
+
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;">
+													<b>Below 104°C
+												</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b>2°C</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;"><b>3.5°C</td>
+											</tr>
+											<tr>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center;">
+													<b>Above 104°C
+												</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center"><b>5.5°C</td>
+												<td style="font-weight: bold;text-align: left;padding: 2px;width: 50%;border:2px solid;  text-align:center; "><b>8.5°C</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+							<tr><td style=" height:90px;border-top:2px solid; width:100%;" colspan="2"></td></tr>
+						</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+		   <?php } ?>
+
+
+
+		<!-- FOOTR DESIGN  -->
+
+		</table>
+		</td>
+		</tr>
+		<tr>
+			<td>
+				<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 2px solid; border-top: 2px solid;">
+					<tr>
+						<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue No :- 01</td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue Date :- <?php echo date('d/m/Y', strtotime($issue_date)); ?></td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 23%;border-right:1px solid; border-right:1px solid;">Prepared & Issued By</td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 23%;">Reviewed & Approved By</td>
+					</tr>
+					<tr>
+						<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 1px solid; border-right:1px solid; border-bottom:2px solid;">Amend No :- 01</td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid; border-right:1px solid; border-bottom:2px solid;">Amend Date :- <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?></td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid; border-right:1px solid; border-right:1px solid; border-bottom:2px solid;">(Quality Manager)</td>
+						<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid; border-bottom:2px solid;">(Chief Executive Officer)</td>
+					</tr>
+					<tr>
+						<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;">Page 5 of 6</td>
+					</tr>
+
+				</table>
+			</td>
+		</tr>
+		</table>
+	</page>
+	
+	 
+
+	
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+
+	<!-- New Report 6 -->
+
+	<page size="A4">
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align: right;padding: 2px;border: 0; padding-right:100px;"></td>
+							<td style="padding: 2px;text-align: center;"><b>Testing Date :-</b> <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 0px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">Loss on Heating </td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 12%;">Test Method :-</td>
+							<td><b>IRC-SP:112:2017</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<!-- table design -->
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">Sr. <br>No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Mass of Container + Material  (A), g</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Mass of Container + Material (after Heating)  (B), g</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid; border-bottom:1px solid;">Loss On Heating,<br>2(A – B), %</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;  border-bottom:1px solid;">AVERAGE</td>
+							
+						</tr>
+						<tr>
+
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php }if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+                         <?php }  ?> 
+
+					</table>
+				</td>
+			</tr>
+			<!-- footer design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+						<tr>
+							<td style="padding:8px; border-left:1px solid; border-bottom:2px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-left: 1px solid; border-top:1px solid;width:15%;">Remarks :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;  border-top:2px solid;" colspan="3"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 1px solid;border-top: 1px solid;width:15%;">Checked By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid; "></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;width: 8%;border: 1px solid;width:15%;">Tested By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="height: 45px;border: 1px solid;border-right: 1px solid; " colspan="4"></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			<!--<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;border-bottom: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue No :- 01</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;  border-right:1px solid;">Issue Date :- <?php echo date('d/m/Y', strtotime($issue_date)); ?></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;  border-right:1px solid;">Prepared & Issued By</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;">Reviewed & Approved By</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 1px solid;  border-right:1px solid;">Amend No :- 01</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;  border-right:1px solid;">Amend Date :- <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;  border-right:1px solid;">(Quality Manager)</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;">(Chief Executive Officer)</td>
+						</tr>
+						<tr>
+							<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;">Page 6 of 6</td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>-->
+		</table>
+	</page>
+	
+	
+	
+	
+	
+	<?php } if (($row_select_pipe['msf_sam_type'] != "" && $row_select_pipe['msf_sam_type'] != "0" && $row_select_pipe['msf_sam_type'] != null) || ($row_select_pipe['bit_prcap'] != "" && $row_select_pipe['bit_prcap'] != "0" && $row_select_pipe['bit_prcap'] != null) || ($row_select_pipe['bit_prcon'] != "" && $row_select_pipe['bit_prcon'] != "0" && $row_select_pipe['bit_prcon'] != null) || ($row_select_pipe['bit_dia_1'] != "" && $row_select_pipe['bit_dia_1'] != "0" && $row_select_pipe['bit_dia_1'] != null) || ($row_select_pipe['bit_thick_1'] != "" && $row_select_pipe['bit_thick_1'] != "0" && $row_select_pipe['bit_thick_1'] != null) || ($row_select_pipe['bit_cf_1'] != "" && $row_select_pipe['bit_cf_1'] != "0" && $row_select_pipe['bit_cf_1'] != null) || ($row_select_pipe['bit_div_1'] != "" && $row_select_pipe['bit_div_1'] != "0" && $row_select_pipe['bit_div_1'] != null) || ($row_select_pipe['bit_N_1'] != "" && $row_select_pipe['bit_N_1'] != "0" && $row_select_pipe['bit_N_1'] != null) || ($row_select_pipe['bit_csv_1'] != "" && $row_select_pipe['bit_csv_1'] != "0" && $row_select_pipe['bit_csv_1'] != null) || ($row_select_pipe['bit_mfv_1'] != "" && $row_select_pipe['bit_mfv_1'] != "0" && $row_select_pipe['bit_mfv_1'] != null) || ($row_select_pipe['bit_dia_2'] != "" && $row_select_pipe['bit_dia_2'] != "0" && $row_select_pipe['bit_dia_2'] != null) || ($row_select_pipe['bit_thick_2'] != "" && $row_select_pipe['bit_thick_2'] != "0" && $row_select_pipe['bit_thick_2'] != null) || ($row_select_pipe['bit_cf_2'] != "" && $row_select_pipe['bit_cf_2'] != "0" && $row_select_pipe['bit_cf_2'] != null) || ($row_select_pipe['bit_div_2'] != "" && $row_select_pipe['bit_div_2'] != "0" && $row_select_pipe['bit_div_2'] != null) || ($row_select_pipe['bit_N_2'] != "" && $row_select_pipe['bit_N_2'] != "0" && $row_select_pipe['bit_N_2'] != null) || ($row_select_pipe['bit_csv_2'] != "" && $row_select_pipe['bit_csv_2'] != "0" && $row_select_pipe['bit_csv_2'] != null) || ($row_select_pipe['bit_mfv_2'] != "" && $row_select_pipe['bit_mfv_2'] != "0" && $row_select_pipe['bit_mfv_2'] != null) || ($row_select_pipe['bit_dia_3'] != "" && $row_select_pipe['bit_dia_3'] != "0" && $row_select_pipe['bit_dia_3'] != null) || ($row_select_pipe['bit_thick_3'] != "" && $row_select_pipe['bit_thick_3'] != "0" && $row_select_pipe['bit_thick_3'] != null) || ($row_select_pipe['bit_cf_3'] != "" && $row_select_pipe['bit_cf_3'] != "0" && $row_select_pipe['bit_cf_3'] != null) || ($row_select_pipe['bit_div_3'] != "" && $row_select_pipe['bit_div_3'] != "0" && $row_select_pipe['bit_div_3'] != null) || ($row_select_pipe['bit_N_3'] != "" && $row_select_pipe['bit_N_3'] != "0" && $row_select_pipe['bit_N_3'] != null) || ($row_select_pipe['bit_csv_3'] != "" && $row_select_pipe['bit_csv_3'] != "0" && $row_select_pipe['bit_csv_3'] != null) || ($row_select_pipe['bit_mfv_3'] != "" && $row_select_pipe['bit_mfv_3'] != "0" && $row_select_pipe['bit_mfv_3'] != null) || ($row_select_pipe['avg_msv'] != "" && $row_select_pipe['avg_msv'] != "0" && $row_select_pipe['avg_msv'] != null) || ($row_select_pipe['avg_mfv'] != "" && $row_select_pipe['avg_mfv'] != "0" && $row_select_pipe['avg_mfv'] != null)) {  ?> 
+	
+	<div class="pagebreak"></div>
+	<br>
+	<br><br>	
+
+	
+	<!-- NEW REPORT 2 -->
+		
+	<page size="A4">
+			
+			<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+				<!-- header design -->
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+							<tr>
+								<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">MARSHALL STABILITY AND FLOW VALUE TEST</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding-bottom: 5px; font-size: 12px;">Format No :- FMT-OBS-17</td>
+						</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Sample ID :-&nbsp;&nbsp; <?php echo $sample_id; ?></td>
+								<td style="padding: 2px;"></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Material Description :- <?php echo $mt_name; ?></td>
+								<td style="padding: 2px;"></td>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Testing Date :-</td>
+								<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Bitumen Grade :-&nbsp;&nbsp; <?php echo $bitumin_grade; ?></td>
+								<td style="padding: 2px;"></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 15%;">Test Method :-</td>
+								<td style="padding: 2px;">As Per ASTM D : 6927 : 2022</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<!-- <tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+							</tr> -->
+						</table>
+					</td>
+				</tr>
+				<!-- table design -->
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+				
+                <tr style="height: 24px;">
+				<td style="padding: 3px;border: 1px solid;text-align: left;width: 5%;">Type of Sample</td>
+				<td style="padding:5px 5px;border: 1px solid;text-align: left;width: 10%;" colspan="5" >
+					<table align="center" width="100%" class="test" style="font-size: 12px;">
+						<tr>
+							<td style="width:33%;text-align:left;">
+								<input type="checkbox" id="scales_1" name="scales_1" <?php echo ($row_select_pipe["msf_sam_type"] == "lab_mix") ? "checked" : ""; ?> />
+								<label for="scales_1" style="padding-left:3px;">Laboratory Mixed Sample</label>
+							</td>
+
+							<td style="width:33%;text-align:center;">
+								<input type="checkbox" id="scales_2" name="scales_2" <?php echo ($row_select_pipe["msf_sam_type"] == "plant_mix") ? "checked" : ""; ?> />
+								<label for="scales_2" style="padding-left:3px;">Plant Mixed Sample</label>
+							</td>
+
+							<td style="width:33%;text-align:right;">
+								<input type="checkbox" id="scales_3" name="scales_3" <?php echo ($row_select_pipe["msf_sam_type"] == "pav_core_speci") ? "checked" : ""; ?> />
+								<label for="scales_3" style="padding-left:3px;">Pavement Core Specimen</label>
+							</td>
+
+						</tr>
+					</table>
+				</td>
+			</tr>
+				<tr>
+				<td style="font-weight:bold; padding-top:12px;" colspan="2">Proving Ring Capacity :- &nbsp; &nbsp; <span><?php echo $row_select_pipe['bit_prcap']; ?> </span> KN </td>
+				<td style="font-weight:bold; padding-top:12px;"colspan="3">Proving Ring Constant :- &nbsp; &nbsp; <span> <?php echo $row_select_pipe['bit_prcon']; ?> </span> N / Div </td>
+				<td style="font-weight:bold; padding-top:10px;"> </td>
+			</tr>
+				<tr>
+				<td style="font-weight:bold; padding-top:10px; padding-bottom:30px;"colspan="2"> Rate of Strain:- &nbsp; &nbsp; 50 ± 5 mm / min </td>
+				</tr>
+		</table>
+
+				<tr>
+					<td>
+						<?php $cnt=1; ?>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border:2px solid; margin-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Sr. No.</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Sample ID</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" colspan="2">Specimen Dimensions</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Correctionbr Factor</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" colspan="2" rowspan="2">Marshall Stability Value</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="2">Corrected Stability Value</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="2">Marshall Flow Value</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="">Diameter</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="">Thickness</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;  width:13%;" colspan="2"rowspan="">Kg</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">Kg</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">1</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_div_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_1']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">2</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_N_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_2']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">3</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_div_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_3']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid; width:26%" colspan="2">Mean Marshall Stability Value :-</td>
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid;" colspan="2"><?php echo $row_select_pipe['avg_msv']; ?></td>
+							<!-- <td style="font-weight: bold;text-align: center;padding:5px;"></td> -->
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid;width:26%" colspan="">Mean Marshall Flow Value :-</td>
+							<td style="font-weight: bold;text-align: center;padding:5px; border:2px solid;"><?php echo $row_select_pipe['avg_mfv']; ?></td>	
+							</tr>	
+							<tr>
+								<td style="padding:8px; border-top:0px solid;" colspan="8"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr><td>
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border:2px solid;border-top:0px;">
+				<tr>
+				<td style="font-size:13px; font-weight: bold;text-align: center; border:2px solid; border-top:0px;">Stability Correlation Factors</td>
+				</tr>
+				<tr>
+				<td style="font-size:13px; font-weight: bold;text-align: center; border:2px solid; border-top:0px;">Graph<br>
+					<img src="../../images/lab_ss.jpg" alt="">
+				  <br>Reference - As Per Table No.1 - ASTM -d6927- 22	
+			     </td>
+				</tr>
+
+			</table>
+				</td></tr>
+			
+				
+				 <!-- footer design -->
+				 <tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 2px solid; border-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 2px solid;border-top: 1px solid;">Checked By :-</td>
+								<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;width: 12%;border: 1px solid;">Tested By :-</td>
+								<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="height: 80px;border: 2px solid;border-right: 1px solid;" colspan="4"></td>
+							</tr>
+						   
+						</table>
+					</td>
+				</tr>
+				<!--<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;border-bottom: 2px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue No :-  01</td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue Date :-  <?php echo date('d/m/Y', strtotime($issue_date)); ?></td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 23%;border-right:1px solid;">Prepared & Issued By</td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 23%;">Reviewed & Approved By</td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 1px solid; border-right:1px solid;">Amend No :-     01</td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid; border-right:1px solid;">Amend Date :-   <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?>  </td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid; border-right:1px solid;">(Quality Manager)</td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;">(Chief Executive Officer)</td>
+							</tr>
+							<tr>
+								<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;">Page 2 of 6</td>
+							</tr>
+						   
+						</table>
+					</td>
+				</tr>-->
+			</table>
+			</page>
+
+
+
+	
+	
+	<?php } if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null) || ($row_select_pipe['bit_bc_2'] != "" && $row_select_pipe['bit_bc_2'] != "0" && $row_select_pipe['bit_bc_2'] != null) || ($row_select_pipe['bit_bc_3'] != "" && $row_select_pipe['bit_bc_3'] != "0" && $row_select_pipe['bit_bc_3'] != null) || ($row_select_pipe['bit_bc_4'] != "" && $row_select_pipe['bit_bc_4'] != "0" && $row_select_pipe['bit_bc_4'] != null) || ($row_select_pipe['bit_bc_5'] != "" && $row_select_pipe['bit_bc_5'] != "0" && $row_select_pipe['bit_bc_5'] != null)) {  ?> 
+
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+
+	<!-- New Report 6 -->
+
+	<page size="A4">
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">BITUMEN CONTENT TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align: right;padding: 2px;border: 0; padding-right:100px;"></td>
+							<td style="padding: 2px;text-align: center;"><b>Testing Date :-</b> <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 12%;">Test Method :-</td>
+							<td><b>IRC-SP:112:2017</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<!-- table design -->
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;" rowspan="4">Sr. <br>No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Weight of Sample Taken</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Weight of the Sample after extraction</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid; border-bottom:1px solid;" rowspan="2">Weight of Fine Material, recovered from the extract </td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;  border-bottom:1px solid;" rowspan="2">Dry weight of Filter Ring</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Final weight of Filter Ring with finer materia</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2" > Increase in weight of the filter ring</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Binder Content</td>
+
+						</tr>
+						<tr>
+
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 0px solid;" rowspan="1">W<sub>1</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid; border-top:0px solid;">W<sub>2</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">W<sub>3</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">F1</td>
+							<td style="font-weight:bold;text-align: center;padding: 2px;border: 1px solid; border-left:1px solid;">F2</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">W4 = (F2-F1)</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;"><u>W1-(W2+W3)+W4</u> <br> W1</td>
+
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">%</td>
+
+						</tr>
+						
+						 <?php if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" ><?php echo $row_select_pipe["bit_w4_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" ><?php echo $row_select_pipe["bit_w5_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_1"] ?></td>
+
+						</tr>
+						
+						 <?php } if (($row_select_pipe['bit_bc_2'] != "" && $row_select_pipe['bit_bc_2'] != "0" && $row_select_pipe['bit_bc_2'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"> <?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_2"] ?></td>
+                        </tr>
+						
+						 <?php } if (($row_select_pipe['bit_bc_3'] != "" && $row_select_pipe['bit_bc_3'] != "0" && $row_select_pipe['bit_bc_3'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_3"] ?></td>
+
+						</tr>
+						
+						 <?php } if (($row_select_pipe['bit_bc_4'] != "" && $row_select_pipe['bit_bc_4'] != "0" && $row_select_pipe['bit_bc_4'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_4"] ?></td>
+                        </tr>
+						
+						 <?php } if (($row_select_pipe['bit_bc_5'] != "" && $row_select_pipe['bit_bc_5'] != "0" && $row_select_pipe['bit_bc_5'] != null)) {  ?> 
+						 
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_5"] ?></td>
+                        </tr>
+                         <?php }  ?> 
+
+					</table>
+				</td>
+			</tr>
+			<!-- footer design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+						<tr>
+							<td style="padding:8px; border-left:1px solid; border-bottom:2px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 1px solid;border-top: 1px solid;width:15%;">Checked By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid; "></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;width: 8%;border: 1px solid;width:15%;">Tested By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="height: 45px;border: 1px solid;border-right: 1px solid; " colspan="4"></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;border-bottom: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 20%; border-right:1px solid;">Issue No :- 01</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;  border-right:1px solid;">Issue Date :- <?php echo date('d/m/Y', strtotime($issue_date)); ?></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;  border-right:1px solid;">Prepared & Issued By</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 20%;">Reviewed & Approved By</td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 1px solid;  border-right:1px solid;">Amend No :- 01</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;  border-right:1px solid;">Amend Date :- <?php echo date('d-m-Y', strtotime($row_select_pipe["amend_date"])); ?></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;  border-right:1px solid;">(Quality Manager)</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border-top: 1px solid;">(Chief Executive Officer)</td>
+						</tr>
+						<tr>
+							<td colspan="5" style="font-weight: bold;border-top: 1px solid;text-align: right;">Page 6 of 6</td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+		</table>
+	</page>
+	 <?php } ?>
+
+	
+
+
+	<!-- old design -->
+
+	<!-- <page size="A4">
+		
+	<?php if ($branch_name == "Nadiad") { ?>
+		<table align="center" width="94%" class="test" height="8%" style="border: 1px solid black;">
+			<tr>
+				<td rowspan="2" style="height:100px;width:120px;border: 1px solid black;"><center><img src="../images/nadiad.png" style="height:150%;width:70%;"></center></td>
+				<td colspan="2" style="font-size:14px;border: 1px solid black;">
+					<center><b>Laboratory Quality System Format Om Geo Tech Services, Nadiad</b></center>
+				</td>
+			</tr>
+			
+			<tr>
+				<td style="font-size:11px;border: 1px solid black;">
+					<center><b>FMT-OBS-008</b></center>
+				</td>
+				<td style="font-size:12px;border: 1px solid black;text-transform:uppercase;">
+					<center><b>OBSERVATION OF CONCRETE <?php echo $detail_sample; ?></b></center>
+				</td>
+			</tr>
+		</table>
+		<?php } else { ?>
+		<table align="center" width="94%" class="test" height="8%" style="border: 1px solid black;">
+			<tr>
+				<td rowspan="2" style="height:70px;width:120px;border: 1px solid black;"><center><img src="../images/manglam.jpg" style="height:95%;width:90%;"></center></td>
+				<td colspan="2" style="font-size:14px;border: 1px solid black;text-transform:capitalize;">
+					<center><b>Laboratory Quality System Format Manglam Consultancy Services, <Span style="text-transform:capitalize;"><?php echo $branch_name; ?></span></b></center>
+				</td>
+			<tr>
+				<td style="font-size:11px;border: 1px solid black;">
+					<center><b>FMT-OBS-008</b></center>
+				</td>
+				<td style="font-size:12px;border: 1px solid black;text-transform:uppercase;">
+					<center><b>OBSERVATION OF CONCRETE <?php echo $detail_sample; ?></b></center>
+				</td>
+			</tr>
+		</table>
+		<?php } ?>	 -->
+
+
+
+
+	<!--input type="checkbox" style="width:30px; height:30px" id="header_hide_show" onclick="header()"-->
+	<!-- <table align="center" width="92%" cellspacing="0" cellpadding="0" style="font-size:11px;font-family : Calibri;margin-left:35px;margin-top:15px;"> -->
+	<!-- <tr>
+				<td style="text-align:center;font-size:12px; ">
+
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:12px;font-family : Calibri;border-bottom:1px solid;">
+
+						<tr style="">
+
+							<td style="width:25%;font-weight:bold;padding-bottom:2px ;padding-top:2px ; ">&nbsp;&nbsp; DOC : GOMAEC/L/OS/001</td>
+							<td style="width:25%;text-align:center;font-weight:bold; ">REV : 2</td>
+							<td style="width:25%; font-weight:bold;">RD :- 09/01/2023</td>
+							<td style="width:25%;font-weight:bold;">Page : 1</td>
+						</tr>
+
+					</table>
+
+				</td>
+			</tr>
+
+			<tr>
+				<td style="text-align:center;font-size:11px; ">
+
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:12px;font-family : Calibri;border-bottom:1px solid;">
+
+						<tr style="">
+
+							<td style="width:60%;font-weight:bold;padding-bottom:2px ;padding-top:2px ;  ">&nbsp;&nbsp; Prepared by : Technical Manager</td>
+							<td style="width:40%;text-align:left;font-weight:bold; ">Approved by : Quality Manager</td>
+						</tr>
+
+					</table>
+
+				</td>
+			</tr>
+
+			<tr>
+				<td style="text-align:center;font-size:13px; ">
+
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:13px;font-family : Calibri;border-bottom:1px solid;">
+
+						<tr style="">
+
+							<td style="width:75%;padding-left:200px; text-align:center;font-weight:bold;padding-bottom:2px ;padding-top:4px ; ">Goma Engineering and Consultancy, Ahmedabad,</td>
+							<td style="width:25%;text-align:center;font-weight:bold; " rowspan=5><img src="../images/logo.jpg" style="height:40px;width:60px;background-blend-mode:multiply;"><br><span style="text-align:center">A Gov. Approved<br> Laboratory</span></td>
+						</tr>
+						<tr style="">
+							<td style="width:75%; text-align:center;padding-left:200px;padding-bottom:2px ;padding-top:2px ; ">"Goma House" F-88, Tulsi Estate,Opp. Bhagyoday Hotel,</td>
+						</tr>
+						<tr style="">
+							<td style="width:75%; text-align:center;padding-left:200px;padding-bottom:2px ;padding-top:2px ; ">Sarkhej - Bawla Highway, Changodar - 382 213,</td>
+						</tr>
+						<tr style="">
+							<td style="width:75%; text-align:center;padding-left:200px;padding-bottom:2px ;padding-top:2px ; ">Ahmedabad. Ph.No. :- 8238468031/7600004285</td>
+						</tr>
+						<tr style="">
+							<td style="width:75%;padding-bottom:8px;padding-top:0px; text-align:center;padding-left:200px; ">Email: gomaconsultancy@gmail.com</td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+
+			<tr>
+				<td style="text-align:center;font-size:16px; ">
+
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:16px;font-family : Calibri;border-bottom:1px solid;">
+
+						<tr style="">
+
+							<td style="width:100%; text-align:center;font-weight:bold; "> OBSERVATION AND CALCULAITON SHEET FOR TEST ON BITUMEN</td>
+						</tr>
+
+					</table><br>
+
+				</td>
+			</tr> 
+
+
+			<?php $cnt = 1; ?>
+			<tr>
+				<td style="text-align:center;font-size:11px; ">
+
+					<table align="center" width="100%" cellspacing="0" cellpadding="0" style="font-size:11px;font-family : Calibri;border-bottom:1px solid;border-top:1px solid;">
+
+						<tr style="">
+
+							<td style="width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Job No.</td>
+							<td style="border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo $row_select_pipe['lab_no']; ?></td>
+						</tr>
+
+						<tr style="">
+
+							<td style="border-top:1px solid;width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-top:1px solid;border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Laboratory No</td>
+							<td style="border-top:1px solid;border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo $job_no; ?></td>
+						</tr>
+						<tr style="">
+
+							<td style="border-top:1px solid;width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-top:1px solid;border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Date of receipt of sample</td>
+							<td style="border-top:1px solid;border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo date('d/m/Y', strtotime($rec_sample_date)); ?></td>
+						</tr>
+						<tr style="">
+
+							<td style="border-top:1px solid;width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-top:1px solid;border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Date of starting test</td>
+							<td style="border-top:1px solid;border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo date('d/m/Y', strtotime($start_date)); ?></td>
+						</tr>
+						<tr style="">
+
+							<td style="border-top:1px solid;width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-top:1px solid;border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Probable date of completion</td>
+							<td style="border-top:1px solid;border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr style="">
+
+							<td style="border-top:1px solid;width:10%;font-weight:bold;padding-bottom:2px;padding-top:2px;text-align:center; "><?php echo $cnt++; ?></td>
+							<td style="border-top:1px solid;border-left:1px solid;width:40%;text-align:left; ">&nbsp;&nbsp; Grade of Bitumen</td>
+							<td style="border-top:1px solid;border-left:1px solid;width:50%; ">&nbsp;&nbsp; <?php echo $row_select_pipe['bitumin_grade']; ?></td>
+						</tr>
+
+					</table><br>
+
+				</td>
+			</tr>
+
+
+		
+
+	</page> -->
+
+</body>
+
+</html>
+
+<script type="text/javascript">
+
+
+</script>
+
+
+
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+	
+	
+   <?php //} if (($row_select_pipe['avg_duc'] != "" && $row_select_pipe['avg_duc'] != "0" && $row_select_pipe['avg_duc'] != null) || ($row_select_pipe['time_1'] != "" && $row_select_pipe['time_1'] != "0" && $row_select_pipe['time_1'] != null) || ($row_select_pipe['time_2'] != "" && $row_select_pipe['time_2'] != "0" && $row_select_pipe['time_2'] != null)) {  ?> 
+
+
+
+	<!-- NEW REPORT 5 -->
+
+	
+
+	
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+
+	<!-- New Report 6 -->
+
+	<page size="A4">
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align: right;padding: 2px;border: 0; padding-right:100px;"></td>
+							<td style="padding: 2px;text-align: center;"><b>Testing Date :-</b> <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 0px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">Loss on Heating </td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 12%;">Test Method :-</td>
+							<td><b>IRC-SP:112:2017</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<!-- table design -->
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">Sr. <br>No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Mass of Container + Material  (A), g</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" >Mass of Container + Material (after Heating)  (B), g</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid; border-bottom:1px solid;">Loss On Heating,<br>2(A – B), %</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;  border-bottom:1px solid;">AVERAGE</td>
+							
+						</tr>
+						<tr>
+
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"rowspan="2"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							
+						</tr>
+						<?php //}if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							
+						</tr>
+						
+                         <?php //}  ?> 
+
+					</table>
+				</td>
+			</tr>
+			<!-- footer design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+						<tr>
+							<td style="padding:8px; border-left:1px solid; border-bottom:2px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 1px solid;border-top: 1px solid;width:15%;">Checked By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid; "></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;width: 8%;border: 1px solid;width:15%;">Tested By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="height: 45px;border: 1px solid;border-right: 1px solid; " colspan="4"></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			
+		</table>
+	</page>
+	
+	
+	
+	
+	
+	<?php //} if (($row_select_pipe['msf_sam_type'] != "" && $row_select_pipe['msf_sam_type'] != "0" && $row_select_pipe['msf_sam_type'] != null) || ($row_select_pipe['bit_prcap'] != "" && $row_select_pipe['bit_prcap'] != "0" && $row_select_pipe['bit_prcap'] != null) || ($row_select_pipe['bit_prcon'] != "" && $row_select_pipe['bit_prcon'] != "0" && $row_select_pipe['bit_prcon'] != null) || ($row_select_pipe['bit_dia_1'] != "" && $row_select_pipe['bit_dia_1'] != "0" && $row_select_pipe['bit_dia_1'] != null) || ($row_select_pipe['bit_thick_1'] != "" && $row_select_pipe['bit_thick_1'] != "0" && $row_select_pipe['bit_thick_1'] != null) || ($row_select_pipe['bit_cf_1'] != "" && $row_select_pipe['bit_cf_1'] != "0" && $row_select_pipe['bit_cf_1'] != null) || ($row_select_pipe['bit_div_1'] != "" && $row_select_pipe['bit_div_1'] != "0" && $row_select_pipe['bit_div_1'] != null) || ($row_select_pipe['bit_N_1'] != "" && $row_select_pipe['bit_N_1'] != "0" && $row_select_pipe['bit_N_1'] != null) || ($row_select_pipe['bit_csv_1'] != "" && $row_select_pipe['bit_csv_1'] != "0" && $row_select_pipe['bit_csv_1'] != null) || ($row_select_pipe['bit_mfv_1'] != "" && $row_select_pipe['bit_mfv_1'] != "0" && $row_select_pipe['bit_mfv_1'] != null) || ($row_select_pipe['bit_dia_2'] != "" && $row_select_pipe['bit_dia_2'] != "0" && $row_select_pipe['bit_dia_2'] != null) || ($row_select_pipe['bit_thick_2'] != "" && $row_select_pipe['bit_thick_2'] != "0" && $row_select_pipe['bit_thick_2'] != null) || ($row_select_pipe['bit_cf_2'] != "" && $row_select_pipe['bit_cf_2'] != "0" && $row_select_pipe['bit_cf_2'] != null) || ($row_select_pipe['bit_div_2'] != "" && $row_select_pipe['bit_div_2'] != "0" && $row_select_pipe['bit_div_2'] != null) || ($row_select_pipe['bit_N_2'] != "" && $row_select_pipe['bit_N_2'] != "0" && $row_select_pipe['bit_N_2'] != null) || ($row_select_pipe['bit_csv_2'] != "" && $row_select_pipe['bit_csv_2'] != "0" && $row_select_pipe['bit_csv_2'] != null) || ($row_select_pipe['bit_mfv_2'] != "" && $row_select_pipe['bit_mfv_2'] != "0" && $row_select_pipe['bit_mfv_2'] != null) || ($row_select_pipe['bit_dia_3'] != "" && $row_select_pipe['bit_dia_3'] != "0" && $row_select_pipe['bit_dia_3'] != null) || ($row_select_pipe['bit_thick_3'] != "" && $row_select_pipe['bit_thick_3'] != "0" && $row_select_pipe['bit_thick_3'] != null) || ($row_select_pipe['bit_cf_3'] != "" && $row_select_pipe['bit_cf_3'] != "0" && $row_select_pipe['bit_cf_3'] != null) || ($row_select_pipe['bit_div_3'] != "" && $row_select_pipe['bit_div_3'] != "0" && $row_select_pipe['bit_div_3'] != null) || ($row_select_pipe['bit_N_3'] != "" && $row_select_pipe['bit_N_3'] != "0" && $row_select_pipe['bit_N_3'] != null) || ($row_select_pipe['bit_csv_3'] != "" && $row_select_pipe['bit_csv_3'] != "0" && $row_select_pipe['bit_csv_3'] != null) || ($row_select_pipe['bit_mfv_3'] != "" && $row_select_pipe['bit_mfv_3'] != "0" && $row_select_pipe['bit_mfv_3'] != null) || ($row_select_pipe['avg_msv'] != "" && $row_select_pipe['avg_msv'] != "0" && $row_select_pipe['avg_msv'] != null) || ($row_select_pipe['avg_mfv'] != "" && $row_select_pipe['avg_mfv'] != "0" && $row_select_pipe['avg_mfv'] != null)) {  ?> 
+	
+	<div class="pagebreak"></div>
+	<br>
+	<br><br>	
+
+	
+	<!-- NEW REPORT 2 -->
+		
+	<page size="A4">
+			
+			<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+				<!-- header design -->
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+							<tr>
+								<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">MARSHALL STABILITY AND FLOW VALUE TEST</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding-bottom: 5px; font-size: 12px;">Format No :- FMT-OBS-17</td>
+						</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Sample ID :-&nbsp;&nbsp; <?php echo $sample_id; ?></td>
+								<td style="padding: 2px;"></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding-bottom: 5px;border: 0;">Material Description :- <?php echo $mt_name; ?></td>
+								<td style="padding: 2px;"></td>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Testing Date :-</td>
+								<td style="padding: 2px;"><?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+							</tr>
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border: 0;">Bitumen Grade :-&nbsp;&nbsp; <?php echo $bitumin_grade; ?></td>
+								<td style="padding: 2px;"></td>
+								<td></td>
+								<td></td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 15%;">Test Method :-</td>
+								<td style="padding: 2px;">As Per ASTM D : 6927 : 2022</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<tr>
+								<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+							</tr>
+							<tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+							</tr>
+							<!-- <tr>
+								<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+							</tr> -->
+						</table>
+					</td>
+				</tr>
+				<!-- table design -->
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 2px solid;border-right: 2px solid;">
+				
+                <tr style="height: 24px;">
+				<td style="padding: 3px;border: 1px solid;text-align: left;width: 5%;">Type of Sample</td>
+				<td style="padding:5px 5px;border: 1px solid;text-align: left;width: 10%;" colspan="5" >
+					<table align="center" width="100%" class="test" style="font-size: 12px;">
+						<tr>
+							<td style="width:33%;text-align:left;">
+								<input type="checkbox" id="scales_1" name="scales_1" <?php echo ($row_select_pipe["msf_sam_type"] == "lab_mix") ? "checked" : ""; ?> />
+								<label for="scales_1" style="padding-left:3px;">Laboratory Mixed Sample</label>
+							</td>
+
+							<td style="width:33%;text-align:center;">
+								<input type="checkbox" id="scales_2" name="scales_2" <?php echo ($row_select_pipe["msf_sam_type"] == "plant_mix") ? "checked" : ""; ?> />
+								<label for="scales_2" style="padding-left:3px;">Plant Mixed Sample</label>
+							</td>
+
+							<td style="width:33%;text-align:right;">
+								<input type="checkbox" id="scales_3" name="scales_3" <?php echo ($row_select_pipe["msf_sam_type"] == "pav_core_speci") ? "checked" : ""; ?> />
+								<label for="scales_3" style="padding-left:3px;">Pavement Core Specimen</label>
+							</td>
+
+						</tr>
+					</table>
+				</td>
+			</tr>
+				<tr>
+				<td style="font-weight:bold; padding-top:12px;" colspan="2">Proving Ring Capacity :- &nbsp; &nbsp; <span><?php echo $row_select_pipe['bit_prcap']; ?> </span> KN </td>
+				<td style="font-weight:bold; padding-top:12px;"colspan="3">Proving Ring Constant :- &nbsp; &nbsp; <span> <?php echo $row_select_pipe['bit_prcon']; ?> </span> N / Div </td>
+				<td style="font-weight:bold; padding-top:10px;"> </td>
+			</tr>
+				<tr>
+				<td style="font-weight:bold; padding-top:10px; padding-bottom:30px;"colspan="2"> Rate of Strain:- &nbsp; &nbsp; 50 ± 5 mm / min </td>
+				</tr>
+		</table>
+
+				<tr>
+					<td>
+						<?php $cnt=1; ?>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border:2px solid; margin-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Sr. No.</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Sample ID</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" colspan="2">Specimen Dimensions</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="3">Correctionbr Factor</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" colspan="2" rowspan="2">Marshall Stability Value</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="2">Corrected Stability Value</td>
+								<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="2">Marshall Flow Value</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="">Diameter</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: px solid;" rowspan="">Thickness</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;  width:13%;" colspan="2"rowspan="">Kg</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">Kg</td>
+							<td style="font-weight: bold;text-align: center;padding: px;border: 1px solid;border-bottom: 2px solid;" rowspan="">mm</td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">1</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_div_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_1']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_1']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">2</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_N_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_2']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_2']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;">3</td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_dia_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_thick_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_cf_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"colspan="2"><?php echo $row_select_pipe['bit_div_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_csv_3']; ?></td>
+							<td style="font-weight: bold;text-align: center;border: 1px solid;padding:5px;"><?php echo $row_select_pipe['bit_mfv_3']; ?></td>
+							</tr>
+							<tr>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;"></td>
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid; width:26%" colspan="2">Mean Marshall Stability Value :-</td>
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid;" colspan="2"><?php echo $row_select_pipe['avg_msv']; ?></td>
+							<!-- <td style="font-weight: bold;text-align: center;padding:5px;"></td> -->
+							<td style="font-weight: bold;text-align: center;padding:5px;border: 2px solid;width:26%" colspan="">Mean Marshall Flow Value :-</td>
+							<td style="font-weight: bold;text-align: center;padding:5px; border:2px solid;"><?php echo $row_select_pipe['avg_mfv']; ?></td>	
+							</tr>	
+							<tr>
+								<td style="padding:8px; border-top:0px solid;" colspan="8"></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr><td>
+				<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border:2px solid;border-top:0px;">
+				<tr>
+				<td style="font-size:13px; font-weight: bold;text-align: center; border:2px solid; border-top:0px;">Stability Correlation Factors</td>
+				</tr>
+				<tr>
+				<td style="font-size:13px; font-weight: bold;text-align: center; border:2px solid; border-top:0px;">Graph<br>
+					<img src="../../images/lab_ss.jpg" alt="">
+				  <br>Reference - As Per Table No.1 - ASTM -d6927- 22	
+			     </td>
+				</tr>
+
+			</table>
+				</td></tr>
+			
+				
+				 <!-- footer design -->
+				 <tr>
+					<td>
+						<table align="center" width="100%"  style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 2px solid; border-top:0px;">
+							<tr>
+								<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 2px solid;border-top: 1px solid;">Checked By :-</td>
+								<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+								<td style="font-weight: bold;text-align: center;padding: 2px;width: 12%;border: 1px solid;">Tested By :-</td>
+								<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+							</tr>
+							<tr>
+								<td style="height: 80px;border: 2px solid;border-right: 1px solid;" colspan="4"></td>
+							</tr>
+						   
+						</table>
+					</td>
+				</tr>
+				
+			</table>
+			</page>
+
+
+
+	
+	
+	<?php //} if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null) || ($row_select_pipe['bit_bc_2'] != "" && $row_select_pipe['bit_bc_2'] != "0" && $row_select_pipe['bit_bc_2'] != null) || ($row_select_pipe['bit_bc_3'] != "" && $row_select_pipe['bit_bc_3'] != "0" && $row_select_pipe['bit_bc_3'] != null) || ($row_select_pipe['bit_bc_4'] != "" && $row_select_pipe['bit_bc_4'] != "0" && $row_select_pipe['bit_bc_4'] != null) || ($row_select_pipe['bit_bc_5'] != "" && $row_select_pipe['bit_bc_5'] != "0" && $row_select_pipe['bit_bc_5'] != null)) {  ?> 
+
+	<div class="pagebreak"></div>
+	<br>
+	<br>
+	<br>
+
+	<!-- New Report 6 -->
+
+	<page size="A4">
+		<table align="center" width="100%" cellpadding="0" style="font-size:11px;height:auto;font-family : Calibri;border: 1px solid;padding: 0;border-collapse: collapse;">
+			<!-- header design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;">
+						<tr>
+							<td style="font-size: 15px;font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">BITUMEN</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 14px;font-weight: bold;text-align: center;padding: 2px;text-transform: uppercase;border: 1px solid;">BITUMEN CONTENT TEST</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td style="font-weight: bold;text-align: right;padding: 2px;border: 0; padding-right:100px;"></td>
+							<td style="padding: 2px;text-align: center;"><b>Testing Date :-</b> <?php echo date('d/m/Y', strtotime($start_date)); ?>&nbsp; To &nbsp;<?php echo date('d/m/Y', strtotime($end_date)); ?></td>
+						</tr>
+						<tr>
+
+							<td style="padding: 2px;"></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="4"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;border-top: 0;width: 12%;">Test Method :-</td>
+							<td><b>IRC-SP:112:2017</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="font-size: 12px;font-weight: bold;text-align: center;padding: 2px;border-top: 0;width: 8%;" colspan="2">Observation Table</td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2"></td>
+						</tr>
+						<tr>
+							<td style="padding: 1px;border: 1px solid;" colspan="2">&nbsp;</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<!-- table design -->
+			<tr>
+				<td>
+					<?php $cnt = 1; ?>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border-left: 1px solid;border-right: 1px solid;">
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;" rowspan="4">Sr. <br>No.</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Weight of Sample Taken</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Weight of the Sample after extraction</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid; border-bottom:1px solid;" rowspan="2">Weight of Fine Material, recovered from the extract </td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;  border-bottom:1px solid;" rowspan="2">Dry weight of Filter Ring</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Final weight of Filter Ring with finer materia</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2" > Increase in weight of the filter ring</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;" rowspan="2">Binder Content</td>
+
+						</tr>
+						<tr>
+
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 0px solid;" rowspan="1">W<sub>1</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid; border-top:0px solid;">W<sub>2</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">W<sub>3</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">F1</td>
+							<td style="font-weight:bold;text-align: center;padding: 2px;border: 1px solid; border-left:1px solid;">F2</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;">W4 = (F2-F1)</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;"><u>W1-(W2+W3)+W4</u> <br> W1</td>
+
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">gm</td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;border: 1px solid;border-bottom: 2px solid;">%</td>
+
+						</tr>
+						
+						 <?php //if (($row_select_pipe['bit_bc_1'] != "" && $row_select_pipe['bit_bc_1'] != "0" && $row_select_pipe['bit_bc_1'] != null)) {  ?> 
+
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"><?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" ><?php echo $row_select_pipe["bit_w4_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;" ><?php echo $row_select_pipe["bit_w5_1"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_1"] ?></td>
+
+						</tr>
+						
+						 <?php //} if (($row_select_pipe['bit_bc_2'] != "" && $row_select_pipe['bit_bc_2'] != "0" && $row_select_pipe['bit_bc_2'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px; border: 1px solid;"> <?php echo $cnt++; ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_2"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_2"] ?></td>
+                        </tr>
+						
+						 <?php //} if (($row_select_pipe['bit_bc_3'] != "" && $row_select_pipe['bit_bc_3'] != "0" && $row_select_pipe['bit_bc_3'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_3"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_3"] ?></td>
+
+						</tr>
+						
+						 <?php //} if (($row_select_pipe['bit_bc_4'] != "" && $row_select_pipe['bit_bc_4'] != "0" && $row_select_pipe['bit_bc_4'] != null)) {  ?> 
+						
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_4"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_4"] ?></td>
+                        </tr>
+						
+						 <?php //} if (($row_select_pipe['bit_bc_5'] != "" && $row_select_pipe['bit_bc_5'] != "0" && $row_select_pipe['bit_bc_5'] != null)) {  ?> 
+						 
+						<tr>
+							<td style="text-align: center;padding-top:9px; padding-bottom:9px;border: 1px solid;"><?php echo $cnt++; ?> </td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w1_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_f_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w2_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w3_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w4_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_w5_5"] ?></td>
+							<td style="text-align: center;padding: 2px;border: 1px solid;"><?php echo $row_select_pipe["bit_bc_5"] ?></td>
+                        </tr>
+                         <?php //}  ?> 
+
+					</table>
+				</td>
+			</tr>
+			<!-- footer design -->
+			<tr>
+				<td>
+					<table align="center" width="100%" style="font-size:11px;height:auto;font-family : Calibri;border-collapse: collapse;border: 1px solid; ">
+						<tr>
+							<td style="padding:8px; border-left:1px solid; border-bottom:2px solid;"></td>
+						</tr>
+						<tr>
+							<td style="font-weight: bold;text-align: left;padding: 2px;width: 8%;border-left: 1px solid;border-top: 1px solid;width:15%;">Checked By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid; "></td>
+							<td style="font-weight: bold;text-align: center;padding: 2px;width: 8%;border: 1px solid;width:15%;">Tested By :-</td>
+							<td style="padding: 2px;border-left: 1px solid;border: 1px solid;border: 1px solid;"></td>
+						</tr>
+						<tr>
+							<td style="height: 45px;border: 1px solid;border-right: 1px solid; " colspan="4"></td>
+						</tr>
+
+					</table>
+				</td>
+			</tr>
+			
+		</table>

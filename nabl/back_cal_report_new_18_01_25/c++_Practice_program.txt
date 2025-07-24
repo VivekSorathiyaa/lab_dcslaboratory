@@ -1,0 +1,31 @@
+
+1ST Program:-
+
+Three Numbers sum:- a + b + c = ans:-- 		
+
+
+#include <iostream>
+
+using namespace std;
+
+int main() {
+    
+    int a;
+    int b;
+    int c;
+    
+    cout << "Enter The First Value: " << a << "\n";
+    cin >> a;
+    
+    cout << "Enter The Second Value: " << b << "\n";
+    cin >> b;
+    
+    cout << "Enter The Third Value: " << c << "\n";
+    cin >> c;
+    
+    int d = a + b + c;
+    cout << "The Sum Of Three Values Is: " << d;
+    
+    
+    return 0;
+}
