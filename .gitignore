@@ -30,7 +30,6 @@ vendor/
 __MACOSX/
 
 # Optional: ignore database dumps or local test files
-*.sql
 *.sqlite
 *.bak
 *.tmp
