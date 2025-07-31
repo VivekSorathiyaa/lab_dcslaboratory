@@ -5,7 +5,7 @@ $db = mysqli_select_db($conn, "u218669247_dcslab");
 $base_url = "http://localhost/lab_nextgen/";
 
 $h_sr = "SSMTL";
-$comp_name = "NEXTGEN ENGINEERS & CONSULTANT PVT. LTD.";
+$comp_name = "NextGenLIMS Technologies";
 $city_name = "TARAGARH";
 
 /*Need For Dynamic Backup*/
@@ -19,9 +19,9 @@ $cc_mail_id = "vivek1.semicolon@gmail.com";
 $to_mail_id = "vivek1.semicolon@gmail.com";
 
 /*Print Bill*/
-$tax_no = "AAIFT3946QSD002";
-$pancard_no = "AAKCD6125G";
-$gst_no = "02AAKCD6125G1ZZ";
-$bank = "PUNJAB NATIONAL BANK";
-$acc_no = "3371002100015065";
-$ifsc_code = "PUNB0337100";
+$tax_no = "NGTLT1234X001";
+$pancard_no = "NGTPT6789L";
+$gst_no = "24NGTPT6789L1Z9";
+$bank = "NEXTGEN BANK LTD";
+$acc_no = "9876543210123456";
+$ifsc_code = "NEXT0001234";

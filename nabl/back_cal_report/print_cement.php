@@ -156,7 +156,7 @@ error_reporting(1); ?>
         <tr>
             <td style="border: 1px solid black;">logo</td>
             <td style="border: 1px solid black;" colspan="2">
-                DCS ENGINEERS & CONSULTANT Pvt. Ltd.<br>
+                NextGenLIMS Technologies<br>
                 <b>(Formerly known as DC Consultant)</b><br>
                 Mobile: +91-7018819894, +91-9816755805, e-mail: officialdcspvtltd@gmail.com<br>
                 <b>Regd, Office : VPO Taragarh (Rani Di K) Near Taragarh Palace Tehsil Baijnath</b><br>
@@ -280,7 +280,7 @@ error_reporting(1); ?>
                 
             </tr>
             <td style="border: 1px solid black;" colspan="2">
-                DCS ENGINEERS & CONSULTANT Pvt. Ltd.<br>
+                NextGenLIMS Technologies<br>
                 <b>(Formerly known as DC Consultant)</b><br>
 				<b>Geo Technical Investigation, Construction Material Testing Facility, Designing Structures,</b><br>
 				<b>DPR’s and other Civil Engineering Consultancy Services</b><br>
@@ -423,7 +423,7 @@ error_reporting(1); ?>
                 
             </tr>
             <td style="border: 1px solid black;" colspan="2">
-                DCS ENGINEERS & CONSULTANT Pvt. Ltd.<br>
+                NextGenLIMS Technologies<br>
                 <b>(Formerly known as DC Consultant)</b><br>
 				<b>Geo Technical Investigation, Construction Material Testing Facility, Designing Structures,</b><br>
 				<b>DPR’s and other Civil Engineering Consultancy Services</b><br>

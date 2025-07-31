@@ -104,7 +104,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -290,7 +290,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -424,7 +424,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -555,7 +555,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -681,7 +681,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -805,7 +805,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -924,7 +924,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -1199,7 +1199,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -1318,7 +1318,7 @@ error_reporting(0);?>
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>

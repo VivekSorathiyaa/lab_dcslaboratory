@@ -257,7 +257,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -441,7 +441,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -575,7 +575,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -706,7 +706,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -832,7 +832,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -956,7 +956,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -1075,7 +1075,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -1350,7 +1350,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>
@@ -1467,7 +1467,7 @@ $user_name = "select * from `multi_login` WHERE `id`='$tested_by'";
                 
             </tr>
             <tr>
-                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">DCS ENGINEERS & CONSULTANT Pvt. Ltd.</td> 
+                <td style="text-align: center;font-weight: bold;font-family: 'calibri';font-size: 25px;" colspan="7">NextGenLIMS Technologies</td> 
             </tr>
             
             <tr>

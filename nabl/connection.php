@@ -5,7 +5,7 @@ $db = mysqli_select_db($conn, "u218669247_dcslab");
 $base_url = "";
 
 $h_sr = "SSMTL";
-$comp_name = "NEXTGEN ENGINEERS & CONSULTANT PVT. LTD.";
+$comp_name = "NextGenLIMS Technologies";
 $city_name = "TARAGARH";
 ini_set('max_input_vars', '3000');
 
@@ -20,12 +20,12 @@ $cc_mail_id = "vivek1.semicolon@gmail.com";
 $to_mail_id = "vivek1.semicolon@gmail.com";
 
 /*Print Bill*/
-$tax_no = "AAIFT3946QSD002";
-$pancard_no = "AAKCD6125G";
-$gst_no = "02AAKCD6125G1ZZ";
-$bank = "PUNJAB NATIONAL BANK";
-$acc_no = "3371002100015065";
-$ifsc_code = "PUNB0337100";
+$tax_no = "NGTLT1234X001";
+$pancard_no = "NGTPT6789L";
+$gst_no = "24NGTPT6789L1Z9";
+$bank = "NEXTGEN BANK LTD";
+$acc_no = "9876543210123456";
+$ifsc_code = "NEXT0001234";
 
 
 $nabl_report_first = "NGL/REPORT/";
@@ -40,7 +40,8 @@ $pur_in_img_first_parts = "NGL_PUR_";
 $pur_out_first_parts = "NGL/PUROUT/";
 $qt_first_parts = "NGL/EXT/QU/";
 
-$set_mo_and_email = "Mobile: +91-7018819894, +91-9816755805, e-mail : officialNGLpvtltd@gmail.com";
-$set_reg_office = "Regd. Office: VPO Taragarh(Rani Di K) Near Taragarh Palace Tehsil Bajinath District Kangra Himachal Pradesh(176081)";
+$set_mo_and_email = "Mobile: +91-9925755626, e-mail: contact@nextgenlims.in";
+$set_reg_office = "Regd. Office: 302, ABC Business Park, Udhna Magdalla Road, Surat, Gujarat - 395007";
+
 
 ?>
