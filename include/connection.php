@@ -2,7 +2,7 @@
 	$servername='localhost';
 	$username='root';
 	$password='';
-	$dbname = "geo_lab";
+	$dbname = "u218669247_dcslab";
 	$conn=mysqli_connect($servername,$username,$password,"$dbname");
 	if(!$conn){
 	   die('Could not Connect My Sql:' .mysql_error());
