@@ -1,85 +1,80 @@
-<?php 
-session_start(); 
+<?php
+session_start();
 include("header.php");
-if($_SESSION['name']=="")
-{
+if ($_SESSION['name'] == "") {
 	?>
-	<script >
-		window.location.href="<?php echo $base_url; ?>index.php";
+	<script>
+		window.location.href = "<?php echo $base_url; ?>index.php";
 	</script>
 	<?php
 }
 
-	$serial="SELECT * FROM client ORDER BY client_id DESC";
+$serial = "SELECT * FROM client ORDER BY client_id DESC";
 $res = mysqli_query($conn, $serial);
 
 if (mysqli_num_rows($res) > 0) {
 	$r = mysqli_fetch_assoc($res);
-	$ser_no=$r["client_code"]+1;
-}else{
-	$ser_no=1;
+	$ser_no = $r["client_code"] + 1;
+} else {
+	$ser_no = 1;
 }
 
-$serial1="SELECT * FROM tpi ORDER BY tpi_id DESC";
+$serial1 = "SELECT * FROM tpi ORDER BY tpi_id DESC";
 $res1 = mysqli_query($conn, $serial1);
 
 if (mysqli_num_rows($res1) > 0) {
-	$r1= mysqli_fetch_assoc($res1);
-	$ser_no1=$r1["tpi_code"]+1;
-}else{
-	$ser_no1=1;
+	$r1 = mysqli_fetch_assoc($res1);
+	$ser_no1 = $r1["tpi_code"] + 1;
+} else {
+	$ser_no1 = 1;
 }
 
-$serial2="SELECT * FROM pmc ORDER BY pmc_id DESC";
+$serial2 = "SELECT * FROM pmc ORDER BY pmc_id DESC";
 $res2 = mysqli_query($conn, $serial2);
 
 if (mysqli_num_rows($res2) > 0) {
-	$r2= mysqli_fetch_assoc($res2);
-	$ser_no2=$r2["pmc_code"]+1;
-}else{
-	$ser_no2=1;
+	$r2 = mysqli_fetch_assoc($res2);
+	$ser_no2 = $r2["pmc_code"] + 1;
+} else {
+	$ser_no2 = 1;
 }
 
 
-$today= date("Y-m-d");
+$today = date("Y-m-d");
 
-$job_serial="SELECT * FROM job ORDER BY job_id DESC";
+$job_serial = "SELECT * FROM job ORDER BY job_id DESC";
 $job_res = mysqli_query($conn, $job_serial);
 
 if (mysqli_num_rows($job_res) > 0) {
 	$job_r = mysqli_fetch_array($job_res);
-	
-	$sam_rec_date= $job_r["sw_date"];
-	$last_refno= $job_r["refno"];
-	
-	if($sam_rec_date < $today)
-	{
-		$starting_date=date('Y-m-d H:i:s', strtotime($sam_rec_date));
+
+	$sam_rec_date = $job_r["sw_date"];
+	$last_refno = $job_r["refno"];
+
+	if ($sam_rec_date < $today) {
+		$starting_date = date('Y-m-d H:i:s', strtotime($sam_rec_date));
+	} else {
+		$starting_date = "";
 	}
-	else
-	{
-		$starting_date= "";
-	}
-	
-}else{
-	$starting_date= "";
-	$last_refno= "";
+
+} else {
+	$starting_date = "";
+	$last_refno = "";
 }
 
 ?>
 
 <?php
 
-		if(isset($_POST["btn_save_job"]))
-		{
-			?>
-			 <script>
-			 alert("Job Inserted Sucessfully.");
-			 window.location.href="<?php $base_url; ?>client_form.php";
-			 </script>
-			 
-			 <?php 
-		}
+if (isset($_POST["btn_save_job"])) {
+	?>
+	<script>
+		alert("Job Inserted Sucessfully.");
+		window.location.href = "<?php $base_url; ?>client_form.php";
+	</script>
+
+<?php
+}
 
 ?>
 
@@ -88,11 +83,11 @@ if (mysqli_num_rows($job_res) > 0) {
 	<!-- Content Header (Page header) -->
 
 	<section class="content" style="padding: 0px;
-     margin-right: auto;
-     margin-left: auto; 
-     padding-left: 0px; 
-     padding-right: 0px; ">
-	<?php include("menu.php") ?>
+	 margin-right: auto;
+	 margin-left: auto; 
+	 padding-left: 0px; 
+	 padding-right: 0px; ">
+		<?php include("menu.php") ?>
 	<div class="row">
 		
 		<h1 style="text-align:center;">
@@ -112,20 +107,20 @@ if (mysqli_num_rows($job_res) > 0) {
 								<div class="row">
 												
 												<div class="col-md-4" >
-												    <label>Agency / Contractor / Customer<span style="color:red;">*</span></label>
+													<label>Agency / Contractor / Customer<span style="color:red;">*</span></label>
 													<select class="form-control  select2 col-sm-12" tabindex="9"  id="select_agency" name="select_agency" required >
 														<option value="0">Select Agency</option>
-														<?php 
-															$cat_sql = "select * from agency_master where `isdeleted`=0";
-														
-															$cat_result = mysqli_query($conn, $cat_sql);
+														<?php
+														$cat_sql = "select * from agency_master where `isdeleted`=0";
 
-																while($cat_row = mysqli_fetch_assoc($cat_result)) {
-															
+														$cat_result = mysqli_query($conn, $cat_sql);
+
+														while ($cat_row = mysqli_fetch_assoc($cat_result)) {
+
 															?>
-															<option value="<?php echo $cat_row['agency_id']; ?>">
-															<?php echo str_replace("zxctxavb","'",$cat_row['agency_name']);?></option>
-															<?php  }?>
+																<option value="<?php echo $cat_row['agency_id']; ?>">
+																<?php echo str_replace("zxctxavb", "'", $cat_row['agency_name']); ?></option>
+															<?php } ?>
 													</select>
 												</div>
 												<div class="col-md-1">
@@ -136,16 +131,17 @@ if (mysqli_num_rows($job_res) > 0) {
 												</div>
 												
 												<div class="col-md-4" >
-									    <label>Client(End Customer):</label>
+										<label>Client(End Customer):</label>
 										<select class="form-control select2 col-sm-12" tabindex="6"   id="sel_client" name="sel_client">
 											<option value="0">Select Client(End Customer)</option>
 											<?php
-											$get_client="SELECT *FROM client where `clientisdeleted`=0";
+											$get_client = "SELECT *FROM client where `clientisdeleted`=0";
 											$client_res = mysqli_query($conn, $get_client);
 											if (mysqli_num_rows($client_res) > 0) {
-												while($r = mysqli_fetch_array($client_res)){?>
-												<option value="<?php echo $r["client_code"]?>"><?php echo str_replace("zxctxavb","'",$r['clientname']);?></option>
-												<?php } }?>
+												while ($r = mysqli_fetch_array($client_res)) { ?>
+														<option value="<?php echo $r["client_code"] ?>"><?php echo str_replace("zxctxavb", "'", $r['clientname']); ?></option>
+													<?php }
+											} ?>
 										</select>
 									</div>
 									<div class="col-md-1">
@@ -173,17 +169,17 @@ if (mysqli_num_rows($job_res) > 0) {
 									<label>Agency City:</label>
 										<select class="form-control  col-sm-12" tabindex="12"  data-placeholder="Select City" id="sel_city_of_agency" name="sel_city_of_agency" required >
 											<option value="">Select City</option>
-											<?php 
-												$sql = "select * from city";
-											
-												$result = mysqli_query($conn, $sql);
+											<?php
+											$sql = "select * from city";
 
-													while($row = mysqli_fetch_assoc($result)) {
-												
+											$result = mysqli_query($conn, $sql);
+
+											while ($row = mysqli_fetch_assoc($result)) {
+
 												?>
-												<option value="<?php echo $row['id']; ?>">
-												<?php echo $row['city_name']; ?></option>
-												<?php  }?>
+													<option value="<?php echo $row['id']; ?>">
+													<?php echo $row['city_name']; ?></option>
+												<?php } ?>
 										</select>
 										
 									</div>
@@ -218,7 +214,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									<div class="row">									
 									<div class="col-md-2">
 									<label>Customer Code :</label>
-										<input type="text" class="col-sm-12 form-control" id="client_code" tabindex="0" name="client_code" value="<?php echo $ser_no;?>" required disabled> 
+										<input type="text" class="col-sm-12 form-control" id="client_code" tabindex="0" name="client_code" value="<?php echo $ser_no; ?>" required disabled> 
 									</div>									
 									<div class="col-md-5">
 									<label>Customer Name:</label>
@@ -234,7 +230,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									</div>
 									
 								</div>
-						        <br>
+								<br>
 								<div class="row">									
 									<div class="col-md-6">
 									<label>Customer Address:</label>
@@ -253,17 +249,18 @@ if (mysqli_num_rows($job_res) > 0) {
 						<div class="row">
 									
 									<div class="col-md-4">
-									    <label>
+										<label>
 										<input type="text" value="TPI" name="tpi_or_auth" id="tpi_or_auth"></label>
 										<select class="form-control select2 col-sm-12" tabindex="6"  7 id="sel_tpi" name="sel_tpi"  >
 											<option value="0">Select TPI</option>
 											<?php
-											$get_client="SELECT *FROM tpi where `tpiisdeleted`=0";
+											$get_client = "SELECT *FROM tpi where `tpiisdeleted`=0";
 											$client_res = mysqli_query($conn, $get_client);
 											if (mysqli_num_rows($client_res) > 0) {
-												while($r = mysqli_fetch_array($client_res)){?>
-												<option value="<?php echo $r["tpi_code"]?>"><?php echo str_replace("zxctxavb","'",$r['tpi_name']);?></option>
-												<?php } }?>
+												while ($r = mysqli_fetch_array($client_res)) { ?>
+														<option value="<?php echo $r["tpi_code"] ?>"><?php echo str_replace("zxctxavb", "'", $r['tpi_name']); ?></option>
+													<?php }
+											} ?>
 										</select>
 									</div>
 									<div class="col-md-1">
@@ -274,16 +271,17 @@ if (mysqli_num_rows($job_res) > 0) {
 									</div>
 									
 									<div class="col-md-4">
-									    <label><input type="text" value="PMC" name="pmc_heading" id="pmc_heading"></label>
+										<label><input type="text" value="PMC" name="pmc_heading" id="pmc_heading"></label>
 										<select class="form-control select2 col-sm-12" tabindex="6"   id="sel_pmc" name="sel_pmc"  >
 											<option value="0">Select PMC</option>
 											<?php
-											$get_client="SELECT *FROM pmc where `pmcisdeleted`=0";
+											$get_client = "SELECT *FROM pmc where `pmcisdeleted`=0";
 											$client_res = mysqli_query($conn, $get_client);
 											if (mysqli_num_rows($client_res) > 0) {
-												while($r = mysqli_fetch_array($client_res)){?>
-												<option value="<?php echo $r["pmc_code"]?>"><?php echo str_replace("zxctxavb","'",$r['pmcname']);?></option>
-												<?php } }?>
+												while ($r = mysqli_fetch_array($client_res)) { ?>
+														<option value="<?php echo $r["pmc_code"] ?>"><?php echo str_replace("zxctxavb", "'", $r['pmcname']); ?></option>
+													<?php }
+											} ?>
 										</select>
 									</div>
 									<div class="col-md-1">
@@ -297,7 +295,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									<div class="row">									
 									<div class="col-md-2">
 									<label>TPI Code :</label>
-										<input type="text" class="col-sm-12 form-control" id="tpi_code" tabindex="0" name="tpi_code" value="<?php echo $ser_no1;?>" required disabled> 
+										<input type="text" class="col-sm-12 form-control" id="tpi_code" tabindex="0" name="tpi_code" value="<?php echo $ser_no1; ?>" required disabled> 
 									</div>									
 									<div class="col-md-5">
 									<label>TPI Name:</label>
@@ -313,7 +311,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									</div>
 									
 								</div>
-						        <br>
+								<br>
 								<div class="row">									
 									<div class="col-md-6">
 									<label>TPI Address:</label>
@@ -329,7 +327,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									<div class="row">									
 									<div class="col-md-2">
 									<label>PMC Code :</label>
-										<input type="text" class="col-sm-12 form-control" id="pmc_code" tabindex="0" name="pmc_code" value="<?php echo $ser_no2;?>" required disabled> 
+										<input type="text" class="col-sm-12 form-control" id="pmc_code" tabindex="0" name="pmc_code" value="<?php echo $ser_no2; ?>" required disabled> 
 									</div>									
 									<div class="col-md-5">
 									<label>PMC Name:</label>
@@ -345,7 +343,7 @@ if (mysqli_num_rows($job_res) > 0) {
 									</div>
 									
 								</div>
-						        <br>
+								<br>
 								<div class="row">									
 									<div class="col-md-6">
 									<label>PMC Address:</label>
@@ -437,43 +435,43 @@ if (mysqli_num_rows($job_res) > 0) {
 							</div>
 							<br>
 							<div class="col-md-4" >
-							    <label>Bill TO:</label>
+								<label>Bill TO:</label>
 								<select class="form-control select2 col-sm-12" tabindex="6" id="billing_to" name="billing_to">
 									<option value="">Select Billing To</option>
-									<?php 
-													$cat_sql = "select * from agency_master where `isdeleted`=0";
-												
-													$cat_result = mysqli_query($conn, $cat_sql);
+									<?php
+									$cat_sql = "select * from agency_master where `isdeleted`=0";
 
-														while($cat_row = mysqli_fetch_assoc($cat_result)) {
-													
-													?>
-													<option value="<?php echo $cat_row['agency_id']; ?>">
-													<?php echo str_replace("zxctxavb","'",$cat_row['agency_name']);?></option>
-													<?php  }?>
+									$cat_result = mysqli_query($conn, $cat_sql);
+
+									while ($cat_row = mysqli_fetch_assoc($cat_result)) {
+
+										?>
+														<option value="<?php echo $cat_row['agency_id']; ?>">
+														<?php echo str_replace("zxctxavb", "'", $cat_row['agency_name']); ?></option>
+													<?php } ?>
 								</select>
-								<?php //echo $last_refno;?>
+								<?php //echo $last_refno; ?>
 							</div>
 									<div class="col-md-2">
 										<label>Branch:</label>
 										<select class="form-control select2 form-select" tabindex="6" id="sel_branch" name="sel_branch">
 											<option value="">Select Branch</option>
-											<?php 
-												$sel_branch = "select * from branches where `is_deleted`=0";
-												$query_branch = mysqli_query($conn, $sel_branch);
-												if(mysqli_num_rows($query_branch) > 0)
-												{
-												while($row_branch = mysqli_fetch_array($query_branch)) {
-												?>
-												<option value="<?php echo $row_branch['branch_id'].'|'.$row_branch['branch_name'].'|'.$row_branch['branch_short_code']; ?>"><?php echo $row_branch['branch_name'];?></option>
-												<?php 
-												} }
-												?>
+											<?php
+											$sel_branch = "select * from branches where `is_deleted`=0";
+											$query_branch = mysqli_query($conn, $sel_branch);
+											if (mysqli_num_rows($query_branch) > 0) {
+												while ($row_branch = mysqli_fetch_array($query_branch)) {
+													?>
+														<option value="<?php echo $row_branch['branch_id'] . '|' . $row_branch['branch_name'] . '|' . $row_branch['branch_short_code']; ?>"><?php echo $row_branch['branch_name']; ?></option>
+													<?php
+												}
+											}
+											?>
 										</select>
 									</div>
 									<div class="col-md-12" style="text-align: center;">
 											<button type="button" class="btn btn-primary btn-lg btn3d " id="btn_save_client" name="sub_client" tabindex="25" onclick="saveclient('add')" style="margin-top:25px; border-radius: 20px;"> Save Job</button>
-									        <span id="available_msg" style="color:red;font-size:20px;"></span>
+											<span id="available_msg" style="color:red;font-size:20px;"></span>
 									</div>
 							
 							</div>
@@ -507,8 +505,8 @@ if (mysqli_num_rows($job_res) > 0) {
 					</div>
 				<!-- /.tab-content -->
 			</div>
-          <!-- /.nav-tabs-custom -->
-        </div>
+		  <!-- /.nav-tabs-custom -->
+		</div>
 </section>
 </div>
 </div>
@@ -517,13 +515,13 @@ if (mysqli_num_rows($job_res) > 0) {
 					
 <!-----error msg div Stop-------->					
 	<div class="modal fade" id="modal-category">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Category</h4>
-              </div>
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New Category</h4>
+			  </div>
 				<form id="form_ctegory" name="form_ctegory" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -545,21 +543,21 @@ if (mysqli_num_rows($job_res) > 0) {
 						<button type="button" class="btn btn-primary" id="btn_add_category" name="btn_add_category" data-dismiss="modal">Add Agency</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.
 modal-dialog -->
-    </div>
+	</div>
 	
 	<div class="modal fade" id="modal-city">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New City</h4>
-              </div>
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New City</h4>
+			  </div>
 				<form id="form_city" name="form_city" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -574,20 +572,20 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_city" name="btn_add_city" data-dismiss="modal">Add City</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>	
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>	
 	
 	<div class="modal fade" id="modal-auth">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Authority</h4>
-              </div>
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New Authority</h4>
+			  </div>
 				<form id="form_auth" name="form_auth" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -602,20 +600,20 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_auth" name="btn_add_auth" data-dismiss="modal">Add Authority</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	<div class="modal fade" id="modal-authcity">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New City</h4>
-              </div>
+		  <div class="modal-dialog">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New City</h4>
+			  </div>
 				<form id="form_city" name="form_city" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -630,21 +628,21 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_auth_city" name="btn_add_auth_city" data-dismiss="modal">Add City</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	
 	<div class="modal fade" id="modal-agency">
-          <div class="modal-dialog" style="width:80%">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Agency/Contractor/Customer</h4>
-              </div>
+		  <div class="modal-dialog" style="width:80%">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New Agency/Contractor/Customer</h4>
+			  </div>
 				<form id="form_agency" name="form_agency" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -666,17 +664,17 @@ modal-dialog -->
 												<div class="col-md-6">												
 													<select class="form-control col-sm-12" placeholder="Select City" tabindex="6"   id="add_sel_agency_city" name="sel_agency_city" required >
 													<option value="">Select City</option>
-													<?php 
+													<?php
 													$sql = "select * from city";
-												
+
 													$result = mysqli_query($conn, $sql);
 
-														while($row = mysqli_fetch_assoc($result)) {
-													
-													?>
-													<option value="<?php echo $row['id']; ?>">
-													<?php echo $row['city_name']; ?></option>
-													<?php  }?>
+													while ($row = mysqli_fetch_assoc($result)) {
+
+														?>
+														<option value="<?php echo $row['id']; ?>">
+														<?php echo $row['city_name']; ?></option>
+													<?php } ?>
 													</select>
 										
 												</div>
@@ -733,15 +731,13 @@ modal-dialog -->
 													<select name="sel_state" id="sel_state" class="form-control">
 													<option value="">Select State</option>
 													<?php
-													$get_state="SELECT * FROM state where `is_deleted`=0 ORDER BY state_id DESC";
+													$get_state = "SELECT * FROM state where `is_deleted`=0 ORDER BY state_id DESC";
 													$get_state_res = mysqli_query($conn, $get_state);
-													if (mysqli_num_rows($get_state_res) > 0) 
-													{
-														while($r = mysqli_fetch_array($get_state_res))
-														{?>
-															<option value="<?php echo $r["state_id"]?>"><?php echo $r['state_name'];?></option>
-													<?php 
-														} 
+													if (mysqli_num_rows($get_state_res) > 0) {
+														while ($r = mysqli_fetch_array($get_state_res)) { ?>
+																	<option value="<?php echo $r["state_id"] ?>"><?php echo $r['state_name']; ?></option>
+														<?php
+														}
 													}
 													?>
 													</select>
@@ -762,20 +758,20 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_agency" name="btn_add_agency" data-dismiss="modal">Add Agency/Contractor/Customer</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	<div class="modal fade" id="modal-client">
-          <div class="modal-dialog" style="width:80%">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Client(End Customer)</h4>
-              </div>
+		  <div class="modal-dialog" style="width:80%">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New Client(End Customer)</h4>
+			  </div>
 				<form id="form_client" name="form_client" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -813,20 +809,20 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_client" name="btn_add_client" data-dismiss="modal">Add client(End Customer)</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	<div class="modal fade" id="modal-tpi">
-          <div class="modal-dialog" style="width:80%">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New tpi</h4>
-              </div>
+		  <div class="modal-dialog" style="width:80%">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New tpi</h4>
+			  </div>
 				<form id="form_tpi" name="form_client" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -856,20 +852,20 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_tpi" name="btn_add_tpi" data-dismiss="modal">Add Tpi</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	<div class="modal fade" id="modal-pmc">
-          <div class="modal-dialog" style="width:80%">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New pmc</h4>
-              </div>
+		  <div class="modal-dialog" style="width:80%">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Add New pmc</h4>
+			  </div>
 				<form id="form_pmc" name="form_pmc" method="post">
 					<div class="modal-body">
 						<div class="form-group">
@@ -898,21 +894,21 @@ modal-dialog -->
 						<button type="button" class="btn btn-primary" id="btn_add_pmc" name="btn_add_pmc" data-dismiss="modal">Add Pmc</button>
 					</div>
 				</form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-          <!-- /.modal-dialog -->
-    </div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		  <!-- /.modal-dialog -->
+	</div>
 	
 	<div id="myModal" class="modal fade">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" style="text-align:center;font-size:30px;">Verify Given Instruction Before Inward</h5>
-                
-            </div>
-            <div class="modal-body instr_modal">
-                <table style="width:100%;" border="1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" style="text-align:center;font-size:30px;">Verify Given Instruction Before Inward</h5>
+				
+			</div>
+			<div class="modal-body instr_modal">
+				<table style="width:100%;" border="1">
 					<tr>
 						<td colspan="4" style="text-align:center;font-size:20px;">REVIEW REMARKS</td>
 					</tr>
@@ -989,17 +985,17 @@ modal-dialog -->
 					</tr>
 				</table>
 				<br>
-            </div>
-        </div>
-    </div>
+			</div>
+		</div>
+	</div>
 </div>		
-<?php include("footer.php");?>
+<?php include("footer.php"); ?>
 <script>
 
  
 
   $(function () {
-    $('.select2').select2();
+	$('.select2').select2();
   });
 $(document).ready(function()
 	{ 
@@ -1012,10 +1008,10 @@ $(document).ready(function()
 
 // client save
 function saveclient(type,id){
-    id = (typeof id == "undefined")?'':id;
-    var statusArr = {add:"added",edit:"updated",delete:"deleted"};
-    var billData = '';
-    if (type == 'add' || type == 'add_and_next') {		
+	id = (typeof id == "undefined")?'':id;
+	var statusArr = {add:"added",edit:"updated",delete:"deleted"};
+	var billData = '';
+	if (type == 'add' || type == 'add_and_next') {		
 				var client_code = $('#client_code').val(); 
 				var tester = $('#tester').val(); 
 				
@@ -1086,7 +1082,7 @@ function saveclient(type,id){
 				
 				if(!radio_nabl)
 				{
-                radio_nabl="";
+				radio_nabl="";
 				}
 				
 			
@@ -1098,7 +1094,7 @@ function saveclient(type,id){
 			
 	
 				billData = 'action_type='+type+'&id='+id;
-    }
+	}
 	
 	// set blank message to submit
 	var error_msg="";
@@ -1243,8 +1239,8 @@ function saveclient(type,id){
 		form_data.append("acceptable", acceptable);
 		form_data.append("applicable", applicable);
 		form_data.append("deviation", deviation);
-    $.ajax({
-        url : "<?php $base_url; ?>savetest_master.php",
+	$.ajax({
+		url : "<?php $base_url; ?>savetest_master.php",
 		type: "POST",
 		dataType:'JSON',
 		data : form_data,
@@ -1253,18 +1249,18 @@ function saveclient(type,id){
 		beforeSend: function(){
 		document.getElementById("overlay_div").style.display="block";
 		},
-        success:function(data){
+		success:function(data){
 			document.getElementById("overlay_div").style.display="none";
 			if(data.statuses=='1'){
 			alert("Job Is Successfully Saved");
-		    window.location.href="<?php $base_url; ?>job_listing_for_second_reception.php";
+			window.location.href="<?php $base_url; ?>job_listing_for_second_reception.php";
 			}else{
 				alert("Please Login By Reception First..");
-		    window.location.href="<?php $base_url; ?>index.php";
+			window.location.href="<?php $base_url; ?>index.php";
 			}
 			
-        }
-    });
+		}
+	});
   }else{
 	  alert("AllFields Required..");
 	  $("#error_msg_put").html(error_msg);
@@ -1438,7 +1434,7 @@ if(add_client_gst != "" && add_client_gst.length != 15){
 				return false;
 			}else{
 				$("#sel_client").html(data);
-		        $( '#form_client' ).each(function(){
+				$( '#form_client' ).each(function(){
 				this.reset();
 			});
 			}
@@ -1470,7 +1466,7 @@ let newStr1 = newStr.replace(/&/g,'qwerfdsa');
 		 {
 			
 				$("#sel_tpi").html(data);
-		        $( '#form_tpi' ).each(function(){
+				$( '#form_tpi' ).each(function(){
 				this.reset();
 			});
 			
@@ -1502,7 +1498,7 @@ let newStr1 = newStr.replace(/&/g,'qwerfdsa');
 		 {
 			
 				$("#sel_pmc").html(data);
-		        $( '#form_pmc' ).each(function(){
+				$( '#form_pmc' ).each(function(){
 				this.reset();
 			});
 			
@@ -1519,7 +1515,7 @@ let newStr1 = newStr.replace(/&/g,'qwerfdsa');
 $("#exist_client").change(function(){
 				
 				var exist_client = $('#exist_client').val();
-                
+				
 				var postData = '&exist_client='+exist_client;
 				
 				
@@ -1545,17 +1541,17 @@ $("#exist_client").change(function(){
 				  
 				 
 				  
- 			 }
+			  }
 
 		}); 
-    });
+	});
 
 
 // get exist client by select client
 $("#sel_client").change(function(){
 				
 				var exist_client = $('#sel_client').val();
-                
+				
 				var postData = '&exist_client='+exist_client;
 
 				
@@ -1580,7 +1576,7 @@ $("#sel_client").change(function(){
 			}
 
 		}); 
-    });
+	});
 
 
 // get exist client by enter client code
@@ -1622,17 +1618,17 @@ $("#exist_agency_mo").change(function(){
 				  
 				 
 				  
- 			 }
+			  }
 
 		}); 
 			}
 
-    });
+	});
 // get exist client by select TPI	
 $("#sel_tpi").change(function(){
 				
 				var exist_tpi = $('#sel_tpi').val();
-                
+				
 				var postData = '&exist_tpi='+exist_tpi;
 				
 				
@@ -1656,13 +1652,13 @@ $("#sel_tpi").change(function(){
 			}
 
 		}); 
-    });
+	});
 	
 	// get exist client by select TPI	
 $("#exist_tpi").change(function(){
 				
 				var exist_tpi = $('#exist_tpi').val();
-                
+				
 				var postData = '&exist_tpi='+exist_tpi;
 				
 				
@@ -1687,13 +1683,13 @@ $("#exist_tpi").change(function(){
 			}
 
 		}); 
-    });
+	});
 
 // get exist client by select TPI	
 $("#sel_pmc").change(function(){
 				
 				var sel_pmc = $('#sel_pmc').val();
-                
+				
 				var postData = '&exist_pmc='+sel_pmc;
 				
 				
@@ -1718,12 +1714,12 @@ $("#sel_pmc").change(function(){
 			}
 
 		}); 
-    });
+	});
 	
 	$("#exist_pmc").change(function(){
 				
 				var sel_pmc = $('#exist_pmc').val();
-                
+				
 				var postData = '&exist_pmc='+sel_pmc;
 				
 				
@@ -1748,13 +1744,13 @@ $("#sel_pmc").change(function(){
 			}
 
 		}); 
-    });	
+	});	
 	
 	
 	$("#select_agency").change(function(){
 				
 				var select_agency = $('#select_agency').val();
-                
+				
 				var postData = 'action_type=select_agency_on_change&select_agency='+select_agency;
 				
 				
@@ -1771,7 +1767,7 @@ $("#sel_pmc").change(function(){
 			}
 
 		}); 
-    });
+	});
 	
 	$("#sel_client").change(function(){
 				
@@ -1830,17 +1826,17 @@ $("#sel_pmc").change(function(){
 			}
 
 		}); 
-    });
+	});
 
 
 
 	
 $('#date').datepicker({
-      autoclose: true,
+	  autoclose: true,
 	  format: 'dd/mm/yyyy'
-    })
+	})
 
-var starting_date='<?php echo $starting_date;?>';
+var starting_date='<?php echo $starting_date; ?>';
 
 if(starting_date !="")
 {
@@ -1858,19 +1854,19 @@ var ended_date=(curr_date1 + "/" + curr_month1 + "/" + curr_year1);
 
 
 	$('#sw_date').datepicker({
-      autoclose: true,
+	  autoclose: true,
 	  format: 'dd/mm/yyyy',
 	  startDate: "'"+started_date+"'",
 	  endDate: "'"+ended_date+"'"
-    });
+	});
 	
 }else{
 	
 }
 $('#sw_date').datepicker({
-      autoclose: true,
+	  autoclose: true,
 	  format: 'dd/mm/yyyy',
-    }).on("change", function() {
+	}).on("change", function() {
 		
 			
 			var date_input = document.getElementById("sw_date").value.split('/');						
@@ -1900,10 +1896,10 @@ var curr_year1 = d_one.getFullYear();
 var ended_date=(curr_date1 + "/" + curr_month1 + "/" + curr_year1);
 
  $('#sample_rec_date').datepicker({
-      autoclose: true,
+	  autoclose: true,
 	  format: 'dd/mm/yyyy',
 	  endDate: "'"+ended_date+"'"
-    }); 
+	}); 
 
 
 
@@ -1949,10 +1945,10 @@ var curr_month1 = d1.getMonth() + 1; //Months are zero based
 var curr_year1 = d1.getFullYear();
 var started_date1=(curr_date1 + "/" + curr_month1 + "/" + curr_year1);
 	$('#sample_rec_date').datepicker({
-      autoclose: true,
+	  autoclose: true,
 	  format: 'dd/mm/yyyy',
 	  startDate: "'"+started_date1+"'"
-    });
+	});
 	
 	
 });*/
@@ -1960,10 +1956,10 @@ var started_date1=(curr_date1 + "/" + curr_month1 + "/" + curr_year1);
 
 <script>
   $(function () {
-    // Replace the <textarea id="editor1"> with a CKEditor
-    // instance, using default configuration.
-    CKEDITOR.replace('editor1')
-    //bootstrap WYSIHTML5 - text editor
-    $('.textarea').wysihtml5()
+	// Replace the <textarea id="editor1"> with a CKEditor
+	// instance, using default configuration.
+	CKEDITOR.replace('editor1')
+	//bootstrap WYSIHTML5 - text editor
+	$('.textarea').wysihtml5()
   })
 </script>
